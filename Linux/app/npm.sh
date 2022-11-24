@@ -12,3 +12,5 @@ npm install -g sass
 npm install -g nodemon
 npm install -g vite
 npm install -g yarn
+npm install -g express-generator
+npm install -g pug
