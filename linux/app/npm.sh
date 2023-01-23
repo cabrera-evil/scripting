@@ -13,4 +13,7 @@ npm install -g nodemon
 npm install -g vite
 npm install -g yarn
 npm install -g express-generator
+npm install -g hbs
 npm install -g pug
+npm install -g create-next-app
+npm install -g create-electron-app

@@ -10,3 +10,5 @@ sudo sh ./app/others.sh
 sudo sh ./app/snap.sh
 #Install NPM Modules
 sudo sh ./app/npm.sh
+#Install development tools
+sudo sh ./app/dev.sh
