@@ -6,14 +6,13 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 #Reload config
 source ~/.bashrc
 #Install NodeJs LTS
-nvm install --lts
+nvm i --lts
 #Install Modules
-npm install -g sass
-npm install -g nodemon
-npm install -g vite
-npm install -g yarn
-npm install -g express-generator
-npm install -g hbs
-npm install -g pug
-npm install -g create-next-app
-npm install -g create-electron-app
+npm i -g sass
+npm i -g nodemon
+npm i -g vite
+npm i -g yarn
+npm i -g hbs
+npm i -g express-generator
+npm i -g create-electron-app
+npm i -g nest-api-generator
