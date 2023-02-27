@@ -21,35 +21,32 @@ case $choice in
 1)
     echo -e "${GREEN}Installing terminal apps...${NC}"
     # Updating System
-    sudo sh ./config/update.sh
-    # Install Basic apt programs
-    sudo sh ./app/apt.sh
-    # Install NPM Modules
-    sudo sh ./app/npm.sh
-    # Install development tools
-    sudo sh ./app/dev.sh
-    # Install GCM
-    sudo sh ./config/git.sh
+    sudo sh ./linux/config/update.sh
+    # Installing terminal apps
+    sudo sh ./linux/app/terminal/apt.sh
+    sudo sh ./linux/app/terminal/dev.sh
+    sudo sh ./linux/app/terminal/npm.sh
+    # Configurations
+    sudo sh ./linux/config/git.sh
     ;;
 2)
     echo -e "${GREEN}Installing both terminal and desktop apps...${NC}"
     # Updating System
-    sudo sh ./config/update.sh
-    # Install Basic apt programs
-    sudo sh ./app/apt.sh
-    # Install NPM Modules
-    sudo sh ./app/npm.sh
-    # Install development tools
-    sudo sh ./app/dev.sh
-    # Install GCM
-    sudo sh ./config/git.sh
+    sudo sh ./linux/config/update.sh
+    # Installing terminal apps
+    sudo sh ./linux/app/terminal/apt.sh
+    sudo sh ./linux/app/terminal/dev.sh
+    sudo sh ./linux/app/terminal/npm.sh
+    # Configurations
+    sudo sh ./linux/config/git.sh
     # Install desktop apps
-    sudo sh ./app/snap.sh
+    sudo sh ./linux/app/desktop/snap.sh
+    sudo sh ./linux/app/desktop/external.sh
     ;;
 3)
     echo -e "${GREEN}Changing default grub...${NC}"
     # Change default grub
-    sudo sh ./config/grub.sh
+    sudo sh ./linux/config/grub.sh
     ;;
 4)
     echo -e "${GREEN}Exiting the installation menu...${NC}"
@@ -59,3 +56,6 @@ case $choice in
     echo -e "${RED}Invalid choice. Please enter 1, 2, 3, 4.${NC}"
     ;;
 esac
+
+# Return to the menu
+sh "$0"

@@ -20,12 +20,12 @@ case $choice in
 1)
     echo -e "${GREEN}Installing docker desktop...${NC}"
     # Installing docker desktop
-    sh ./version/desktop.sh
+    sh ./docker/version/desktop.sh
     ;;
 2)
     echo -e "${GREEN}Installing docker engine...${NC}"
     # Installing docker engine
-    sh ./version/engine.sh
+    sh ./docker/version/engine.sh
     ;;
 3)
     echo -e "${GREEN}Exiting the installation menu...${NC}"
@@ -35,3 +35,6 @@ case $choice in
     echo -e "${RED}Invalid choice. Please enter 1, 2, 3.${NC}"
     ;;
 esac
+
+# Return to the menu
+sh "$0"
