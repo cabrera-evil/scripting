@@ -6,3 +6,5 @@ sudo sh ./app/apt.sh
 sudo sh ./app/npm.sh
 #Install development tools
 sudo sh ./app/dev.sh
+#Install GCM
+sudo sh ./config/git.sh
