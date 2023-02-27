@@ -1,11 +1,32 @@
-#Install Git Credential Manager Core
-wget "https://github.com/GitCredentialManager/git-credential-manager/releases/download/v2.0.696/gcmcore-linux_amd64.2.0.696.deb" -O /tmp/gcmcore.deb
-sudo dpkg -i /tmp/gcmcore.deb
-#Configuring GCMC
+#!/bin/bash
+
+# Define colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+# Install Git Credential Manager Core
+echo -e "${GREEN}Installing Git Credential Manager Core${NC}"
+wget -O /tmp/gcm.deb "https://github.com/GitCredentialManager/git-credential-manager/releases/download/v2.0.886/gcm-linux_amd64.2.0.886.deb"
+sudo dpkg -i /tmp/gcm.deb
+
+# Deleting installation file
+echo -e "${GREEN}Deleting installation file${NC}"
+sudo rm /tmp/gmc.deb
+
+# Configuring GCMC
+echo -e "${GREEN}Configuring GCMC${NC}"
 git-credential-manager configure
-#Install keyring
+
+# Install keyring
+echo -e "${GREEN}Installing keyring${NC}"
 sudo apt-get install gnome-keyring -y
-#Install missing dependency
+
+# Install missing dependency
+echo -e "${GREEN}Installing missing dependency${NC}"
 sudo apt-get install libsecret-1-dev
-#Fixing GCMC error
+
+# Fixing GCMC error
+echo -e "${GREEN}Fixing GCMC error${NC}"
 git config --global credential.credentialStore secretservice
