@@ -78,11 +78,6 @@ clear
 echo -e "${BLUE}Adding user to Docker organization${NC}"
 sudo usermod -aG docker $USER
 
-#Enable Service Startup
-clear
-echo -e "${BLUE}Enabling Docker service${NC}"
-systemctl --user enable docker-desktop
-
 #Open Docker-Desktop
 clear
 echo -e "${BLUE}Opening Docker Desktop${NC}"
