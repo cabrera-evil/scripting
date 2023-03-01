@@ -27,8 +27,6 @@ case $choice in
     sudo sh ./app/terminal/apt.sh
     sudo sh ./app/terminal/dev.sh
     sudo sh ./app/terminal/npm.sh
-    # Configurations
-    sudo sh ./config/git.sh
     ;;
 2)
     echo -e "${GREEN}Installing both terminal and desktop apps...${NC}"
@@ -38,8 +36,6 @@ case $choice in
     sudo sh ./app/terminal/apt.sh
     sudo sh ./app/terminal/dev.sh
     sudo sh ./app/terminal/npm.sh
-    # Configurations
-    sudo sh ./config/git.sh
     # Install desktop apps
     sudo sh ./app/desktop/snap.sh
     sudo sh ./app/desktop/external.sh
