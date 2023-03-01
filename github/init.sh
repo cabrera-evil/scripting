@@ -22,22 +22,22 @@ case $choice in
 1)
     echo -e "${GREEN}Cloning a repository...${NC}"
     # Cloning a github repository
-    sh ./github/scripts/clone_repo.sh
+    sh ./scripts/clone_repo.sh
     ;;
 2)
     echo -e "${GREEN}Creating a repository...${NC}"
     # Creating a github repository
-    sh ./github/scripts/create_repo.sh
+    sh ./scripts/create_repo.sh
     ;;
 3)
     echo -e "${GREEN}Deleting a repository...${NC}"
     # Deleting a github repository
-    sh ./github/scripts/delete_repo.sh
+    sh ./scripts/delete_repo.sh
     ;;
 4)
     echo -e "${GREEN}Resetting a repository...${NC}"
     # Resetting a github repository
-    sh ./github/scripts/reset_repo.sh
+    sh ./scripts/reset_repo.sh
     ;;
 5)
     echo -e "${GREEN}Exiting the github scripting menu...${NC}"

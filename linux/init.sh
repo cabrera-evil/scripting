@@ -12,48 +12,54 @@ echo -e "${YELLOW}What would you like to install?${NC}"
 echo -e "${YELLOW}1. Terminal apps only${NC}"
 echo -e "${YELLOW}2. Terminal and desktop apps${NC}"
 echo -e "${YELLOW}3. Change default grub${NC}"
-echo -e "${YELLOW}4. Exit${NC}"
+echo -e "${YELLOW}4. Update system${NC}"
+echo -e "${YELLOW}5. Exit${NC}"
 
 # Prompt user for choice
-read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, 4):${NC} ")" choice
+read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, etc):${NC} ")" choice
 
 case $choice in
 1)
     echo -e "${GREEN}Installing terminal apps...${NC}"
     # Updating System
-    sudo sh ./linux/config/update.sh
+    sudo sh ./config/update.sh
     # Installing terminal apps
-    sudo sh ./linux/app/terminal/apt.sh
-    sudo sh ./linux/app/terminal/dev.sh
-    sudo sh ./linux/app/terminal/npm.sh
+    sudo sh ./app/terminal/apt.sh
+    sudo sh ./app/terminal/dev.sh
+    sudo sh ./app/terminal/npm.sh
     # Configurations
-    sudo sh ./linux/config/git.sh
+    sudo sh ./config/git.sh
     ;;
 2)
     echo -e "${GREEN}Installing both terminal and desktop apps...${NC}"
     # Updating System
-    sudo sh ./linux/config/update.sh
+    sudo sh ./config/update.sh
     # Installing terminal apps
-    sudo sh ./linux/app/terminal/apt.sh
-    sudo sh ./linux/app/terminal/dev.sh
-    sudo sh ./linux/app/terminal/npm.sh
+    sudo sh ./app/terminal/apt.sh
+    sudo sh ./app/terminal/dev.sh
+    sudo sh ./app/terminal/npm.sh
     # Configurations
-    sudo sh ./linux/config/git.sh
+    sudo sh ./config/git.sh
     # Install desktop apps
-    sudo sh ./linux/app/desktop/snap.sh
-    sudo sh ./linux/app/desktop/external.sh
+    sudo sh ./app/desktop/snap.sh
+    sudo sh ./app/desktop/external.sh
     ;;
 3)
     echo -e "${GREEN}Changing default grub...${NC}"
     # Change default grub
-    sudo sh ./linux/config/grub.sh
+    sudo sh ./config/grub.sh
     ;;
 4)
+    echo -e "${GREEN}Updating system...${NC}"
+    # Updating System
+    sh ./config/update.sh
+    ;;
+5)
     echo -e "${GREEN}Exiting the installation menu...${NC}"
     exit 0
     ;;
 *)
-    echo -e "${RED}Invalid choice. Please enter 1, 2, 3, 4.${NC}"
+    echo -e "${RED}Invalid choice. Please enter 1, 2, 3, etc.${NC}"
     ;;
 esac
 
