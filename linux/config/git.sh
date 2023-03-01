@@ -25,7 +25,7 @@ sudo apt-get install gnome-keyring -y
 
 # Install missing dependency
 echo -e "${GREEN}Installing missing dependency${NC}"
-sudo apt-get install libsecret-1-dev
+sudo apt-get install libsecret-1-dev -y
 
 # Fixing GCMC error
 echo -e "${GREEN}Fixing GCMC error${NC}"
