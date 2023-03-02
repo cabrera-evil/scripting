@@ -31,6 +31,7 @@ nvm i --lts && echo -e "${green}Node.js LTS installed.${NC}" || echo -e "${red}F
 # Install Modules
 clear
 echo -e "${blue}Installing Node.js modules...${NC}"
+npm i -g typescript && echo -e "${green}Typescript installed.${NC}" || echo -e "${red}Failed to install Typescript.${NC}"
 npm i -g sass && echo -e "${green}Sass installed.${NC}" || echo -e "${red}Failed to install Sass.${NC}"
 npm i -g nodemon && echo -e "${green}Nodemon installed.${NC}" || echo -e "${red}Failed to install Nodemon.${NC}"
 npm i -g vite && echo -e "${green}Vite installed.${NC}" || echo -e "${red}Failed to install Vite.${NC}"
