@@ -7,6 +7,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Print welcome message and menu
+clear
 echo -e "${YELLOW}Welcome to the installation menu.${NC}"
 echo -e "${YELLOW}What would you like to install?${NC}"
 echo -e "${YELLOW}1. Terminal apps only${NC}"

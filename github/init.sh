@@ -7,6 +7,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Print welcome message and menu
+clear
 echo -e "${YELLOW}Welcome to github scripting menu.${NC}"
 echo -e "${YELLOW}What would you like to do?${NC}"
 echo -e "${YELLOW}1. Clone a repository${NC}"
