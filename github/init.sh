@@ -25,32 +25,32 @@ case $choice in
 1)
     echo -e "${GREEN}Cloning a repository...${NC}"
     # Cloning a github repository
-    sh ./scripts/clone_repo.sh
+    sh ./github/scripts/clone_repo.sh
     ;;
 2)
     echo -e "${GREEN}Creating a repository...${NC}"
     # Creating a github repository
-    sh ./scripts/create_repo.sh
+    sh ./github/scripts/create_repo.sh
     ;;
 3)
     echo -e "${GREEN}Deleting a repository...${NC}"
     # Deleting a github repository
-    sh ./scripts/delete_repo.sh
+    sh ./github/scripts/delete_repo.sh
     ;;
 4)
     echo -e "${GREEN}Resetting a repository...${NC}"
     # Resetting a github repository
-    sh ./scripts/reset_repo.sh
+    sh ./github/scripts/reset_repo.sh
     ;;
 5)
     echo -e "${GREEN}Setting up gitconfig...${NC}"
     # Setting up gitconfig
-    sh ./scripts/git_config.sh
+    sh ./github/scripts/git_config.sh
     ;;
 6)
     echo -e "${GREEN}Setting up git credential manager (linux)...${NC}"
     # Setting up git credential manager (linux)
-    sh ./scripts/gcm_config.sh
+    sh ./github/scripts/gcm_config.sh
     ;;
 7)
     echo -e "${GREEN}Exiting the github scripting menu...${NC}"
