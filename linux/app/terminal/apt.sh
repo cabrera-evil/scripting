@@ -23,3 +23,11 @@ sudo apt-get install gnome-keyring -y
 clear
 echo -e "${BLUE}Installing Snap as additional software manager${NC}"
 sudo apt-get install snapd -y
+
+# Install basic development tools
+clear
+echo -e "${BLUE}Installing Basic Development Tools...${NC}"
+sudo apt-get install build-essential -y
+
+# Install Missing dependency for Proton
+sudo apt-get install libgbm-dev -y

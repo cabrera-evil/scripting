@@ -24,25 +24,29 @@ case $choice in
     echo -e "${GREEN}Installing terminal apps...${NC}"
     # Updating System
     sudo sh ./linux/config/update.sh
+
     # Installing terminal apps
-    sudo sh ./linux/app/terminal/apt.sh
-    sudo sh ./linux/app/terminal/dev.sh
-    sudo sh ./linux/app/terminal/npm.sh
+    for script in ./linux/app/terminal/*.sh; do
+        sudo sh "$script"
+    done
     ;;
 2)
     echo -e "${GREEN}Installing both terminal and desktop apps...${NC}"
     # Updating System
     sudo sh ./linux/config/update.sh
+
     # Installing terminal apps
-    sudo sh ./linux/app/terminal/apt.sh
-    sudo sh ./linux/app/terminal/dev.sh
-    sudo sh ./linux/app/terminal/npm.sh
+    for script in ./linux/app/terminal/*.sh; do
+        sudo sh "$script"
+    done
+
     # Install desktop apps
-    sudo sh ./linux/app/desktop/snap.sh
-    sudo sh ./linux/app/desktop/external.sh
+    for script in ./linux/app/desktop/*.sh; do
+        sudo sh "$script"
+    done
     ;;
 3)
-    echo -e "${GREEN}Changing default grub...${NC}"
+    echo -e "${GREEN}Updating default grub...${NC}"
     # Change default grub
     sudo sh ./linux/config/grub.sh
     ;;
