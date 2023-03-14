@@ -8,7 +8,7 @@ NC='\033[0m'
 
 # Install Git Credential Manager Core
 echo -e "${GREEN}Installing Git Credential Manager Core${NC}"
-wget -O /tmp/gcm.deb "https://github.com/GitCredentialManager/git-credential-manager/releases/download/v2.0.886/gcm-linux_amd64.2.0.886.deb"
+wget -O /tmp/gcm.deb "https://github.com/git-ecosystem/git-credential-manager/releases/download/v2.0.935/gcm-linux_amd64.2.0.935.deb"
 sudo dpkg -i /tmp/gcm.deb
 
 # Configuring GCMC
