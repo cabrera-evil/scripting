@@ -11,10 +11,6 @@ echo -e "${GREEN}Installing Git Credential Manager Core${NC}"
 wget -O /tmp/gcm.deb "https://github.com/GitCredentialManager/git-credential-manager/releases/download/v2.0.886/gcm-linux_amd64.2.0.886.deb"
 sudo dpkg -i /tmp/gcm.deb
 
-# Deleting installation file
-echo -e "${GREEN}Deleting installation file${NC}"
-sudo rm /tmp/gmc.deb
-
 # Configuring GCMC
 echo -e "${GREEN}Configuring GCMC${NC}"
 git-credential-manager configure
