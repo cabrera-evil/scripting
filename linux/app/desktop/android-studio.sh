@@ -24,7 +24,7 @@ if ! sudo dpkg -i /tmp/jdk-17_linux-x64_bin.deb; then
     exit 1
 fi
 
-echo -e "${green}JDK 17 installation complete!${NC}"
+echo -e "${GREEN}JDK 17 installation complete!${NC}"
 
 # Config JDK-17 PATH
 echo -e "${BLUE}Configuring Java Path...${NC}"
