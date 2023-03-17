@@ -33,5 +33,30 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 echo -e "${green}Java Path configured successfully!${NC}"
 
-# Install Android Studio IDE
-sudo snap install android-studio --classic && echo -e "${GREEN}Android Studio installed.${NC}" || echo -e "${RED}Failed to install Android Studio.${NC}"
+Install Android Studio
+echo -e "${BLUE}Downloading Android Studio...${NC}"
+if ! wget -O /tmp/android-studio-2022.1.1.21-linux.tar.gz "https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2022.1.1.21/android-studio-2022.1.1.21-linux.tar.gz"; then
+    echo -e "${RED}Failed to download Android Studio.${NC}"
+    exit 1
+fi
+
+echo -e "${BLUE}Extracting Android Studio...${NC}"
+if ! sudo tar -xvzf /tmp/android-studio-2022.1.1.21-linux.tar.gz -C /opt/; then
+    echo -e "${RED}Failed to extract Android Studio.${NC}"
+    exit 1
+fi
+
+echo -e "${BLUE}Creating desktop entry for Android Studio...${NC}"
+cat <<EOF | sudo tee /usr/share/applications/android-studio.desktop > /dev/null
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=/opt/android-studio/bin/studio.sh
+Name=Android Studio
+Icon=/opt/android-studio/bin/studio.png
+EOF
+
+sudo chmod +x /usr/share/applications/android-studio.desktop
+
+echo -e "${GREEN}Android Studio has been installed.${NC}"
