@@ -55,12 +55,12 @@ echo \
 #Download A Test Version (Then You Can Update)
 clear
 echo -e "${BLUE}Downloading latest version of Docker Desktop${NC}"
-wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/docker-desktop-4.16.2-amd64.deb"
+wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/docker-desktop-4.18.0-amd64.deb"
 
 #Install The Downloaded Package
 clear
 echo -e "${BLUE}Installing Docker Desktop${NC}"
-sudo apt update
+sudo apt-get update
 sudo dpkg -i /tmp/docker-desktop.deb
 
 #Cheking Version

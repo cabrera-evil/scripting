@@ -21,12 +21,12 @@ case $choice in
 1)
     echo -e "${GREEN}Installing docker desktop...${NC}"
     # Installing docker desktop
-    sudo sh ./docker/version/desktop.sh
+    sh ./docker/version/desktop.sh
     ;;
 2)
     echo -e "${GREEN}Installing docker engine...${NC}"
     # Installing docker engine
-    sudo sh ./docker/version/engine.sh
+    sh ./docker/version/engine.sh
     ;;
 3)
     echo -e "${GREEN}Exiting the installation menu...${NC}"
