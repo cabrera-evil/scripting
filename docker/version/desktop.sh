@@ -34,6 +34,7 @@ sudo usermod -aG kvm $USER
 clear
 echo -e "${BLUE}Cleaning old installations${NC}"
 sudo apt remove docker-desktop
+sudo dpkg -r docker-desktop
 rm -r $HOME/.docker/desktop
 sudo rm /usr/local/bin/com.docker.cli
 sudo apt purge docker-desktop
@@ -61,10 +62,6 @@ clear
 echo -e "${BLUE}Installing Docker Desktop${NC}"
 sudo apt update
 sudo dpkg -i /tmp/docker-desktop.deb
-
-# Deleting installation file
-echo -e "${GREEN}Deleting installation file${NC}"
-sudo rm /tmp/docker-desktop.deb
 
 #Cheking Version
 clear
