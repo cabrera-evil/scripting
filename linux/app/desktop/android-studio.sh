@@ -9,7 +9,6 @@ NC='\e[0m' # No Color
 
 # Install JDK 17
 clear
-
 if [ -d "/usr/lib/jvm/jdk-17" ]; then
     echo "JDK 17 already installed."
 else
@@ -42,7 +41,8 @@ fi
 echo -e "${BLUE}Deleting old installations...${NC}"
 if [ -d "/opt/android-studio" ]; then
     echo -e "${BLUE}Deleting old installations...${NC}"
-    sudo rm -rf /opt/android-studio
+    sudo rm -r /opt/android-studio
+    sudo rm -r /home/.gradle
 else
     echo -e "${BLUE}No old installations found...${NC}"
 fi
