@@ -33,21 +33,39 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 echo -e "${green}Java Path configured successfully!${NC}"
 
-Install Android Studio
+# Delete  Android Studio old installations
+echo -e "${BLUE}Deleting old installations...${NC}"
+if [ -d "/opt/android-studio" ]; then
+    echo -e "${BLUE}Deleting old installations...${NC}"
+    sudo rm -rf /opt/android-studio
+else
+    echo -e "${BLUE}No old installations found...${NC}"
+fi
+
+# Install Android Studio
 echo -e "${BLUE}Downloading Android Studio...${NC}"
-if ! wget -O /tmp/android-studio-2022.1.1.21-linux.tar.gz "https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2022.1.1.21/android-studio-2022.1.1.21-linux.tar.gz"; then
+if ! wget -O /tmp/android-studio-2022.2.1.18-linux.tar.gz "https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2022.2.1.18/android-studio-2022.2.1.18-linux.tar.gz"; then
     echo -e "${RED}Failed to download Android Studio.${NC}"
     exit 1
 fi
 
 echo -e "${BLUE}Extracting Android Studio...${NC}"
-if ! sudo tar -xvzf /tmp/android-studio-2022.1.1.21-linux.tar.gz -C /opt/; then
+if ! sudo tar -xvzf /tmp/android-studio-2022.2.1.18-linux.tar.gz -C /opt/; then
     echo -e "${RED}Failed to extract Android Studio.${NC}"
     exit 1
 fi
 
+# Delete Android Studio launcher
+if [ -f "/usr/share/applications/android-studio.desktop" ]; then
+    echo "Deleting app launcher..."
+    sudo rm /usr/share/applications/android-studio.desktop
+    echo "File deleted."
+else
+    echo "App launcher not found."
+fi
+
 echo -e "${BLUE}Creating desktop entry for Android Studio...${NC}"
-cat <<EOF | sudo tee /usr/share/applications/android-studio.desktop > /dev/null
+cat <<EOF | sudo tee /usr/share/applications/android-studio.desktop >/dev/null
 [Desktop Entry]
 Version=1.0
 Type=Application
