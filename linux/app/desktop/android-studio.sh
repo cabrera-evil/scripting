@@ -9,29 +9,34 @@ NC='\e[0m' # No Color
 
 # Install JDK 17
 clear
-echo -e "${BLUE}Downloading JDK 17...${NC}"
-if ! wget -O /tmp/jdk-17_linux-x64_bin.deb "https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.deb"; then
-    echo -e "${RED}Failed to download JDK 17.${NC}"
-    exit 1
+
+if [ -d "/usr/lib/jvm/jdk-17" ]; then
+    echo "JDK 17 already installed."
+else
+    echo -e "${BLUE}Downloading JDK 17...${NC}"
+    if ! wget -O /tmp/jdk-17_linux-x64_bin.deb "https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.deb"; then
+        echo -e "${RED}Failed to download JDK 17.${NC}"
+        exit 1
+    fi
+
+    echo -e "${BLUE}Installing JDK 17 dependencies...${NC}"
+    sudo apt-get install libc6-i386 libc6-x32 -y
+
+    echo -e "${BLUE}Installing JDK 17...${NC}"
+    if ! sudo dpkg -i /tmp/jdk-17_linux-x64_bin.deb; then
+        echo -e "${RED}Failed to install JDK 17.${NC}"
+        exit 1
+    fi
+
+    echo -e "${GREEN}JDK 17 installation complete!${NC}"
+
+    # Config JDK-17 PATH
+    echo -e "${BLUE}Configuring Java Path...${NC}"
+    export JAVA_HOME=/usr/lib/jvm/jdk-17
+    export PATH=$PATH:$JAVA_HOME/bin
+
+    echo -e "${green}Java Path configured successfully!${NC}"
 fi
-
-echo -e "${BLUE}Installing JDK 17 dependencies...${NC}"
-sudo apt-get install libc6-i386 libc6-x32 -y
-
-echo -e "${BLUE}Installing JDK 17...${NC}"
-if ! sudo dpkg -i /tmp/jdk-17_linux-x64_bin.deb; then
-    echo -e "${RED}Failed to install JDK 17.${NC}"
-    exit 1
-fi
-
-echo -e "${GREEN}JDK 17 installation complete!${NC}"
-
-# Config JDK-17 PATH
-echo -e "${BLUE}Configuring Java Path...${NC}"
-export JAVA_HOME=/usr/lib/jvm/jdk-17
-export PATH=$PATH:$JAVA_HOME/bin
-
-echo -e "${green}Java Path configured successfully!${NC}"
 
 # Delete  Android Studio old installations
 echo -e "${BLUE}Deleting old installations...${NC}"
