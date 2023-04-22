@@ -32,11 +32,9 @@ nvm i --lts && echo -e "${GREEN}Node.js LTS installed.${NC}" || echo -e "${RED}F
 clear
 echo -e "${BLUE}Installing Node.js modules...${NC}"
 npm i -g typescript && echo -e "${GREEN}Typescript installed.${NC}" || echo -e "${RED}Failed to install Typescript.${NC}"
-npm i -g sass && echo -e "${GREEN}Sass installed.${NC}" || echo -e "${RED}Failed to install Sass.${NC}"
 npm i -g nodemon && echo -e "${GREEN}Nodemon installed.${NC}" || echo -e "${RED}Failed to install Nodemon.${NC}"
 npm i -g vite && echo -e "${GREEN}Vite installed.${NC}" || echo -e "${RED}Failed to install Vite.${NC}"
-npm i -g yarn && echo -e "${GREEN}Yarn installed.${NC}" || echo -e "${RED}Failed to install Yarn.${NC}"
 npm i -g hbs && echo -e "${GREEN}HBS installed.${NC}" || echo -e "${RED}Failed to install HBS.${NC}"
-npm i -g express-generator && echo -e "${GREEN}Express generator installed.${NC}" || echo -e "${RED}Failed to install Express generator.${NC}"
 npm i -g create-electron-app && echo -e "${GREEN}Create Electron App installed.${NC}" || echo -e "${RED}Failed to install Create Electron App.${NC}"
-npm i -g nest-api-generator && echo -e "${GREEN}Nest API generator installed.${NC}" || echo -e "${RED}Failed to install Nest API generator.${NC}"
+npm i -g express-generator && echo -e "${GREEN}Express generator installed.${NC}" || echo -e "${RED}Failed to install Express generator.${NC}"
+pm i -g @nestjs/cli && echo -e "${GREEN}NestJS CLI installed.${NC}" || echo -e "${RED}Failed to install NestJS CLI.${NC}"
