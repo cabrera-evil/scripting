@@ -19,11 +19,6 @@ echo -e "${BLUE}Installing Git as version controller${NC}"
 sudo apt-get install git -y
 sudo apt-get install gnome-keyring -y
 
-# Install Snap as additional software manager
-clear
-echo -e "${BLUE}Installing Snap as additional software manager${NC}"
-sudo apt-get install snapd -y
-
 # Install basic development tools
 clear
 echo -e "${BLUE}Installing Basic Development Tools...${NC}"
