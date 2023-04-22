@@ -69,6 +69,7 @@ else
     echo "App launcher not found."
 fi
 
+# Create Android Studio launcher
 echo -e "${BLUE}Creating desktop entry for Android Studio...${NC}"
 cat <<EOF | sudo tee /usr/share/applications/android-studio.desktop >/dev/null
 [Desktop Entry]
