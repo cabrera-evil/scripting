@@ -14,15 +14,18 @@ sudo apt-get install htop -y
 sudo apt-get install neofetch -y
 
 # Install Git as version controller
-clear
 echo -e "${BLUE}Installing Git as version controller${NC}"
 sudo apt-get install git -y
 sudo apt-get install gnome-keyring -y
 
 # Install basic development tools
-clear
 echo -e "${BLUE}Installing Basic Development Tools...${NC}"
 sudo apt-get install build-essential -y
 
 # Install Missing dependency for Proton
+echo -e "${BLUE}Installing Missing dependency for Proton...${NC}"
 sudo apt-get install libgbm-dev -y
+
+# Install docker-compose
+echo -e "${BLUE}Installing docker-compose...${NC}"
+sudo apt-get install docker-compose -y
