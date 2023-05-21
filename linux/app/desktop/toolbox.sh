@@ -29,7 +29,7 @@ fi
 
 # Create Android Studio launcher
 echo -e "${BLUE}Creating JetBrains Toolbox App launcher...${NC}"
-if ! sudo ln -s /opt/jetbrains-toolbox/jetbrains-toolbox /usr/local/bin/jetbrains-toolbox; then
+if ! sudo ln -s /opt/jetbrains-toolbox-1.28.1.15219/jetbrains-toolbox /usr/local/bin/jetbrains-toolbox; then
     echo -e "${RED}Failed to create JetBrains Toolbox App launcher.${NC}"
     exit 1
 fi
