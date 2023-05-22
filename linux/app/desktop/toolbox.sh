@@ -7,7 +7,6 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-Download and install JetBrains Toolbox App
 clear
 echo -e "${BLUE}Downloading JetBrains Toolbox App...${NC}"
 if ! wget -O /tmp/toolbox.tar.gz "https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.28.1.15219.tar.gz?_gl=1*1a41i3s*_ga*MTQ0MTQ4MDkwMy4xNjg0NDcwMDA1*_ga_9J976DJZ68*MTY4NDQ3MDAwNS4xLjEuMTY4NDQ3MDEyMi4wLjAuMA.."; then
@@ -27,7 +26,7 @@ if ! sudo /opt/jetbrains-toolbox-1.28.1.15219/jetbrains-toolbox; then
     exit 1
 fi
 
-# Create Android Studio launcher
+# Create Jetbrains Toolbox launcher
 echo -e "${BLUE}Creating JetBrains Toolbox App launcher...${NC}"
 if ! sudo ln -s /opt/jetbrains-toolbox-1.28.1.15219/jetbrains-toolbox /usr/local/bin/jetbrains-toolbox; then
     echo -e "${RED}Failed to create JetBrains Toolbox App launcher.${NC}"
