@@ -46,31 +46,42 @@ case $choice in
     clear
     print_header "Installing both terminal and desktop apps..."
     # Updating System
-    # sudo sh ./linux/config/update.sh
+    sudo sh ./linux/config/update.sh
 
-    # # Installing terminal apps
-    # for script in ./linux/app/terminal/*.sh; do
-    #     sudo sh "$script"
-    # done
+    # Installing terminal apps
+    for script in ./linux/app/terminal/*.sh; do
+        sudo sh "$script"
+    done
 
     # Print available desktop programs
     print_header "Available desktop programs:"
     desktop_apps=(./linux/app/desktop/*.sh)
-    for ((i=0; i<${#desktop_apps[@]}; i++)); do
+    for ((i = 0; i < ${#desktop_apps[@]}; i++)); do
         app_script="${desktop_apps[$i]}"
         app_name=$(basename "$app_script" .sh)
-        echo "$((i+1)). $app_name"
+        echo "$((i + 1)). $app_name"
     done
 
     # Prompt user for desktop program choice
     echo -e "${YELLOW}Which desktop program would you like to install?${NC}"
-    read -p "$(echo -e "${YELLOW}Enter the program number:${NC} ")" app_choice
-    selected_app_script="${desktop_apps[$((app_choice-1))]}"
-    if [[ -n $selected_app_script ]]; then
-        print_header "Installing ${selected_app_script}..."
-        sudo sh "$selected_app_script"
+    read -p "$(echo -e "${YELLOW}Enter the program number (or 'all' to install all programs):${NC} ")" app_choice
+
+    if [[ "$app_choice" == "all" ]]; then
+        # Install all desktop programs
+        for script in "${desktop_apps[@]}"; do
+            print_header "Installing ${script}..."
+            sudo sh "$script"
+        done
+    elif [[ "$app_choice" =~ ^[0-9]+$ ]]; then
+        selected_app_script="${desktop_apps[$((app_choice - 1))]}"
+        if [[ -n $selected_app_script ]]; then
+            print_header "Installing ${selected_app_script}..."
+            sudo sh "$selected_app_script"
+        else
+            echo -e "${RED}Invalid choice. Please select a valid program number.${NC}"
+        fi
     else
-        echo -e "${RED}Invalid choice. Please select a valid program number.${NC}"
+        echo -e "${RED}Invalid choice. Please enter a valid program number or 'all'.${NC}"
     fi
     ;;
 3)
