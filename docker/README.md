@@ -7,7 +7,7 @@
 - `desktop.sh`: A script for installing Docker Desktop on Linux.1
 - `engine.sh`: A script for installing Docker Engine on Linux.
 
-# Docker images
+## Docker images
 
 - `mongo.sh`: A script for installing MongoDB on Linux.
 - `oracle19c.sh`: A script for installing Oracle Database 19c on Linux.
