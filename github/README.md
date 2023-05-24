@@ -1,4 +1,4 @@
-# GitHub Scripts
+## GitHub Scripts
 
 - `github_script.sh`: A script for various github actions from CLI.
 
