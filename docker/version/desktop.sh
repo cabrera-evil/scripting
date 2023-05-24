@@ -7,7 +7,6 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 #Install Kvm For Virtualization
-clear
 echo -e "${BLUE}Installing KVM${NC}"
 sudo apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm
 kvm-ok
