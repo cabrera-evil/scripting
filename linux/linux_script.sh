@@ -13,6 +13,7 @@ print_separator() {
 
 # Function to print a header
 print_header() {
+    clear
     print_separator
     echo -e "${YELLOW}$1${NC}"
     print_separator
@@ -62,30 +63,28 @@ read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, etc):${NC} ")" choice
 
 case $choice in
 1)
-    clear
     print_header "Installing terminal apps..."
     # Updating System
-    sudo sh ./$distro_path/config/update.sh
+    sudo sh ./linux/$distro_path/config/update.sh
 
     # Installing terminal apps
-    for script in ./$distro_path/app/terminal/*.sh; do
+    for script in ./linux/$distro_path/app/terminal/*.sh; do
         sudo sh "$script"
     done
     ;;
 2)
-    clear
     print_header "Installing both terminal and desktop apps..."
     # Updating System
-    sudo sh ./$distro_path/config/update.sh
+    sudo sh ./linux/$distro_path/config/update.sh
 
     # Installing terminal apps
-    for script in ./$distro_path/app/terminal/*.sh; do
+    for script in ./linux/$distro_path/app/terminal/*.sh; do
         sudo sh "$script"
     done
 
     # Print available desktop programs
     print_header "Available desktop programs:"
-    desktop_apps=(./$distro_path/app/desktop/*.sh)
+    desktop_apps=(./linux/$distro_path/app/desktop/*.sh)
     for ((i = 0; i < ${#desktop_apps[@]}; i++)); do
         app_script="${desktop_apps[$i]}"
         app_name=$(basename "$app_script" .sh)
@@ -116,14 +115,13 @@ case $choice in
     fi
     ;;
 3)
-    clear
     print_header "Installing desktop programs..."
     # Updating System
-    sudo sh ./$distro_path/config/update.sh
+    sudo sh ./linux/$distro_path/config/update.sh
 
     # Print available desktop programs
     print_header "Available desktop programs:"
-    desktop_apps=(./$distro_path/app/desktop/*.sh)
+    desktop_apps=(./linux/$distro_path/app/desktop/*.sh)
     for ((i = 0; i < ${#desktop_apps[@]}; i++)); do
         app_script="${desktop_apps[$i]}"
         app_name=$(basename "$app_script" .sh)
@@ -154,19 +152,16 @@ case $choice in
     fi
     ;;
 4)
-    clear
     print_header "Updating default grub..."
     # Change default grub
-    sudo sh ./$distro_path/config/grub.sh
+    sudo sh ./linux/$distro_path/config/grub.sh
     ;;
 5)
-    clear
     print_header "Updating system..."
     # Updating System
-    sh ./$distro_path/config/update.sh
+    sh ./linux/$distro_path/config/update.sh
     ;;
 6)
-    clear
     print_header "Exiting the installation menu..."
     exit 0
     ;;
