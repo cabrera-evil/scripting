@@ -43,7 +43,7 @@ case $distro_choice in
     exit 0
     ;;
 *)
-    echo -e "${RED}Invalid choice. Please enter 1, 2, 3.${NC}"
+    echo -e "${RED}Invalid choice. Please enter 1, 2, or 3.${NC}"
     exit 1
     ;;
 esac
@@ -99,13 +99,13 @@ case $choice in
     if [[ "$app_choice" == "all" ]]; then
         # Install all desktop programs
         for script in "${desktop_apps[@]}"; do
-            print_header "Installing ${script}..."
+            print_header "Installing $script..."
             sudo sh "$script"
         done
     elif [[ "$app_choice" =~ ^[0-9]+$ ]]; then
         selected_app_script="${desktop_apps[$((app_choice - 1))]}"
         if [[ -n $selected_app_script ]]; then
-            print_header "Installing ${selected_app_script}..."
+            print_header "Installing $selected_app_script..."
             sudo sh "$selected_app_script"
         else
             echo -e "${RED}Invalid choice. Please select a valid program number.${NC}"
@@ -136,13 +136,13 @@ case $choice in
     if [[ "$app_choice" == "all" ]]; then
         # Install all desktop programs
         for script in "${desktop_apps[@]}"; do
-            print_header "Installing ${script}..."
+            print_header "Installing $script..."
             sudo sh "$script"
         done
     elif [[ "$app_choice" =~ ^[0-9]+$ ]]; then
         selected_app_script="${desktop_apps[$((app_choice - 1))]}"
         if [[ -n $selected_app_script ]]; then
-            print_header "Installing ${selected_app_script}..."
+            print_header "Installing $selected_app_script..."
             sudo sh "$selected_app_script"
         else
             echo -e "${RED}Invalid choice. Please select a valid program number.${NC}"
@@ -171,4 +171,4 @@ case $choice in
 esac
 
 # Return to the menu
-sh "$0"
+exec bash "$0"

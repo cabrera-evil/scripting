@@ -35,19 +35,19 @@ case $choice in
     clear
     print_header "Opening Docker script menu..."
     # Docker scripts menu
-    sh ./docker/docker_script.sh
+    ./docker/docker_script.sh
     ;;
 2)
     clear
     print_header "Opening Github script menu..."
     # Github scripts menu
-    sh ./github/github_script.sh
+    ./github/github_script.sh
     ;;
 3)
     clear
     print_header "Opening Linux script menu..."
     # Linux scripts menu
-    sh ./linux/linux_script.sh
+    ./linux/linux_script.sh
     ;;
 4)
     clear
