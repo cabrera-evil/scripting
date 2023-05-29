@@ -13,7 +13,7 @@ export FLATPAK_NO_INTERACTIVE=1
 # Install Postman via Flatpak
 clear
 echo -e "${BLUE}Installing Postman...${NC}"
-if ! flatpak install --noninteractive flathub com.getpostman.Postman; then
+if ! flatpak install flathub com.getpostman.Postman -y; then
     echo -e "${RED}Failed to install Postman.${NC}"
     exit 1
 fi

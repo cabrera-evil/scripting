@@ -13,7 +13,7 @@ export FLATPAK_NO_INTERACTIVE=1
 # Install Visual Studio Code via Flatpak
 clear
 echo -e "${BLUE}Installing Visual Studio Code...${NC}"
-if ! flatpak install --noninteractive flathub com.visualstudio.code; then
+if ! flatpak install flathub com.visualstudio.code -y; then
     echo -e "${RED}Failed to install Visual Studio Code.${NC}"
     exit 1
 fi

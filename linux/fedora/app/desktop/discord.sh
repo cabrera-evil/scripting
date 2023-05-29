@@ -13,7 +13,7 @@ export FLATPAK_NO_INTERACTIVE=1
 # Install Discord via Flatpak
 clear
 echo -e "${BLUE}Installing Discord...${NC}"
-if ! flatpak install --noninteractive flathub com.discordapp.Discord; then
+if ! flatpak install flathub com.discordapp.Discord -y; then
     echo -e "${RED}Failed to install Discord.${NC}"
     exit 1
 fi

@@ -13,7 +13,7 @@ export FLATPAK_NO_INTERACTIVE=1
 # Install Spotify via Flatpak
 clear
 echo -e "${BLUE}Installing Spotify...${NC}"
-if ! flatpak install --noninteractive flathub com.spotify.Client; then
+if ! flatpak install flathub com.spotify.Client -y; then
     echo -e "${RED}Failed to install Spotify.${NC}"
     exit 1
 fi

@@ -13,7 +13,7 @@ export FLATPAK_NO_INTERACTIVE=1
 # Install OBS Studio via Flatpak
 clear
 echo -e "${BLUE}Installing OBS Studio...${NC}"
-if ! flatpak install --noninteractive flathub com.obsproject.Studio; then
+if ! flatpak install flathub com.obsproject.Studio -y; then
     echo -e "${RED}Failed to install OBS Studio.${NC}"
     exit 1
 fi

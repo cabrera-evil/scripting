@@ -13,7 +13,7 @@ export FLATPAK_NO_INTERACTIVE=1
 # Install MongoDB Compass via Flatpak
 clear
 echo -e "${BLUE}Installing MongoDB Compass...${NC}"
-if ! flatpak install --noninteractive flathub com.mongodb.Compass; then
+if ! flatpak install flathub com.mongodb.Compass -y; then
     echo -e "${RED}Failed to install MongoDB Compass.${NC}"
     exit 1
 fi
