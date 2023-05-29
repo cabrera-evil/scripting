@@ -28,11 +28,11 @@ EOF
 check_command_success "Failed to add VirtualBox RPM repository"
 
 # Step 3: Import VirtualBox GPG Key
-sudo dnf search virtualbox
+sudo dnf -y search virtualbox
 check_command_success "Failed to import VirtualBox GPG key"
 
 # Step 4: Install VirtualBox 7.0 on Fedora
-sudo dnf install VirtualBox-7.0
+sudo dnf -y install VirtualBox-7.0
 check_command_success "Failed to install VirtualBox"
 
 # Step 5: Add your user to the vboxusers group
