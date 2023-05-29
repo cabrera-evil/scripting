@@ -1,10 +1,23 @@
 #!/bin/bash
 
-# Define colors
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m'
+# Colors for terminal output
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[0;34m'
+NC='\e[0m' # No Color
+
+# Error handling function
+handle_error() {
+    local exit_code=$1
+    local command=$2
+    local message=$3
+
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}"
+        exit $exit_code
+    fi
+}
 
 # Function to print a separator line
 print_separator() {
@@ -46,8 +59,7 @@ case $distro_choice in
     exit 0
     ;;
 *)
-    echo -e "${RED}Invalid choice. Please enter 1, 2, or 3.${NC}"
-    exit 1
+    handle_error 1 "Invalid choice" "Please enter 1, 2, or 3."
     ;;
 esac
 
@@ -70,7 +82,8 @@ case $choice in
 
     # Installing terminal apps
     for script in $script_dir/$distro_path/app/terminal/*.sh; do
-        sudo $script
+        source $script
+        handle_error $? "Failed to install $script"
     done
     ;;
 2)
@@ -78,7 +91,8 @@ case $choice in
 
     # Installing terminal apps
     for script in $script_dir/$distro_path/app/terminal/*.sh; do
-        sudo $script
+        source $script
+        handle_error $? "Failed to install $script"
     done
 
     # Print available desktop programs
@@ -86,7 +100,8 @@ case $choice in
     desktop_apps=($script_dir/$distro_path/app/desktop/*.sh)
     for script in "${desktop_apps[@]}"; do
         print_header "Installing $script..."
-        sudo $script
+        source $script
+        handle_error $? "Failed to install $script"
     done
     ;;
 3)
@@ -110,36 +125,40 @@ case $choice in
         # Install all desktop programs
         for script in "${desktop_apps[@]}"; do
             print_header "Installing $script..."
-            sudo $script
+            source $script
+            handle_error $? "Failed to install $script"
         done
     elif [[ "$app_choice" =~ ^[0-9]+$ ]]; then
         selected_app_script="${desktop_apps[$((app_choice - 1))]}"
         if [[ -n $selected_app_script ]]; then
             print_header "Installing $selected_app_script..."
-            sudo "$selected_app_script"
+            source "$selected_app_script"
+            handle_error $? "Failed to install $selected_app_script"
         else
-            echo -e "${RED}Invalid choice. Please select a valid program number.${NC}"
+            handle_error 1 "Invalid choice" "Please select a valid program number."
         fi
     else
-        echo -e "${RED}Invalid choice. Please enter a valid program number or 'all'.${NC}"
+        handle_error 1 "Invalid choice" "Please enter a valid program number or 'all'."
     fi
     ;;
 4)
     print_header "Updating default grub..."
     # Change default grub
-    sudo $script_dir/$distro_path/config/grub.sh
+    source $script_dir/$distro_path/config/grub.sh
+    handle_error $? "Failed to update default grub."
     ;;
 5)
     print_header "Updating system..."
     # Updating System
     sh $script_dir/$distro_path/config/update.sh
+    handle_error $? "Failed to update system."
     ;;
 6)
     print_header "Exiting the installation menu..."
     exit 0
     ;;
 *)
-    echo -e "${RED}Invalid choice. Please enter 1, 2, 3, etc.${NC}"
+    handle_error 1 "Invalid choice" "Please enter 1, 2, 3, etc."
     ;;
 esac
 

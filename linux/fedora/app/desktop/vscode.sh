@@ -7,15 +7,24 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Set Flatpak non-interactive mode
-export FLATPAK_NO_INTERACTIVE=1
+# Error handling function
+handle_error() {
+    local exit_code=$1
+    local command=$2
+    local message=$3
 
-# Install Visual Studio Code via Flatpak
-clear
-echo -e "${BLUE}Installing Visual Studio Code...${NC}"
-if ! flatpak install flathub com.visualstudio.code -y; then
-    echo -e "${RED}Failed to install Visual Studio Code.${NC}"
-    exit 1
-fi
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}" >&2
+        exit $exit_code
+    fi
+}
 
-echo -e "${GREEN}Visual Studio Code installation complete!${NC}"
+# Add the alias to ~/.bashrc file
+echo "alias code='flatpak run com.visualstudio.code'" >> ~/.bashrc
+handle_error $? "echo" "Failed to add alias to ~/.bashrc."
+
+# Reload the terminal configuration
+source ~/.bashrc
+handle_error $? "source" "Failed to reload terminal configuration."
+
+echo -e "${GREEN}Visual Studio Code alias added to ~/.bashrc and terminal configuration reloaded successfully!${NC}"

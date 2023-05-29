@@ -1,44 +1,59 @@
 #!/bin/bash
 
-# Function to check command success
-check_command_success() {
-    if [ $? -ne 0 ]; then
-        echo "Error: $1"
-        exit 1
+# Colors for terminal output
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[0;34m'
+NC='\e[0m' # No Color
+
+# Error handling function
+handle_error() {
+    local exit_code=$1
+    local command=$2
+    local message=$3
+
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}" >&2
+        exit $exit_code
     fi
 }
 
 # Step 1: Install Dependency packages and Wireshark
+echo -e "${BLUE}Step 1: Installing Dependency packages and Wireshark${NC}"
 sudo dnf -y install git gcc cmake flex bison
-check_command_success "Failed to install dependency packages"
+handle_error $? "sudo dnf install" "Failed to install dependency packages"
 sudo dnf -y install elfutils-libelf-devel libuuid-devel libpcap-devel
-check_command_success "Failed to install dependency packages"
+handle_error $? "sudo dnf install" "Failed to install dependency packages"
 sudo dnf -y install python3-tornado python3-netifaces python3-devel python-pip python3-setuptools python3-PyQt4 python3-zmq
-check_command_success "Failed to install dependency packages"
+handle_error $? "sudo dnf install" "Failed to install dependency packages"
 sudo dnf -y install wireshark
-check_command_success "Failed to install Wireshark"
+handle_error $? "sudo dnf install" "Failed to install Wireshark"
 
 # Step 2: Install GNS3 GUI and Server
+echo -e "${BLUE}Step 2: Installing GNS3 GUI and Server${NC}"
 sudo dnf -y install gns3-server gns3-gui
-check_command_success "Failed to install GNS3 GUI and Server"
+handle_error $? "sudo dnf install" "Failed to install GNS3 GUI and Server"
 
-# Step 3: Install Dynamips and vpcs
+# Step 3: Clone Dynamips in /tmp directory
+echo -e "${BLUE}Step 3: Cloning Dynamips${NC}"
+cd /tmp
 git clone https://github.com/GNS3/dynamips
-check_command_success "Failed to clone Dynamips repository"
+handle_error $? "git clone" "Failed to clone Dynamips repository"
 cd dynamips
 mkdir build
 cd build
 cmake ..
-check_command_success "Failed to build Dynamips"
+handle_error $? "cmake" "Failed to build Dynamips"
 sudo make install
-check_command_success "Failed to install Dynamips"
+handle_error $? "make install" "Failed to install Dynamips"
 
 # Confirm binary location
 which dynamips
 
 # Install vpcs
 wget https://liquidtelecom.dl.sourceforge.net/project/vpcs/0.8/vpcs_0.8b_Linux64
-check_command_success "Failed to download vpcs"
+handle_error $? "wget" "Failed to download vpcs"
 mv vpcs_0.8b_Linux64 vpcs
 chmod +x vpcs
 sudo cp vpcs /usr/local/bin/
@@ -50,11 +65,13 @@ vpcs -v
 # Please follow separate instructions to install KVM on Fedora
 
 # Step 5: Setup IOU support
+echo -e "${BLUE}Step 5: Setting up IOU support${NC}"
+cd /tmp
 git clone http://github.com/ndevilla/iniparser.git
-check_command_success "Failed to clone iniparser repository"
+handle_error $? "git clone" "Failed to clone iniparser repository"
 cd iniparser
 make
-check_command_success "Failed to build iniparser"
+handle_error $? "make" "Failed to build iniparser"
 sudo cp libiniparser.* /usr/lib/
 sudo cp src/iniparser.h /usr/local/include
 sudo cp src/dictionary.h /usr/local/include
@@ -64,4 +81,4 @@ cd ..
 # Please follow separate instructions to install Docker on Fedora
 # Don't forget to add your user to the docker group after starting the service
 sudo usermod -a -G docker $(whoami)
-check_command_success "Failed to add user to docker group"
+handle_error $? "sudo usermod" "Failed to add user to docker group"
