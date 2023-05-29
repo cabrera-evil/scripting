@@ -19,6 +19,9 @@ print_header() {
     print_separator
 }
 
+# Get the directory of the script
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Print welcome message and menu
 print_header "Welcome to the installation menu."
 echo -e "${YELLOW}Select your Linux distribution:${NC}"
@@ -65,26 +68,26 @@ case $choice in
 1)
     print_header "Installing terminal apps..."
     # Updating System
-    sudo sh ./linux/$distro_path/config/update.sh
+    sudo sh $script_dir/$distro_path/config/update.sh
 
     # Installing terminal apps
-    for script in ./linux/$distro_path/app/terminal/*.sh; do
+    for script in $script_dir/$distro_path/app/terminal/*.sh; do
         sudo sh "$script"
     done
     ;;
 2)
     print_header "Installing both terminal and desktop apps..."
     # Updating System
-    sudo sh ./linux/$distro_path/config/update.sh
+    sudo sh $script_dir/$distro_path/config/update.sh
 
     # Installing terminal apps
-    for script in ./linux/$distro_path/app/terminal/*.sh; do
+    for script in $script_dir/$distro_path/app/terminal/*.sh; do
         sudo sh "$script"
     done
 
     # Print available desktop programs
     print_header "Available desktop programs:"
-    desktop_apps=(./linux/$distro_path/app/desktop/*.sh)
+    desktop_apps=($script_dir/$distro_path/app/desktop/*.sh)
     for ((i = 0; i < ${#desktop_apps[@]}; i++)); do
         app_script="${desktop_apps[$i]}"
         app_name=$(basename "$app_script" .sh)
@@ -117,11 +120,11 @@ case $choice in
 3)
     print_header "Installing desktop programs..."
     # Updating System
-    sudo sh ./linux/$distro_path/config/update.sh
+    sudo sh $script_dir/$distro_path/config/update.sh
 
     # Print available desktop programs
     print_header "Available desktop programs:"
-    desktop_apps=(./linux/$distro_path/app/desktop/*.sh)
+    desktop_apps=($script_dir/$distro_path/app/desktop/*.sh)
     for ((i = 0; i < ${#desktop_apps[@]}; i++)); do
         app_script="${desktop_apps[$i]}"
         app_name=$(basename "$app_script" .sh)
@@ -154,12 +157,12 @@ case $choice in
 4)
     print_header "Updating default grub..."
     # Change default grub
-    sudo sh ./linux/$distro_path/config/grub.sh
+    sudo sh $script_dir/$distro_path/config/grub.sh
     ;;
 5)
     print_header "Updating system..."
     # Updating System
-    sh ./linux/$distro_path/config/update.sh
+    sh $script_dir/$distro_path/config/update.sh
     ;;
 6)
     print_header "Exiting the installation menu..."
