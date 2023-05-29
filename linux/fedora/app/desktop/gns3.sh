@@ -8,64 +8,60 @@ check_command_success() {
     fi
 }
 
-# Update the system
-sudo dnf update -y
-check_command_success "Failed to update the system."
+# Step 1: Install Dependency packages and Wireshark
+sudo dnf -y install git gcc cmake flex bison
+check_command_success "Failed to install dependency packages"
+sudo dnf -y install elfutils-libelf-devel libuuid-devel libpcap-devel
+check_command_success "Failed to install dependency packages"
+sudo dnf -y install python3-tornado python3-netifaces python3-devel python-pip python3-setuptools python3-PyQt4 python3-zmq
+check_command_success "Failed to install dependency packages"
+sudo dnf -y install wireshark
+check_command_success "Failed to install Wireshark"
 
-# Install necessary dependencies
-sudo dnf install -y wget python3 python3-pip python3-devel cmake qt5-qtbase-devel qt5-qtmultimedia-devel qt5-qtsvg-devel libnetfilter_queue-devel libpcap-devel libpng-devel openssl-devel libssh-devel libssh2-devel libyaml-devel snappy-devel lld flex bison autoconf automake libtool make pkgconf swig zlib-devel curl-devel ncurses-devel
-check_command_success "Failed to install necessary dependencies."
+# Step 2: Install GNS3 GUI and Server
+sudo dnf -y install gns3-server gns3-gui
+check_command_success "Failed to install GNS3 GUI and Server"
 
-# Install libvirt for QEMU/KVM integration (optional)
-sudo dnf install -y libvirt libvirt-devel
-check_command_success "Failed to install libvirt."
-
-# Install Dynamips
-wget -O dynamips.tar.gz https://github.com/GNS3/dynamips/archive/master.tar.gz
-check_command_success "Failed to download Dynamips source code."
-tar -xf dynamips.tar.gz
-cd dynamips-master
+# Step 3: Install Dynamips and vpcs
+git clone https://github.com/GNS3/dynamips
+check_command_success "Failed to clone Dynamips repository"
+cd dynamips
 mkdir build
 cd build
 cmake ..
-make
+check_command_success "Failed to build Dynamips"
 sudo make install
-check_command_success "Failed to build and install Dynamips."
-cd ../..
+check_command_success "Failed to install Dynamips"
 
-# Install IOU
-wget -O iouyap.tar.gz https://github.com/GNS3/iouyap/archive/master.tar.gz
-check_command_success "Failed to download iouyap source code."
-tar -xf iouyap.tar.gz
-cd iouyap-master
+# Confirm binary location
+which dynamips
+
+# Install vpcs
+wget https://liquidtelecom.dl.sourceforge.net/project/vpcs/0.8/vpcs_0.8b_Linux64
+check_command_success "Failed to download vpcs"
+mv vpcs_0.8b_Linux64 vpcs
+chmod +x vpcs
+sudo cp vpcs /usr/local/bin/
+
+# Confirm vpcs version
+vpcs -v
+
+# Step 4: Add support for KVM / QEMU (Optional)
+# Please follow separate instructions to install KVM on Fedora
+
+# Step 5: Setup IOU support
+git clone http://github.com/ndevilla/iniparser.git
+check_command_success "Failed to clone iniparser repository"
+cd iniparser
 make
-sudo make install
-check_command_success "Failed to build and install iouyap."
+check_command_success "Failed to build iniparser"
+sudo cp libiniparser.* /usr/lib/
+sudo cp src/iniparser.h /usr/local/include
+sudo cp src/dictionary.h /usr/local/include
 cd ..
 
-# Install VPCS
-wget -O vpcs.tar.gz https://github.com/GNS3/vpcs/archive/master.tar.gz
-check_command_success "Failed to download VPCS source code."
-tar -xf vpcs.tar.gz
-cd vpcs-master/src
-./mk.sh
-sudo cp vpcs /usr/local/bin/
-check_command_success "Failed to build and install VPCS."
-cd ../..
-
-# Install GNS3
-pip3 install gns3-server gns3-gui
-check_command_success "Failed to install GNS3."
-
-# Create symbolic link for Qt 5.15 (may not be necessary on Fedora)
-sudo ln -s /usr/lib64/qt5/plugins/platforms/ /usr/lib/qt5/plugins/
-
-# Start GNS3 server
-# gns3server
-# check_command_success "Failed to start GNS3 server."
-
-# Open GNS3 GUI
-# gns3
-# check_command_success "Failed to open GNS3 GUI."
-
-echo "GNS3 installation completed successfully."
+# Step 6: Add Support for Docker (Optional)
+# Please follow separate instructions to install Docker on Fedora
+# Don't forget to add your user to the docker group after starting the service
+sudo usermod -a -G docker $(whoami)
+check_command_success "Failed to add user to docker group"
