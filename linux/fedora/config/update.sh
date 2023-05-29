@@ -53,4 +53,13 @@ else
     exit 1
 fi
 
+# Update flatpak packages
+echo -e "${BLUE}Updating Flatpak Packages${NC}"
+if flatpak update -y; then
+    echo -e "${GREEN}Flatpak packages updated.${NC}"
+else
+    echo -e "${RED}Failed to update flatpak packages.${NC}"
+    exit 1
+fi
+
 echo -e "${GREEN}System maintenance complete.${NC}"
