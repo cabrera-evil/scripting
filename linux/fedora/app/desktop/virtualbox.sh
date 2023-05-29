@@ -8,29 +8,37 @@ check_command_success() {
     fi
 }
 
-# Check if VirtualBox is already installed
-if command -v vboxmanage >/dev/null 2>&1; then
-    echo "VirtualBox is already installed."
-    exit 0
-fi
+# Step 1: Install Dependencies
+sudo dnf -y install @development-tools
+check_command_success "Failed to install development tools"
+sudo dnf -y install kernel-headers kernel-devel dkms elfutils-libelf-devel qt5-qtx11extras
+check_command_success "Failed to install kernel headers and other dependencies"
 
-# Enable RPM Fusion repository
-sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-check_command_success "Failed to enable RPM Fusion repository."
+# Step 2: Add VirtualBox RPM repository
+VERSION=38
+cat <<EOF | sudo tee /etc/yum.repos.d/virtualbox.repo 
+[virtualbox]
+name=Fedora VirtualBox Repo
+baseurl=http://download.virtualbox.org/virtualbox/rpm/fedora/$VERSION/\$basearch
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://www.virtualbox.org/download/oracle_vbox_2016.asc
+EOF
+check_command_success "Failed to add VirtualBox RPM repository"
 
-# Install VirtualBox dependencies
-sudo dnf install -y dkms kernel-devel-$(uname -r) elfutils-libelf-devel qt5-qtx11extras
+# Step 3: Import VirtualBox GPG Key
+sudo dnf search virtualbox
+check_command_success "Failed to import VirtualBox GPG key"
 
-# Add VirtualBox repository
-sudo wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo rpm --import -
-check_command_success "Failed to add VirtualBox repository."
+# Step 4: Install VirtualBox 7.0 on Fedora
+sudo dnf install VirtualBox-7.0
+check_command_success "Failed to install VirtualBox"
 
-# Download VirtualBox repository file
-sudo wget -O /etc/yum.repos.d/virtualbox.repo https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
-check_command_success "Failed to download VirtualBox repository file."
+# Step 5: Add your user to the vboxusers group
+sudo usermod -a -G vboxusers $USER
+newgrp vboxusers
+id $USER
 
-# Install VirtualBox
-sudo dnf install -y VirtualBox-6.1
-check_command_success "Failed to install VirtualBox."
-
+# Display success message
 echo "VirtualBox installation completed successfully."
