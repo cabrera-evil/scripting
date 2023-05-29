@@ -67,60 +67,30 @@ read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, etc):${NC} ")" choice
 case $choice in
 1)
     print_header "Installing terminal apps..."
-    # Updating System
-    sudo sh $script_dir/$distro_path/config/update.sh
 
     # Installing terminal apps
     for script in $script_dir/$distro_path/app/terminal/*.sh; do
-        sudo sh "$script"
+        sudo $script
     done
     ;;
 2)
     print_header "Installing both terminal and desktop apps..."
-    # Updating System
-    sudo sh $script_dir/$distro_path/config/update.sh
 
     # Installing terminal apps
     for script in $script_dir/$distro_path/app/terminal/*.sh; do
-        sudo sh "$script"
+        sudo $script
     done
 
     # Print available desktop programs
     print_header "Available desktop programs:"
     desktop_apps=($script_dir/$distro_path/app/desktop/*.sh)
-    for ((i = 0; i < ${#desktop_apps[@]}; i++)); do
-        app_script="${desktop_apps[$i]}"
-        app_name=$(basename "$app_script" .sh)
-        echo "$((i + 1)). $app_name"
+    for script in "${desktop_apps[@]}"; do
+        print_header "Installing $script..."
+        sudo $script
     done
-
-    # Prompt user for desktop program choice
-    echo -e "${YELLOW}Which desktop program would you like to install?${NC}"
-    echo -e "${YELLOW}Enter the program number (or 'all' to install all programs):${NC}"
-    read -p "" app_choice
-
-    if [[ "$app_choice" == "all" ]]; then
-        # Install all desktop programs
-        for script in "${desktop_apps[@]}"; do
-            print_header "Installing $script..."
-            sudo sh "$script"
-        done
-    elif [[ "$app_choice" =~ ^[0-9]+$ ]]; then
-        selected_app_script="${desktop_apps[$((app_choice - 1))]}"
-        if [[ -n $selected_app_script ]]; then
-            print_header "Installing $selected_app_script..."
-            sudo sh "$selected_app_script"
-        else
-            echo -e "${RED}Invalid choice. Please select a valid program number.${NC}"
-        fi
-    else
-        echo -e "${RED}Invalid choice. Please enter a valid program number or 'all'.${NC}"
-    fi
     ;;
 3)
     print_header "Installing desktop programs..."
-    # Updating System
-    sudo sh $script_dir/$distro_path/config/update.sh
 
     # Print available desktop programs
     print_header "Available desktop programs:"
@@ -140,13 +110,13 @@ case $choice in
         # Install all desktop programs
         for script in "${desktop_apps[@]}"; do
             print_header "Installing $script..."
-            sudo sh "$script"
+            sudo $script
         done
     elif [[ "$app_choice" =~ ^[0-9]+$ ]]; then
         selected_app_script="${desktop_apps[$((app_choice - 1))]}"
         if [[ -n $selected_app_script ]]; then
             print_header "Installing $selected_app_script..."
-            sudo sh "$selected_app_script"
+            sudo "$selected_app_script"
         else
             echo -e "${RED}Invalid choice. Please select a valid program number.${NC}"
         fi
@@ -157,7 +127,7 @@ case $choice in
 4)
     print_header "Updating default grub..."
     # Change default grub
-    sudo sh $script_dir/$distro_path/config/grub.sh
+    sudo $script_dir/$distro_path/config/grub.sh
     ;;
 5)
     print_header "Updating system..."
