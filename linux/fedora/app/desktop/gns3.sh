@@ -1,46 +1,71 @@
 #!/bin/bash
 
-# Colors for terminal output
-RED='\e[0;31m'
-GREEN='\e[0;32m'
-YELLOW='\e[1;33m'
-BLUE='\e[0;34m'
-NC='\e[0m' # No Color
+# Function to check command success
+check_command_success() {
+    if [ $? -ne 0 ]; then
+        echo "Error: $1"
+        exit 1
+    fi
+}
 
-# Install GNS3 dependencies
-echo -e "${BLUE}Installing GNS3 dependencies...${NC}"
-sudo dnf install -y cmake elfutils-libelf-devel libpcap-devel python3-devel qt5-qtbase-devel libvirt libvirt-devel dynamips git python3-netifaces vpcs
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to install GNS3 dependencies.${NC}"
-    exit 1
-fi
+# Update the system
+sudo dnf update -y
+check_command_success "Failed to update the system."
 
-# Install Wireshark (optional)
-echo -e "${BLUE}Installing Wireshark...${NC}"
-sudo dnf install -y wireshark
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to install Wireshark.${NC}"
-fi
+# Install necessary dependencies
+sudo dnf install -y wget python3 python3-pip python3-devel cmake qt5-qtbase-devel qt5-qtmultimedia-devel qt5-qtsvg-devel libnetfilter_queue-devel libpcap-devel libpng-devel openssl-devel libssh-devel libssh2-devel libyaml-devel snappy-devel lld flex bison autoconf automake libtool make pkgconf swig zlib-devel curl-devel ncurses-devel
+check_command_success "Failed to install necessary dependencies."
 
-# Clone GNS3 repository
-echo -e "${BLUE}Cloning GNS3 repository...${NC}"
-git clone https://github.com/GNS3/gns3-gui.git
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to clone GNS3 repository.${NC}"
-    exit 1
-fi
+# Install libvirt for QEMU/KVM integration (optional)
+sudo dnf install -y libvirt libvirt-devel
+check_command_success "Failed to install libvirt."
 
-# Build and install GNS3
-echo -e "${BLUE}Building and installing GNS3...${NC}"
-cd gns3-gui
+# Install Dynamips
+wget -O dynamips.tar.gz https://github.com/GNS3/dynamips/archive/master.tar.gz
+check_command_success "Failed to download Dynamips source code."
+tar -xf dynamips.tar.gz
+cd dynamips-master
 mkdir build
 cd build
 cmake ..
 make
 sudo make install
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to build and install GNS3.${NC}"
-    exit 1
-fi
+check_command_success "Failed to build and install Dynamips."
+cd ../..
 
-echo -e "${GREEN}GNS3 installation complete!${NC}"
+# Install IOU
+wget -O iouyap.tar.gz https://github.com/GNS3/iouyap/archive/master.tar.gz
+check_command_success "Failed to download iouyap source code."
+tar -xf iouyap.tar.gz
+cd iouyap-master
+make
+sudo make install
+check_command_success "Failed to build and install iouyap."
+cd ..
+
+# Install VPCS
+wget -O vpcs.tar.gz https://github.com/GNS3/vpcs/archive/master.tar.gz
+check_command_success "Failed to download VPCS source code."
+tar -xf vpcs.tar.gz
+cd vpcs-master/src
+./mk.sh
+sudo cp vpcs /usr/local/bin/
+check_command_success "Failed to build and install VPCS."
+cd ../..
+
+# Install GNS3
+pip3 install gns3-server gns3-gui
+check_command_success "Failed to install GNS3."
+
+# Create symbolic link for Qt 5.15 (may not be necessary on Fedora)
+sudo ln -s /usr/lib64/qt5/plugins/platforms/ /usr/lib/qt5/plugins/
+
+# Start GNS3 server
+# gns3server
+# check_command_success "Failed to start GNS3 server."
+
+# Open GNS3 GUI
+# gns3
+# check_command_success "Failed to open GNS3 GUI."
+
+echo "GNS3 installation completed successfully."
