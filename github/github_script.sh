@@ -27,7 +27,7 @@ echo -e "${YELLOW}2. Create a repository${NC}"
 echo -e "${YELLOW}3. Delete a repository${NC}"
 echo -e "${YELLOW}4. Reset a repository${NC}"
 echo -e "${YELLOW}5. Setup gitconfig${NC}"
-echo -e "${YELLOW}6. Setup git credential manager (Linux)${NC}"
+echo -e "${YELLOW}6. Setup ssh${NC}"
 echo -e "${YELLOW}7. Exit${NC}"
 
 # Prompt user for choice
@@ -62,7 +62,7 @@ case $choice in
 6)
     print_header "Setting up git credential manager (Linux)..."
     # Setting up git credential manager (Linux)
-    sh ./github/scripts/gcm_config.sh
+    sh ./github/scripts/ssh_config.sh
     ;;
 7)
     print_header "Exiting the GitHub scripting menu..."
