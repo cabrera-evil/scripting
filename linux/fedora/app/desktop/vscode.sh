@@ -37,7 +37,7 @@ handle_error $? "sudo sh -c" "Failed to create vscode.repo file."
 sudo dnf check-update
 handle_error $? "sudo dnf check-update" "Failed to check for updates."
 
-sudo dnf install code -y
+sudo dnf install code 
 handle_error $? "sudo dnf install" "Failed to install Visual Studio Code."
 
 echo -e "${GREEN}Visual Studio Code alias added to ~/.bashrc, terminal configuration reloaded, and Visual Studio Code installed successfully!${NC}"
