@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install ksuperkey
-clear
 echo -e "${BLUE}Installing ksuperkey...${NC}"
 sudo apt-get update
 sudo apt-get install -y cmake build-essential qtbase5-dev libx11-dev libxtst-dev pkg-config

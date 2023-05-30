@@ -13,13 +13,13 @@ print_separator() {
 
 # Function to print a header
 print_header() {
+    clear
     print_separator
     echo -e "${YELLOW}$1${NC}"
     print_separator
 }
 
 # Print welcome message and menu
-clear
 print_header "Welcome to the scripting menu."
 echo -e "${YELLOW}What would you like to do?${NC}"
 echo -e "${YELLOW}1. Docker scripts${NC}"
@@ -32,25 +32,21 @@ read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, etc):${NC} ")" choice
 
 case $choice in
 1)
-    clear
     print_header "Opening Docker script menu..."
     # Docker scripts menu
     ./docker/docker_script.sh
     ;;
 2)
-    clear
     print_header "Opening Github script menu..."
     # Github scripts menu
     ./github/github_script.sh
     ;;
 3)
-    clear
     print_header "Opening Linux script menu..."
     # Linux scripts menu
     ./linux/linux_script.sh
     ;;
 4)
-    clear
     print_header "Exiting the scripting menu..."
     exit 0
     ;;

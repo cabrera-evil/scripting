@@ -13,6 +13,7 @@ print_separator() {
 
 # Function to print a header
 print_header() {
+    clear
     print_separator
     echo -e "${YELLOW}$1${NC}"
     print_separator
@@ -34,43 +35,36 @@ read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, 4, 5, 6, 7):${NC} ")" c
 
 case $choice in
 1)
-    clear
     print_header "Cloning a repository..."
     # Cloning a GitHub repository
     sh ./github/scripts/clone_repo.sh
     ;;
 2)
-    clear
     print_header "Creating a repository..."
     # Creating a GitHub repository
     sh ./github/scripts/create_repo.sh
     ;;
 3)
-    clear
     print_header "Deleting a repository..."
     # Deleting a GitHub repository
     sh ./github/scripts/delete_repo.sh
     ;;
 4)
-    clear
     print_header "Resetting a repository..."
     # Resetting a GitHub repository
     sh ./github/scripts/reset_repo.sh
     ;;
 5)
-    clear
     print_header "Setting up gitconfig..."
     # Setting up gitconfig
     sh ./github/scripts/git_config.sh
     ;;
 6)
-    clear
     print_header "Setting up git credential manager (Linux)..."
     # Setting up git credential manager (Linux)
     sh ./github/scripts/gcm_config.sh
     ;;
 7)
-    clear
     print_header "Exiting the GitHub scripting menu..."
     exit 0
     ;;

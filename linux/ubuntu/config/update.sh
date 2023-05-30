@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Updating system
-clear
+
 echo -e "${BLUE}Updating System${NC}"
 sudo apt-get update -y
 

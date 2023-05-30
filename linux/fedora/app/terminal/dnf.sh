@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install basic applications
-clear
 echo -e "${BLUE}Installing Basic Applications...${NC}"
 sudo dnf install htop -y
 sudo dnf install neofetch -y

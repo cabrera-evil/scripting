@@ -13,6 +13,7 @@ print_separator() {
 
 # Function to print a header
 print_header() {
+    clear
     print_separator
     echo -e "${YELLOW}$1${NC}"
     print_separator
@@ -30,19 +31,16 @@ read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3):${NC} ")" choice
 
 case $choice in
 1)
-    clear
     print_header "Installing Docker Desktop..."
     # Installing Docker Desktop
     sh ./docker/version/desktop.sh
     ;;
 2)
-    clear
     print_header "Installing Docker Engine..."
     # Installing Docker Engine
     sh ./docker/version/engine.sh
     ;;
 3)
-    clear
     print_header "Exiting the installation menu..."
     exit 0
     ;;

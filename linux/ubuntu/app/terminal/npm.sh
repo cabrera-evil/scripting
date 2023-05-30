@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install NVM
-clear
 echo -e "${BLUE}Installing NVM...${NC}"
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 

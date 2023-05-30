@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install Discord
-clear
 echo -e "${BLUE}Downloading Discord...${NC}"
 if ! wget -O /tmp/discord.deb "https://discord.com/api/download?platform=linux&format=deb"; then
     echo -e "${RED}Failed to download Discord.${NC}"

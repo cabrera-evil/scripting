@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install GNS3
-clear
 echo -e "${BLUE}Installing GNS3...${NC}"
 sudo add-apt-repository ppa:gns3/ppa -y
 sudo apt update                                

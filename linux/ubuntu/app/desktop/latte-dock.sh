@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install Latte Dock
-clear
 echo -e "${BLUE}Installing Latte Dock...${NC}"
 sudo apt-get update
 sudo apt-get install -y latte-dock

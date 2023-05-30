@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install Code
-clear
 echo -e "${BLUE}Downloading Code...${NC}"
 if ! wget -O /tmp/code.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"; then
     echo -e "${RED}Failed to download Code.${NC}"

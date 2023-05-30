@@ -20,7 +20,6 @@ handle_error() {
 }
 
 # Updating system
-clear
 echo -e "${BLUE}Updating System${NC}"
 sudo dnf update -y
 handle_error $? "dnf update" "Failed to update system."

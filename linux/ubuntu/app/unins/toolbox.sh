@@ -7,7 +7,6 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-clear
 echo -e "${BLUE}Deleting JetBrains Toolbox App...${NC}"
 if ! sudo rm -rf /opt/jetbrains-toolbox; then
     echo -e "${RED}Failed to install JetBrains Toolbox App.${NC}"

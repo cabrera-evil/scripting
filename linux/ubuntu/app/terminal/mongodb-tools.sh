@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Download MongoDB Database Tools
-clear
+
 echo -e "${BLUE}Downloading MongoDB Database Tools...${NC}"
 if ! wget -O /tmp/mongodb-database-tools.deb "https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2204-x86_64-100.7.0.deb"; then
     echo -e "${RED}Failed to download MongoDB Database Tools.${NC}"

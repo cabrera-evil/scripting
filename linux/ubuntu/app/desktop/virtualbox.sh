@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Download and install VirtualBox
-clear
 echo -e "${BLUE}Downloading VirtualBox...${NC}"
 if ! wget -O /tmp/virtualbox.deb "https://download.virtualbox.org/virtualbox/7.0.8/virtualbox-7.0_7.0.8-156879~Ubuntu~jammy_amd64.deb"; then
     echo -e "${RED}Failed to download VirtualBox.${NC}"

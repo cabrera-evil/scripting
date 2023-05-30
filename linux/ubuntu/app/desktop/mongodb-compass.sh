@@ -8,7 +8,6 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Install MongoDB Compass
-clear
 echo -e "${BLUE}Downloading MongoDB Compass...${NC}"
 if ! wget -O /tmp/mongodb_compass.deb "https://downloads.mongodb.com/compass/mongodb-compass_1.35.0_amd64.deb"; then
     echo -e "${RED}Failed to download MongoDB Compass.${NC}"

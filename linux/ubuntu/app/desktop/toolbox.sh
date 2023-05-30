@@ -7,9 +7,7 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-clear
 # Install JDK 17
-clear
 if [ -d "/usr/lib/jvm/jdk-17" ]; then
     echo "JDK 17 already installed."
 else
