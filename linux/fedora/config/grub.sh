@@ -6,24 +6,30 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+# Error handling function
+handle_error() {
+    local exit_code=$1
+    local command=$2
+    local message=$3
+
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}" >&2
+        exit $exit_code
+    fi
+}
+
 # Prompt user for default boot loader option
 echo -e "${YELLOW}Please enter the default boot loader option (e.g. 0, 1, 2, etc.):${NC}"
 read option
 
 # Update /etc/default/grub file
 echo -e "${GREEN}Updating /etc/default/grub file${NC}"
-if sudo sed -i "s/GRUB_DEFAULT=.*/GRUB_DEFAULT=$option/" /etc/default/grub; then
-    echo -e "${GREEN}GRUB default boot loader option updated.${NC}"
-else
-    echo -e "${RED}Failed to update GRUB default boot loader option.${NC}"
-    exit 1
-fi
+sudo sed -i "s/GRUB_DEFAULT=.*/GRUB_DEFAULT=\"$option\"/" /etc/default/grub
+handle_error $? "sed" "Failed to update GRUB default boot loader option."
 
 # Update GRUB configuration
 echo -e "${GREEN}Updating GRUB configuration${NC}"
-if sudo update-grub2; then
-    echo -e "${GREEN}GRUB configuration updated.${NC}"
-else
-    echo -e "${RED}Failed to update GRUB configuration.${NC}"
-    exit 1
-fi
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+handle_error $? "grub2-mkconfig" "Failed to update GRUB configuration."
+
+echo -e "${GREEN}GRUB default boot loader option has been updated successfully.${NC}"
