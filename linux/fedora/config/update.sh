@@ -26,6 +26,15 @@ else
     exit 1
 fi
 
+# Update flatpak packages
+echo -e "${BLUE}Updating Flatpak Packages${NC}"
+if flatpak update -y; then
+    echo -e "${GREEN}Flatpak packages updated.${NC}"
+else
+    echo -e "${RED}Failed to update flatpak packages.${NC}"
+    exit 1
+fi
+
 # Clean package cache
 echo -e "${BLUE}Cleaning Package Cache${NC}"
 if sudo dnf clean all; then
@@ -50,15 +59,6 @@ if sudo dnf autoremove -y; then
     echo -e "${GREEN}Unused packages removed.${NC}"
 else
     echo -e "${RED}Failed to remove unused packages.${NC}"
-    exit 1
-fi
-
-# Update flatpak packages
-echo -e "${BLUE}Updating Flatpak Packages${NC}"
-if flatpak update -y; then
-    echo -e "${GREEN}Flatpak packages updated.${NC}"
-else
-    echo -e "${RED}Failed to update flatpak packages.${NC}"
     exit 1
 fi
 
