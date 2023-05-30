@@ -33,6 +33,8 @@ handle_error $? "sudo dnf install" "Failed to install KDE packages."
 # Set default target to graphical
 echo -e "${BLUE}Setting default target to graphical...${NC}"
 sudo systemctl set-default graphical.target
+sudo systemctl disable gdm
+sudo systemctl enable sddm
 handle_error $? "sudo systemctl set-default" "Failed to set default target to graphical."
 
 echo -e "${GREEN}KDE installation completed successfully. Please reboot to start KDE.${NC}"
