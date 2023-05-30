@@ -20,7 +20,8 @@ handle_error() {
 
 # Input email and key name
 read -p "Enter your email for GitHub: " email
-read -p "Enter the name for your SSH key: " key_name
+# read -p "Enter the name for your SSH key: " key_name
+key_name="id_ed25519"
 
 # Generate SSH key
 ssh-keygen -t ed25519 -C "$email" -f ~/.ssh/$key_name

@@ -71,7 +71,8 @@ echo -e "${YELLOW}2. Terminal and desktop apps${NC}"
 echo -e "${YELLOW}3. Desktop programs only${NC}"
 echo -e "${YELLOW}4. Change default grub${NC}"
 echo -e "${YELLOW}5. Update system${NC}"
-echo -e "${YELLOW}6. Exit${NC}"
+echo -e "${YELLOW}6. Configure system${NC}"
+echo -e "${YELLOW}7. Exit${NC}"
 
 # Prompt user for choice
 read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, etc):${NC} ")" choice
@@ -154,6 +155,43 @@ case $choice in
     handle_error $? "Failed to update system."
     ;;
 6)
+    print_header "Configuring applications..."
+
+    # Print available configure scripts
+    print_header "Available configure scripts:"
+    config_scripts=($script_dir/$distro_path/config/*.sh)
+    for ((i = 0; i < ${#config_scripts[@]}; i++)); do
+        script="${config_scripts[$i]}"
+        script_name=$(basename "$script" .sh)
+        echo "$((i + 1)). $script_name"
+    done
+
+    # Prompt user for configure script choice
+    echo -e "${YELLOW}Which configure script would you like to run?${NC}"
+    echo -e "${YELLOW}Enter the script number (or 'all' to run all scripts):${NC}"
+    read -p "" script_choice
+
+    if [[ "$script_choice" == "all" ]]; then
+        # Run all configure scripts
+        for script in "${config_scripts[@]}"; do
+            print_header "Running $script..."
+            source $script
+            handle_error $? "Failed to run $script"
+        done
+    elif [[ "$script_choice" =~ ^[0-9]+$ ]]; then
+        selected_script="${config_scripts[$((script_choice - 1))]}"
+        if [[ -n $selected_script ]]; then
+            print_header "Running $selected_script..."
+            source "$selected_script"
+            handle_error $? "Failed to run $selected_script"
+        else
+            handle_error 1 "Invalid choice" "Please select a valid script number."
+        fi
+    else
+        handle_error 1 "Invalid choice" "Please enter a valid script number or 'all'."
+    fi
+    ;;
+7)
     print_header "Exiting the installation menu..."
     exit 0
     ;;
