@@ -20,7 +20,7 @@ print_header() {
 
 # Print welcome message and menu
 print_header "Welcome to the installation menu."
-echo -e "${YELLOW}What would you like to install?${NC}"
+echo -e "${YELLOW}Which docker image would you like to install?${NC}"
 echo -e "${YELLOW}1. Docker desktop${NC}"
 echo -e "${YELLOW}2. Docker engine${NC}"
 echo -e "${YELLOW}3. Exit${NC}"

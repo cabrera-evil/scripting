@@ -4,7 +4,7 @@ This folder contains various scripts for Linux written in `sh`. Here's a brief o
 
 ## Docker scripts
 
-- `docker_script.sh`: A script for installing Docker Desktop or Docker Engine on Linux.
+- `docker_script.sh`: A script for installing Docker Images.
 
 ## GitHub scripts
 
