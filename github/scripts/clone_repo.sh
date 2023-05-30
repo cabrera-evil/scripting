@@ -31,7 +31,7 @@ mkdir -p ~/git
 handle_error $? "mkdir" "Failed to create ~/git directory"
 
 # Clone the repository to the ~/git directory using SSH
-git clone git@github.com:"$github_username"/"$repo_name".git ~/git/"$repo_name"
+git clone git@github.com:"$github_username"/"$repo_name".git ~/git/$github_username/"$repo_name"
 handle_error $? "git clone" "Failed to clone the repository"
 
 echo -e "${GREEN}Repository cloned successfully!${NC}"
