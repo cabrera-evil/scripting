@@ -7,16 +7,25 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Error handling function
+handle_error() {
+    local exit_code=$1
+    local command=$2
+    local message=$3
+
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}" >&2
+        exit $exit_code
+    fi
+}
+
 # Install MongoDB Compass
 echo -e "${BLUE}Downloading MongoDB Compass...${NC}"
-if ! wget -O /tmp/mongodb_compass.deb "https://downloads.mongodb.com/compass/mongodb-compass_1.35.0_amd64.deb"; then
-    echo -e "${RED}Failed to download MongoDB Compass.${NC}"
-    exit 1
-fi
+wget -O /tmp/mongodb_compass.deb "https://downloads.mongodb.com/compass/mongodb-compass_1.35.0_amd64.deb"
+handle_error $? "wget" "Failed to download MongoDB Compass"
 
 echo -e "${BLUE}Installing MongoDB Compass...${NC}"
-if ! sudo dpkg -i /tmp/mongodb_compass.deb; then
-    echo -e "${RED}MongoDB Compass installed with some errors (might be normal).${NC}"
-fi
+sudo dpkg -i /tmp/mongodb_compass.deb
+handle_error $? "dpkg" "Failed to install MongoDB Compass"
 
 echo -e "${GREEN}MongoDB Compass installation complete!${NC}"

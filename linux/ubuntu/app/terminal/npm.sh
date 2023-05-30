@@ -7,30 +7,61 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Error handling function
+handle_error() {
+    local exit_code=$1
+    local command=$2
+    local message=$3
+
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}" >&2
+        exit $exit_code
+    fi
+}
+
 # Install NVM
 echo -e "${BLUE}Installing NVM...${NC}"
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+handle_error $? "NVM installation" "Failed to install NVM."
 
-# Export user config
-echo -e "${BLUE}Exporting user config...${NC}"
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# Load NVM
+echo -e "${BLUE}Loading NVM...${NC}"
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+handle_error $? "NVM configuration" "Failed to configure NVM."
 
-# Reload config
-echo -e "${BLUE}Reloading config...${NC}"
-source ~/.bashrc
-
-# Install NodeJs LTS
+# Install Node.js LTS
 echo -e "${BLUE}Installing Node.js LTS...${NC}"
-nvm i --lts && echo -e "${GREEN}Node.js LTS installed.${NC}" || echo -e "${RED}Failed to install Node.js LTS.${NC}"
+nvm install --lts
+handle_error $? "Node.js LTS installation" "Failed to install Node.js LTS."
+
+# Set default Node.js version
+echo -e "${BLUE}Setting default Node.js version...${NC}"
+nvm use --lts
+handle_error $? "Node.js LTS default version" "Failed to set default Node.js LTS version."
 
 # Install Modules
 echo -e "${BLUE}Installing Node.js modules...${NC}"
-npm i -g typescript && echo -e "${GREEN}Typescript installed.${NC}" || echo -e "${RED}Failed to install Typescript.${NC}"
-npm i -g nodemon && echo -e "${GREEN}Nodemon installed.${NC}" || echo -e "${RED}Failed to install Nodemon.${NC}"
-npm i -g vite && echo -e "${GREEN}Vite installed.${NC}" || echo -e "${RED}Failed to install Vite.${NC}"
-npm i -g hbs && echo -e "${GREEN}HBS installed.${NC}" || echo -e "${RED}Failed to install HBS.${NC}"
-npm i -g create-electron-app && echo -e "${GREEN}Create Electron App installed.${NC}" || echo -e "${RED}Failed to install Create Electron App.${NC}"
-npm i -g express-generator && echo -e "${GREEN}Express generator installed.${NC}" || echo -e "${RED}Failed to install Express generator.${NC}"
-npm i -g @nestjs/cli && echo -e "${GREEN}NestJS CLI installed.${NC}" || echo -e "${RED}Failed to install NestJS CLI.${NC}"
-npm i -g http-server && echo -e "${GREEN}HTTP Server installed.${NC}" || echo -e "${RED}Failed to install HTTP Server.${NC}"
+
+npm install -g typescript
+handle_error $? "TypeScript installation" "Failed to install TypeScript."
+
+npm install -g @nestjs/cli
+handle_error $? "NestJS CLI installation" "Failed to install NestJS CLI."
+
+npm install -g nodemon
+handle_error $? "Nodemon installation" "Failed to install Nodemon."
+
+npm install -g vite
+handle_error $? "Vite installation" "Failed to install Vite."
+
+npm install -g hbs
+handle_error $? "HBS installation" "Failed to install HBS."
+
+npm install -g express-generator
+handle_error $? "Express generator installation" "Failed to install Express generator."
+
+npm install -g http-server
+handle_error $? "HTTP Server installation" "Failed to install HTTP Server."
+
+echo -e "${GREEN}Script execution complete!${NC}"
