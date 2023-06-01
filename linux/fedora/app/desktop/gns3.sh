@@ -51,21 +51,28 @@ handle_error $? "make install" "Failed to install Dynamips"
 # Confirm binary location
 which dynamips
 
-# Install vpcs
-wget https://liquidtelecom.dl.sourceforge.net/project/vpcs/0.8/vpcs_0.8b_Linux64
-handle_error $? "wget" "Failed to download vpcs"
-mv vpcs_0.8b_Linux64 vpcs
-chmod +x vpcs
+# Step 4: Install modified VPCS from GNS3 repository
+echo -e "${BLUE}Step 4: Installing modified VPCS${NC}"
+cd /tmp
+git clone https://github.com/GNS3/vpcs.git
+handle_error $? "git clone" "Failed to clone VPCS repository"
+cd vpcs/src
+./mk.sh
+handle_error $? "./mk.sh" "Failed to build VPCS"
 sudo cp vpcs /usr/local/bin/
+handle_error $? "sudo cp" "Failed to copy VPCS binary"
 
-# Confirm vpcs version
+# Confirm VPCS version
 vpcs -v
 
-# Step 4: Add support for KVM / QEMU (Optional)
+# Step 5: Add support for KVM / QEMU (Optional)
+echo -e "${BLUE}Step 5: Setting up KVM support${NC}"
+source ./linux/fedora/config/enable-kvm.sh
+handle_error $? "KVM Setup" "Failed to setup KVM"
 # Please follow separate instructions to install KVM on Fedora
 
-# Step 5: Setup IOU support
-echo -e "${BLUE}Step 5: Setting up IOU support${NC}"
+# Step 6: Setup IOU support
+echo -e "${BLUE}Step 6: Setting up IOU support${NC}"
 cd /tmp
 git clone http://github.com/ndevilla/iniparser.git
 handle_error $? "git clone" "Failed to clone iniparser repository"
@@ -77,8 +84,10 @@ sudo cp src/iniparser.h /usr/local/include
 sudo cp src/dictionary.h /usr/local/include
 cd ..
 
-# Step 6: Add Support for Docker (Optional)
+# Step 7: Add Support for Docker (Optional)
 # Please follow separate instructions to install Docker on Fedora
 # Don't forget to add your user to the docker group after starting the service
 sudo usermod -a -G docker $(whoami)
 handle_error $? "sudo usermod" "Failed to add user to docker group"
+
+echo -e "${GREEN}GNS3, Dynamips, and VPCS have been successfully installed.${NC}"
