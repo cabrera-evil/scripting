@@ -24,3 +24,7 @@ sudo dnf install @development-tools -y
 # Install docker-compose
 echo -e "${BLUE}Installing docker-compose...${NC}"
 sudo dnf install docker-compose -y
+
+# Install ark as archive manager
+echo -e "${BLUE}Installing ark as archive manager...${NC}"
+sudo dnf install ark -y

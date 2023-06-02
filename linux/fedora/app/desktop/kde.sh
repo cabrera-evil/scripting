@@ -38,3 +38,36 @@ sudo systemctl enable sddm
 handle_error $? "sudo systemctl set-default" "Failed to set default target to graphical."
 
 echo -e "${GREEN}KDE installation completed successfully. Please reboot to start KDE.${NC}"
+
+# Install media drivers
+# Step 1: Configure RPM Fusion
+echo "Configuring RPM Fusion..."
+sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+handle_error $? "RPM Fusion Configuration" "Failed to configure RPM Fusion."
+
+# Step 2: Switch to full ffmpeg
+echo "Switching to full ffmpeg..."
+sudo dnf swap -y ffmpeg-free ffmpeg --allowerasing
+handle_error $? "ffmpeg Switch" "Failed to switch to full ffmpeg."
+
+# Step 3: Install additional codecs
+echo "Installing additional codecs..."
+sudo dnf groupupdate -y multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
+handle_error $? "Multimedia Codecs Installation" "Failed to install additional codecs."
+
+echo "Installing sound-and-video complement packages..."
+sudo dnf groupupdate -y sound-and-video
+handle_error $? "Sound and Video Packages Installation" "Failed to install sound-and-video complement packages."
+
+echo "Multimedia setup completed successfully."
+
+# Hide gnome apps
+# Add "OnlyShowIn=GNOME" to GNOME desktop files
+find /usr/share/applications/org.gnome.*.desktop -exec bash -c 'echo "OnlyShowIn=GNOME" >> {}' \;
+handle_error $? "find GNOME desktop files" "Failed to add 'OnlyShowIn=GNOME' to GNOME desktop files"
+
+# Add "OnlyShowIn=KDE" to KDE desktop files
+find /usr/share/applications/org.kde.*.desktop -exec bash -c 'echo "OnlyShowIn=KDE" >> {}' \;
+handle_error $? "find KDE desktop files" "Failed to add 'OnlyShowIn=KDE' to KDE desktop files"
+
+echo -e "${GREEN}Desktop files updated successfully!${NC}"

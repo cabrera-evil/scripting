@@ -18,6 +18,43 @@ handle_error() {
     fi
 }
 
+# Enable kvm for virtualization
+echo -e "${BLUE}Enabling kvm for virtualization...${NC}"
+# Step 1: Check Intel VT or AMD-V Virtualization extensions
+echo "Checking Virtualization extensions..."
+if cat /proc/cpuinfo | egrep -q "vmx|svm"; then
+    echo "Virtualization extensions found."
+else
+    handle_error 1 "Virtualization Check" "Virtualization extensions not found. Please check your CPU and BIOS settings."
+fi
+
+# Step 2: Install KVM / QEMU on Fedora
+echo "Installing virtualization packages..."
+sudo dnf -y install bridge-utils libvirt virt-install qemu-kvm
+handle_error $? "Package Installation" "Failed to install virtualization packages."
+
+echo "Verifying Kernel modules..."
+if lsmod | grep -q kvm; then
+    echo "Kernel modules are loaded."
+else
+    handle_error 1 "Kernel Module Verification" "Kernel modules are not loaded. Please check the installation."
+fi
+
+echo "Installing additional tools..."
+sudo dnf install libvirt-devel virt-top libguestfs-tools guestfs-tools
+handle_error $? "Additional Tools Installation" "Failed to install additional tools."
+
+# Step 3: Start and enable KVM daemon
+echo "Starting KVM daemon..."
+sudo systemctl start libvirtd
+handle_error $? "KVM Daemon Start" "Failed to start KVM daemon."
+
+echo "Enabling KVM daemon to start on boot..."
+sudo systemctl enable libvirtd
+handle_error $? "KVM Daemon Enable" "Failed to enable KVM daemon."
+
+echo "KVM setup completed successfully."
+
 # Remove older versions of Docker
 echo -e "${BLUE}Removing older versions of Docker...${NC}"
 sudo dnf remove -y docker docker-engine docker-client docker-common docker-logrotate docker-latest
@@ -58,3 +95,26 @@ if [ -f "$download_file" ]; then
 else
     handle_error 1 "file check" "The downloaded Docker Desktop RPM file does not exist"
 fi
+
+# Enable keyring for docker hub
+# Install the necessary package to use the pass credential store
+sudo dnf install -y pass gnupg2
+handle_error $? "Installation" "Failed to install required packages."
+
+# Generate a new GPG key
+gpg --generate-key
+handle_error $? "GPG Key Generation" "Failed to generate GPG key."
+
+# Get the generated public GPG key ID
+gpg_key=$(gpg --list-keys --keyid-format LONG | grep pub | awk '{print $2}' | cut -d'/' -f2)
+handle_error $? "GPG Key Retrieval" "Failed to retrieve GPG key."
+
+# Initialize pass using the generated public GPG key
+pass init "$gpg_key"
+handle_error $? "Pass Initialization" "Failed to initialize pass."
+
+# Restart the Docker service to apply the changes
+sudo systemctl restart docker
+handle_error $? "Docker Service Restart" "Failed to restart Docker service."
+
+echo -e "${GREEN}Pass credential store configured successfully.${NC}"
