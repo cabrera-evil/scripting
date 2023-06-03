@@ -96,6 +96,11 @@ else
     handle_error 1 "file check" "The downloaded Docker Desktop RPM file does not exist"
 fi
 
+# Install docker-compose
+echo -e "${BLUE}Installing docker-compose...${NC}"
+sudo dnf install docker-compose -y
+handle_error $? "Install docker-compose" "Failed to install docker-compose"
+
 # Enable keyring for docker hub
 # Install the necessary package to use the pass credential store
 sudo dnf install -y pass gnupg2
