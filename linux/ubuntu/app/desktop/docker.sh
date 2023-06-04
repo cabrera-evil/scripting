@@ -68,18 +68,36 @@ sudo apt-get update
 sudo dpkg -i /tmp/docker-desktop.deb
 handle_error $? "Docker Desktop Installation" "Failed to install Docker Desktop"
 
-#Cheking Version
-echo -e "${BLUE}Checking Docker version${NC}"
-docker compose version
-docker --version
-docker version
-
 #Add User To Docker
 echo -e "${BLUE}Adding user to Docker organization${NC}"
 sudo usermod -aG docker $USER
 
-#Open Docker-Desktop
-echo -e "${BLUE}Opening Docker Desktop${NC}"
-systemctl --user start docker-desktop
-
 echo -e "${GREEN}Docker installation and configuration complete!${NC}"
+
+# Install docker-compose
+echo -e "${BLUE}Installing docker-compose...${NC}"
+sudo apt-get install docker-compose -y
+handle_error $? "apt-get install docker-compose" "Failed to install docker-compose"
+
+# Enable keyring for docker hub
+# Install the necessary package to use the pass credential store
+sudo apt-get install -y pass gnupg2
+handle_error $? "Installation" "Failed to install required packages."
+
+# Generate a new GPG key
+gpg --generate-key
+handle_error $? "GPG Key Generation" "Failed to generate GPG key."
+
+# Get the generated public GPG key ID
+gpg_key=$(gpg --list-keys --keyid-format LONG | grep pub | awk '{print $2}' | cut -d'/' -f2)
+handle_error $? "GPG Key Retrieval" "Failed to retrieve GPG key."
+
+# Initialize pass using the generated public GPG key
+pass init "$gpg_key"
+handle_error $? "Pass Initialization" "Failed to initialize pass."
+
+# Restart the Docker service to apply the changes
+sudo systemctl restart docker
+handle_error $? "Docker Service Restart" "Failed to restart Docker service."
+
+echo -e "${GREEN}Pass credential store configured successfully.${NC}"

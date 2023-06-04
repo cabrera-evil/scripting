@@ -76,6 +76,10 @@ handle_error $? "sudo systemctl start" "Failed to start Docker service"
 sudo systemctl enable docker
 handle_error $? "sudo systemctl enable" "Failed to enable Docker service"
 
+#Add User To Docker
+echo -e "${BLUE}Adding user to Docker organization${NC}"
+sudo usermod -aG docker $USER
+
 # Download Docker Desktop RPM package
 download_url="https://desktop.docker.com/linux/main/amd64/docker-desktop-4.19.0-x86_64.rpm"
 download_file="/tmp/docker-desktop.rpm"

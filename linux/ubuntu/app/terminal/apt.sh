@@ -38,14 +38,4 @@ echo -e "${BLUE}Installing Basic Development Tools...${NC}"
 sudo apt-get install build-essential -y
 handle_error $? "apt-get install build-essential" "Failed to install build-essential"
 
-# Install Missing dependency for Proton
-echo -e "${BLUE}Installing Missing dependency for Proton...${NC}"
-sudo apt-get install libgbm-dev -y
-handle_error $? "apt-get install libgbm-dev" "Failed to install libgbm-dev"
-
-# Install docker-compose
-echo -e "${BLUE}Installing docker-compose...${NC}"
-sudo apt-get install docker-compose -y
-handle_error $? "apt-get install docker-compose" "Failed to install docker-compose"
-
 echo -e "${GREEN}Installation of basic applications and development tools complete!${NC}"
