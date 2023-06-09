@@ -42,8 +42,3 @@ handle_error $? "Install development tools" "Failed to install development tools
 echo -e "${BLUE}Installing ark as archive manager...${NC}"
 sudo dnf install ark -y
 handle_error $? "Install ark" "Failed to install ark"
-
-# Install Apache Maven using DNF
-echo -e "${BLUE}Installing Apache Maven using DNF...${NC}"
-sudo dnf install -y maven
-handle_error $? "Install Maven" "Failed to install Maven using DNF"

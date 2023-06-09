@@ -64,4 +64,7 @@ handle_error $? "Express generator installation" "Failed to install Express gene
 npm install -g http-server
 handle_error $? "HTTP Server installation" "Failed to install HTTP Server."
 
+npm install -g tree-sitter-cli
+handle_error $? "Tree sitter CLI installation" "Failed to install Tree sitter CLI."
+
 echo -e "${GREEN}Script execution complete!${NC}"
