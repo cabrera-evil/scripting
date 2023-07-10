@@ -42,3 +42,15 @@ handle_error $? "Install development tools" "Failed to install development tools
 echo -e "${BLUE}Installing ark as archive manager...${NC}"
 sudo dnf install ark -y
 handle_error $? "Install ark" "Failed to install ark"
+
+# Install vim as text editor
+echo -e "${BLUE}Installing vim as text editor...${NC}"
+sudo dnf install vim -y
+handle_error $? "Install vim" "Failed to install vim"
+
+# Install unzip and unrar as rar file manager
+echo -e "${BLUE}Installing unzip and unrar as rar file manager...${NC}"
+sudo dnf install unzip -y
+handle_error $? "Install unzip" "Failed to install unzip"
+sudo dnf install unrar -y
+handle_error $? "Install unrar" "Failed to install unrar"

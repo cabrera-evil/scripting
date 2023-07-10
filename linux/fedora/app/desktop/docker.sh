@@ -81,7 +81,7 @@ echo -e "${BLUE}Adding user to Docker organization${NC}"
 sudo usermod -aG docker $USER
 
 # Download Docker Desktop RPM package
-download_url="https://desktop.docker.com/linux/main/amd64/docker-desktop-4.19.0-x86_64.rpm"
+download_url="https://desktop.docker.com/linux/main/amd64/docker-desktop-4.21.1-x86_64.rpm"
 download_file="/tmp/docker-desktop.rpm"
 
 echo -e "${BLUE}Downloading Docker Desktop RPM package...${NC}"

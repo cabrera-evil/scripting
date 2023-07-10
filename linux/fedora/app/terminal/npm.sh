@@ -55,16 +55,10 @@ handle_error $? "Nodemon installation" "Failed to install Nodemon."
 npm install -g vite
 handle_error $? "Vite installation" "Failed to install Vite."
 
-npm install -g hbs
-handle_error $? "HBS installation" "Failed to install HBS."
-
 npm install -g express-generator
 handle_error $? "Express generator installation" "Failed to install Express generator."
 
 npm install -g http-server
 handle_error $? "HTTP Server installation" "Failed to install HTTP Server."
-
-npm install -g tree-sitter-cli
-handle_error $? "Tree sitter CLI installation" "Failed to install Tree sitter CLI."
 
 echo -e "${GREEN}Script execution complete!${NC}"
