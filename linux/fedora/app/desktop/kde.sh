@@ -63,11 +63,11 @@ echo "Multimedia setup completed successfully."
 
 # Hide gnome apps
 # Add "OnlyShowIn=GNOME" to GNOME desktop files
-find /usr/share/applications/org.gnome.*.desktop -exec bash -c 'echo "OnlyShowIn=GNOME" >> {}' \;
-handle_error $? "find GNOME desktop files" "Failed to add 'OnlyShowIn=GNOME' to GNOME desktop files"
+# find /usr/share/applications/org.gnome.*.desktop -exec bash -c 'echo "OnlyShowIn=GNOME" >> {}' \;
+# handle_error $? "find GNOME desktop files" "Failed to add 'OnlyShowIn=GNOME' to GNOME desktop files"
 
 # Add "OnlyShowIn=KDE" to KDE desktop files
-find /usr/share/applications/org.kde.*.desktop -exec bash -c 'echo "OnlyShowIn=KDE" >> {}' \;
-handle_error $? "find KDE desktop files" "Failed to add 'OnlyShowIn=KDE' to KDE desktop files"
+# find /usr/share/applications/org.kde.*.desktop -exec bash -c 'echo "OnlyShowIn=KDE" >> {}' \;
+# handle_error $? "find KDE desktop files" "Failed to add 'OnlyShowIn=KDE' to KDE desktop files"
 
 echo -e "${GREEN}Desktop files updated successfully!${NC}"
