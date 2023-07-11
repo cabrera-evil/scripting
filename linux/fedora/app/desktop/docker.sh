@@ -41,7 +41,7 @@ else
 fi
 
 echo "Installing additional tools..."
-sudo dnf install libvirt-devel virt-top libguestfs-tools guestfs-tools
+sudo dnf install -y libvirt-devel virt-top libguestfs-tools guestfs-tools
 handle_error $? "Additional Tools Installation" "Failed to install additional tools."
 
 # Step 3: Start and enable KVM daemon
