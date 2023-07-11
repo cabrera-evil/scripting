@@ -20,7 +20,7 @@ handle_error() {
 
 # Download MongoDB Database Tools
 echo -e "${BLUE}Downloading MongoDB Database Tools...${NC}"
-wget -O /tmp/mongodb-database-tools.rpm "https://fastdl.mongodb.org/tools/db/mongodb-database-tools-rhel90-arm64-100.7.1.rpm"
+wget -O /tmp/mongodb-database-tools.rpm "https://fastdl.mongodb.org/tools/db/mongodb-database-tools-rhel90-x86_64-100.7.3.rpm"
 handle_error $? "wget" "Failed to download MongoDB Database Tools."
 
 # Install MongoDB Database Tools

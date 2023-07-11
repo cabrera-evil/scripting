@@ -21,7 +21,7 @@ handle_error() {
 
 # Install FileZilla via Flatpak
 echo -e "${BLUE}Installing FileZilla...${NC}"
-flatpak install flathub org.filezillaproject.Filezilla
+flatpak install flathub org.filezillaproject.Filezilla -y
 handle_error $? "flatpak install" "Failed to install FileZilla."
 
 echo -e "${GREEN}FileZilla installation complete!${NC}"

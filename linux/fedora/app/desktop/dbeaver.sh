@@ -21,7 +21,7 @@ handle_error() {
 
 # Install DBeaverCommunity via Flatpak
 echo -e "${BLUE}Installing DBeaverCommunity...${NC}"
-flatpak install flathub io.dbeaver.DBeaverCommunity
+flatpak install flathub io.dbeaver.DBeaverCommunity -y
 handle_error $? "flatpak install" "Failed to install DBeaverCommunity."
 
 echo -e "${GREEN}DBeaverCommunity installation complete!${NC}"
