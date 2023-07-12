@@ -25,17 +25,10 @@ if [ -x "$(command -v startkde)" ]; then
     exit 0
 fi
 
-# Install KDE packages
-echo -e "${BLUE}Installing KDE packages...${NC}"
-sudo dnf install -y @kde-desktop
-handle_error $? "sudo dnf install" "Failed to install KDE packages."
-
-# Set default target to graphical
-echo -e "${BLUE}Setting default target to graphical...${NC}"
-sudo systemctl set-default graphical.target
-sudo systemctl disable gdm
-sudo systemctl enable sddm
-handle_error $? "sudo systemctl set-default" "Failed to set default target to graphical."
+# Install KDE Workspaces
+echo -e "${BLUE}Installing KDE Workspaces...${NC}"
+sudo dnf -y group install "KDE Plasma Workspaces"
+handle_error $? "KDE Workspaces Installation" "Failed to install KDE Workspaces."
 
 echo -e "${GREEN}KDE installation completed successfully. Please reboot to start KDE.${NC}"
 
@@ -60,14 +53,5 @@ sudo dnf groupupdate -y sound-and-video
 handle_error $? "Sound and Video Packages Installation" "Failed to install sound-and-video complement packages."
 
 echo "Multimedia setup completed successfully."
-
-# Hide gnome apps
-# Add "OnlyShowIn=GNOME" to GNOME desktop files
-# find /usr/share/applications/org.gnome.*.desktop -exec bash -c 'echo "OnlyShowIn=GNOME" >> {}' \;
-# handle_error $? "find GNOME desktop files" "Failed to add 'OnlyShowIn=GNOME' to GNOME desktop files"
-
-# Add "OnlyShowIn=KDE" to KDE desktop files
-# find /usr/share/applications/org.kde.*.desktop -exec bash -c 'echo "OnlyShowIn=KDE" >> {}' \;
-# handle_error $? "find KDE desktop files" "Failed to add 'OnlyShowIn=KDE' to KDE desktop files"
 
 echo -e "${GREEN}Desktop files updated successfully!${NC}"
