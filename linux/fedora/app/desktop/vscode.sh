@@ -19,25 +19,10 @@ handle_error() {
     fi
 }
 
-# Add the alias to ~/.bashrc file
-echo "alias code='flatpak run com.visualstudio.code'" >> ~/.bashrc
-handle_error $? "echo" "Failed to add alias to ~/.bashrc."
-
-# Reload the terminal configuration
-source ~/.bashrc
-handle_error $? "source" "Failed to reload terminal configuration."
-
 # Download and install Visual Studio Code
-sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-handle_error $? "sudo rpm --import" "Failed to import Microsoft GPG key."
+echo -e "${BLUE}Downloading Visual Studio Code...${NC}"
+wget -O /tmp/vscode.rpm https://az764295.vo.msecnd.net/stable/660393deaaa6d1996740ff4880f1bad43768c814/code-1.80.0-1688479104.el7.x86_64.rpm
 
-sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-handle_error $? "sudo sh -c" "Failed to create vscode.repo file."
-
-sudo dnf check-update
-handle_error $? "sudo dnf check-update" "Failed to check for updates."
-
-sudo dnf install code 
-handle_error $? "sudo dnf install" "Failed to install Visual Studio Code."
-
-echo -e "${GREEN}Visual Studio Code alias added to ~/.bashrc, terminal configuration reloaded, and Visual Studio Code installed successfully!${NC}"
+echo -e "${BLUE}Installing Visual Studio Code...${NC}"
+sudo dnf install -y /tmp/vscode.rpm
+handle_error $? "dnf install" "See /var/log/dnf.log for details"
