@@ -52,6 +52,4 @@ echo "Installing sound-and-video complement packages..."
 sudo dnf groupupdate -y sound-and-video
 handle_error $? "Sound and Video Packages Installation" "Failed to install sound-and-video complement packages."
 
-echo "Multimedia setup completed successfully."
-
 echo -e "${GREEN}Desktop files updated successfully!${NC}"
