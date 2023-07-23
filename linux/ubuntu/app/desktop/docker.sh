@@ -48,18 +48,26 @@ sudo apt purge docker-desktop
 
 #Docker Install
 echo -e "${BLUE}Installing Docker${NC}"
-sudo apt install -y ca-certificates curl gnupg lsb-release
+sudo apt-get install ca-certificates curl gnupg -y
 handle_error $? "Docker Installation" "Failed to install Docker"
+
+#Setup GPG Key
+echo -e "${BLUE}Setting up GPG key${NC}"
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+handle_error $? "GPG Key Setup" "Failed to setup GPG key"
 
 #Setup The Repository
 echo -e "${BLUE}Setting up Docker repository${NC}"
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 #Download A Test Version (Then You Can Update)
 echo -e "${BLUE}Downloading latest version of Docker Desktop${NC}"
-wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/docker-desktop-4.18.0-amd64.deb"
+wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/docker-desktop-4.21.1-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64&_gl=1*1n2j3yy*_ga*MTk4NjM4NzY0LjE2ODk3OTM4MTQ.*_ga_XJWPQMJYHQ*MTY5MDA3MDA3MC40LjEuMTY5MDA3MDUxMS41Ni4wLjA."
 handle_error $? "Docker Desktop Download" "Failed to download Docker Desktop"
 
 #Install The Downloaded Package
