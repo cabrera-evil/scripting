@@ -46,10 +46,10 @@ rm -r $HOME/.docker/desktop
 sudo rm /usr/local/bin/com.docker.cli
 sudo apt purge docker-desktop
 
-#Docker Install
-echo -e "${BLUE}Installing Docker${NC}"
+#Apt Packages Install
+echo -e "${BLUE}Installing apt package index for HTTPS${NC}"
 sudo apt-get install ca-certificates curl gnupg -y
-handle_error $? "Docker Installation" "Failed to install Docker"
+handle_error $? "apt package" "Failed to install apt packages"
 
 #Setup GPG Key
 echo -e "${BLUE}Setting up GPG key${NC}"
@@ -81,31 +81,3 @@ echo -e "${BLUE}Adding user to Docker organization${NC}"
 sudo usermod -aG docker $USER
 
 echo -e "${GREEN}Docker installation and configuration complete!${NC}"
-
-# Install docker-compose
-echo -e "${BLUE}Installing docker-compose...${NC}"
-sudo apt-get install docker-compose -y
-handle_error $? "apt-get install docker-compose" "Failed to install docker-compose"
-
-# Enable keyring for docker hub
-# Install the necessary package to use the pass credential store
-sudo apt-get install -y pass gnupg2
-handle_error $? "Installation" "Failed to install required packages."
-
-# Generate a new GPG key
-gpg --generate-key
-handle_error $? "GPG Key Generation" "Failed to generate GPG key."
-
-# Get the generated public GPG key ID
-gpg_key=$(gpg --list-keys --keyid-format LONG | grep pub | awk '{print $2}' | cut -d'/' -f2)
-handle_error $? "GPG Key Retrieval" "Failed to retrieve GPG key."
-
-# Initialize pass using the generated public GPG key
-pass init "$gpg_key"
-handle_error $? "Pass Initialization" "Failed to initialize pass."
-
-# Restart the Docker service to apply the changes
-sudo systemctl restart docker
-handle_error $? "Docker Service Restart" "Failed to restart Docker service."
-
-echo -e "${GREEN}Pass credential store configured successfully.${NC}"
