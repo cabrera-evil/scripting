@@ -54,3 +54,8 @@ sudo dnf install unzip -y
 handle_error $? "Install unzip" "Failed to install unzip"
 sudo dnf install unrar -y
 handle_error $? "Install unrar" "Failed to install unrar"
+
+# Install xclip as clipboard manager
+echo -e "${BLUE}Installing xclip as clipboard manager...${NC}"
+sudo dnf install xclip -y
+handle_error $? "Install xclip" "Failed to install xclip"

@@ -38,4 +38,7 @@ echo -e "${BLUE}Installing Basic Development Tools...${NC}"
 sudo apt-get install build-essential -y
 handle_error $? "apt-get install build-essential" "Failed to install build-essential"
 
-echo -e "${GREEN}Installation of basic applications and development tools complete!${NC}"
+# Install xclip as clipboard manager
+echo -e "${BLUE}Installing xclip as clipboard manager...${NC}"
+sudo apt-get install xclip -y
+handle_error $? "apt-get install xclip" "Failed to install xclip"
