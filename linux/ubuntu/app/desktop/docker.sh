@@ -65,7 +65,13 @@ echo \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-#Download A Test Version (Then You Can Update)
+#Installing Docker Engine
+echo -e "${BLUE}Installing Docker Engine${NC}"
+sudo apt-get update -y
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+handle_error $? "Docker Engine Installation" "Failed to install Docker Engine"
+
+#Download Docker Desktop
 echo -e "${BLUE}Downloading latest version of Docker Desktop${NC}"
 wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/docker-desktop-4.21.1-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64&_gl=1*1n2j3yy*_ga*MTk4NjM4NzY0LjE2ODk3OTM4MTQ.*_ga_XJWPQMJYHQ*MTY5MDA3MDA3MC40LjEuMTY5MDA3MDUxMS41Ni4wLjA."
 handle_error $? "Docker Desktop Download" "Failed to download Docker Desktop"
