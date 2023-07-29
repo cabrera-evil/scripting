@@ -2,13 +2,10 @@
 
 This folder contains various scripts for Linux written in `sh`. Here's a brief overview of what's included:
 
-## Docker scripts
-
-- `docker_script.sh`: A script for installing Docker Images.
-
 ## GitHub scripts
 
 - `github_script.sh`: A script for installing GitHub CLI on Linux.
+
 ## Linux script
 
 - `linux_script.sh`: A script for installing various applications and tools on Linux.
