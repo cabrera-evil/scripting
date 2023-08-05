@@ -11,20 +11,17 @@ NC='\e[0m' # No Color
 handle_error() {
     local exit_code=$1
     local command=$2
-    local success_message=$3
-    local error_message=$4
+    local message=$3
 
-    if [ $exit_code -eq 0 ]; then
-        echo -e "${GREEN}$success_message${NC}"
-    else
-        echo -e "${RED}$error_message${NC}"
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}"
         exit $exit_code
     fi
 }
 
-# Install Spotify
+# Install Spotify via Flatpak
 echo -e "${BLUE}Installing Spotify...${NC}"
-curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-sudo apt-get update && sudo apt-get install spotify-client -y
-handle_error $? "Installing Spotify" "Spotify installed." "Failed to install Spotify."
+flatpak install flathub com.spotify.Client -y
+handle_error $? "Failed to install Spotify."
+
+echo -e "${GREEN}Spotify installation complete!${NC}"

@@ -11,23 +11,17 @@ NC='\e[0m' # No Color
 handle_error() {
     local exit_code=$1
     local command=$2
-    local success_message=$3
-    local error_message=$4
+    local message=$3
 
-    if [ $exit_code -eq 0 ]; then
-        echo -e "${GREEN}$success_message${NC}"
-    else
-        echo -e "${RED}$error_message${NC}"
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}"
         exit $exit_code
     fi
 }
 
-# Install Snap as additional software manager
-echo -e "${BLUE}Installing Snap as additional software manager${NC}"
-sudo apt-get install snapd -y
-handle_error $? "Installing Snap" "Snap installed." "Failed to install Snap."
+# Install Postman via Flatpak
+echo -e "${BLUE}Installing Postman...${NC}"
+flatpak install flathub com.getpostman.Postman -y
+handle_error $? "Failed to install Postman."
 
-# Install Postman from Snap
-echo -e "${BLUE}Installing Snap Applications...${NC}"
-sudo snap install postman
-handle_error $? "Installing Postman" "Postman installed." "Failed to install Postman."
+echo -e "${GREEN}Postman installation complete!${NC}"
