@@ -15,7 +15,7 @@ if ! wget -O /tmp/code.deb "https://code.visualstudio.com/sha/download?build=sta
 fi
 
 echo -e "${BLUE}Installing Code...${NC}"
-if ! sudo dpkg -i /tmp/code.deb; then
+if ! sudo apt install /tmp/code.deb; then
     echo -e "${RED}Failed to install Code.${NC}"
     exit 1
 fi

@@ -15,7 +15,7 @@ if ! wget -O /tmp/virtualbox.deb "https://download.virtualbox.org/virtualbox/7.0
 fi
 
 echo -e "${BLUE}Installing VirtualBox...${NC}"
-if ! sudo dpkg -i /tmp/virtualbox.deb; then
+if ! sudo apt install /tmp/virtualbox.deb; then
     echo -e "${RED}VirtualBox installed with some errors.${NC}"
 fi
 

@@ -27,7 +27,7 @@ fi
 
 # Install MongoDB Database Tools
 echo -e "${BLUE}Installing MongoDB Database Tools...${NC}"
-if ! sudo dpkg -i /tmp/mongodb-database-tools.deb; then
+if ! sudo apt install /tmp/mongodb-database-tools.deb; then
     echo -e "${RED}MongoDB Database Tools installed with some errors (might be normal).${NC}"
 fi
 

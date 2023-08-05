@@ -79,7 +79,7 @@ handle_error $? "Docker Desktop Download" "Failed to download Docker Desktop"
 #Install The Downloaded Package
 echo -e "${BLUE}Installing Docker Desktop${NC}"
 sudo apt-get update
-sudo dpkg -i /tmp/docker-desktop.deb
+sudo apt install /tmp/docker-desktop.deb
 handle_error $? "Docker Desktop Installation" "Failed to install Docker Desktop"
 
 #Add User To Docker

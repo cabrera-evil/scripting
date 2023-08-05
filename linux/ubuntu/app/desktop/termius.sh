@@ -28,7 +28,7 @@ wget -O /tmp/termius.deb "https://www.termius.com/download/linux/Termius.deb?_gl
 handle_error $? "Downloading Termius." "Failed to download Termius."
 
 echo -e "${BLUE}Installing Termius...${NC}"
-sudo dpkg -i /tmp/termius.deb
+sudo apt install /tmp/termius.deb
 handle_error $? "Termius installation complete!" "Failed to install Termius."
 
 echo -e "${GREEN}Termius installation complete!${NC}"

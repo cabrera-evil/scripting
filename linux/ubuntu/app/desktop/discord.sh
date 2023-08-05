@@ -25,7 +25,7 @@ wget -O /tmp/discord.deb "https://discord.com/api/download?platform=linux&format
 handle_error $? "wget" "Failed to download Discord"
 
 echo -e "${BLUE}Installing Discord...${NC}"
-sudo dpkg -i /tmp/discord.deb
+sudo apt install /tmp/discord.deb
 handle_error $? "dpkg" "Failed to install Discord"
 
 echo -e "${GREEN}Discord installation complete!${NC}"

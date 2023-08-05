@@ -25,7 +25,7 @@ wget -O /tmp/mongodb_compass.deb "https://downloads.mongodb.com/compass/mongodb-
 handle_error $? "wget" "Failed to download MongoDB Compass"
 
 echo -e "${BLUE}Installing MongoDB Compass...${NC}"
-sudo dpkg -i /tmp/mongodb_compass.deb
+sudo apt install /tmp/mongodb_compass.deb
 handle_error $? "dpkg" "Failed to install MongoDB Compass"
 
 echo -e "${GREEN}MongoDB Compass installation complete!${NC}"
