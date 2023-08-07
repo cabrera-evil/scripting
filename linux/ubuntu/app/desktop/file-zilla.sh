@@ -19,9 +19,9 @@ handle_error() {
     fi
 }
 
-# Install Discord via Flatpak
-echo -e "${BLUE}Installing Discord...${NC}"
-flatpak install flathub com.discordapp.Discord -y
-handle_error $? "flatpak install" "Failed to install Discord."
+# Install FileZilla via Flatpak
+echo -e "${BLUE}Installing FileZilla...${NC}"
+flatpak install flathub org.filezillaproject.Filezilla -y
+handle_error $? "flatpak install" "Failed to install FileZilla."
 
-echo -e "${GREEN}Discord installation complete!${NC}"
+echo -e "${GREEN}FileZilla installation complete!${NC}"

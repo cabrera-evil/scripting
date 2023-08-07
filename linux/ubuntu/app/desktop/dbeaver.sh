@@ -19,9 +19,9 @@ handle_error() {
     fi
 }
 
-# Install Discord via Flatpak
-echo -e "${BLUE}Installing Discord...${NC}"
-flatpak install flathub com.discordapp.Discord -y
-handle_error $? "flatpak install" "Failed to install Discord."
+# Install DBeaverCommunity via Flatpak
+echo -e "${BLUE}Installing DBeaverCommunity...${NC}"
+flatpak install flathub io.dbeaver.DBeaverCommunity -y
+handle_error $? "flatpak install" "Failed to install DBeaverCommunity."
 
-echo -e "${GREEN}Discord installation complete!${NC}"
+echo -e "${GREEN}DBeaverCommunity installation complete!${NC}"

@@ -19,7 +19,10 @@ handle_error() {
     fi
 }
 
-# Install ulauncher
-echo -e "${BLUE}Installing ulauncher...${NC}"
-sudo apt-get install ulauncher -y
-handle_error $? "apt-get install ulauncher" "Failed to install ulauncher"
+# Install Latte Dock
+echo -e "${BLUE}Installing Latte Dock...${NC}"
+sudo apt-get update
+handle_error $? "apt-get update" "Failed to update package lists"
+sudo apt-get install -y latte-dock
+handle_error $? "apt-get install" "Failed to install Latte Dock"
+echo -e "${GREEN}Latte Dock installed.${NC}"

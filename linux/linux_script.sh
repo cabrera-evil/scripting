@@ -40,7 +40,8 @@ print_header "Welcome to the installation menu."
 echo -e "${YELLOW}Select your Linux distribution:${NC}"
 echo -e "${YELLOW}1. Fedora${NC}"
 echo -e "${YELLOW}2. Ubuntu${NC}"
-echo -e "${YELLOW}3. Exit${NC}"
+echo -e "${YELLOW}3. Debian${NC}"
+echo -e "${YELLOW}4. Exit${NC}"
 
 # Prompt user for Linux distribution choice
 read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3):${NC} ")" distro_choice
@@ -55,11 +56,15 @@ case $distro_choice in
     distro_path="ubuntu"
     ;;
 3)
+    distro_name="Debian"
+    distro_path="debian"
+    ;;
+4)
     print_header "Exiting the installation menu..."
     exit 0
     ;;
 *)
-    handle_error 1 "Invalid choice" "Please enter 1, 2, or 3."
+    handle_error 1 "Invalid choice" "Please enter 1, 2, 3..."
     ;;
 esac
 

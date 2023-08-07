@@ -14,14 +14,14 @@ handle_error() {
     local message=$3
 
     if [ $exit_code -ne 0 ]; then
-        echo -e "${RED}Error: $command failed - $message${NC}" >&2
+        echo -e "${RED}Error: $command failed - $message${NC}"
         exit $exit_code
     fi
 }
 
-# Install Discord via Flatpak
-echo -e "${BLUE}Installing Discord...${NC}"
-flatpak install flathub com.discordapp.Discord -y
-handle_error $? "flatpak install" "Failed to install Discord."
+# Install Spotify via Flatpak
+echo -e "${BLUE}Installing Spotify...${NC}"
+flatpak install flathub com.spotify.Client -y
+handle_error $? "Failed to install Spotify."
 
-echo -e "${GREEN}Discord installation complete!${NC}"
+echo -e "${GREEN}Spotify installation complete!${NC}"

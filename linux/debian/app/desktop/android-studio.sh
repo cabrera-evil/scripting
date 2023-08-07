@@ -3,7 +3,6 @@
 # Colors for terminal output
 RED='\e[0;31m'
 GREEN='\e[0;32m'
-YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
@@ -19,9 +18,9 @@ handle_error() {
     fi
 }
 
-# Install Discord via Flatpak
-echo -e "${BLUE}Installing Discord...${NC}"
-flatpak install flathub com.discordapp.Discord -y
-handle_error $? "flatpak install" "Failed to install Discord."
+# Install Google Android Studio via Flatpak
+echo -e "${BLUE}Installing Google Android Studio...${NC}"
+flatpak install flathub com.google.AndroidStudio -y
+handle_error $? "flatpak install" "Failed to install Google Android Studio."
 
-echo -e "${GREEN}Discord installation complete!${NC}"
+echo -e "${GREEN}Google Android Studio installation complete!${NC}"
