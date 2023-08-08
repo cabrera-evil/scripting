@@ -41,7 +41,7 @@ echo -e "${YELLOW}Select your Linux distribution:${NC}"
 echo -e "${YELLOW}1. Fedora${NC}"
 echo -e "${YELLOW}2. Ubuntu${NC}"
 echo -e "${YELLOW}3. Debian${NC}"
-echo -e "${YELLOW}4. Exit${NC}"
+echo -e "${YELLOW}0. Exit${NC}"
 
 # Prompt user for Linux distribution choice
 read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3):${NC} ")" distro_choice
