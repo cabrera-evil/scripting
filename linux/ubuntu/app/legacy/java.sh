@@ -30,7 +30,7 @@ sudo apt install libc6-i386 libc6-x32 -y
 handle_error $? "apt install libc6-i386 libc6-x32" "Failed to install JDK 17 dependencies"
 
 echo -e "${BLUE}Installing JDK 17...${NC}"
-sudo apt install /tmp/jdk-17_linux-x64_bin.deb
+sudo apt install -y /tmp/jdk-17_linux-x64_bin.deb
 handle_error $? "apt install /tmp/jdk-17_linux-x64_bin.deb" "Failed to install JDK 17"
 
 echo -e "${GREEN}JDK 17 installation complete!${NC}"

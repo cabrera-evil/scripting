@@ -26,7 +26,7 @@ handle_error $? "VirtualBox Download" "Failed to download VirtualBox"
 
 # Installing VirtualBox
 echo -e "${BLUE}Installing VirtualBox${NC}"
-sudo apt install /tmp/virtualbox.deb
+sudo apt install -y /tmp/virtualbox.deb
 handle_error $? "VirtualBox Installation" "Failed to install VirtualBox"
 
 echo -e "${GREEN}VirtualBox installation complete!${NC}"

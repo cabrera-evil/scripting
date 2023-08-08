@@ -15,7 +15,7 @@ if ! wget -O /tmp/code.deb "https://az764295.vo.msecnd.net/stable/6445d93c81ebe4
 fi
 
 echo -e "${BLUE}Installing Code...${NC}"
-if ! sudo apt install /tmp/code.deb; then
+if ! sudo apt install -y /tmp/code.deb; then
     echo -e "${RED}Failed to install Code.${NC}"
     exit 1
 fi

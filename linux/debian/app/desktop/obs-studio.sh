@@ -19,19 +19,9 @@ handle_error() {
     fi
 }
 
-# Add OBS Studio PPA
-echo -e "${BLUE}Adding OBS Studio PPA...${NC}"
-sudo add-apt-repository -y ppa:obsproject/obs-studio
-handle_error $? "Adding OBS Studio PPA" "Failed to add OBS Studio PPA."
-
-# Update package lists
-echo -e "${BLUE}Updating package lists...${NC}"
-sudo apt update
-handle_error $? "Updating package lists" "Failed to update package lists."
-
-# Install OBS Studio
+# Install OBS Studio via Flatpak
 echo -e "${BLUE}Installing OBS Studio...${NC}"
-sudo apt install -y obs-studio
-handle_error $? "Installing OBS Studio" "Failed to install OBS Studio."
+flatpak install flathub com.obsproject.Studio -y
+handle_error $? "flatpak install" "Failed to install OBS Studio."
 
 echo -e "${GREEN}OBS Studio installation complete!${NC}"
