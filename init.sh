@@ -59,7 +59,7 @@ case $distro_choice in
     distro_name="Debian"
     distro_path="linux/debian"
     ;;
-4)
+0)
     print_header "Exiting the installation menu..."
     exit 0
     ;;
@@ -71,41 +71,29 @@ esac
 # Print welcome message and menu
 print_header "Welcome to the installation menu for $distro_name."
 echo -e "${YELLOW}What would you like to install?${NC}"
-echo -e "${YELLOW}1. Terminal apps only${NC}"
-echo -e "${YELLOW}2. Terminal and desktop apps${NC}"
+echo -e "${YELLOW}1. Update system${NC}"
+echo -e "${YELLOW}2. Terminal apps only${NC}"
 echo -e "${YELLOW}3. Desktop programs only${NC}"
-echo -e "${YELLOW}4. Change default grub${NC}"
-echo -e "${YELLOW}5. Update system${NC}"
-echo -e "${YELLOW}6. Configure system${NC}"
-echo -e "${YELLOW}7. Exit${NC}"
+echo -e "${YELLOW}4. Terminal and desktop apps${NC}"
+echo -e "${YELLOW}5. Configure system${NC}"
+echo -e "${YELLOW}0. Exit${NC}"
 
 # Prompt user for choice
 read -p "$(echo -e "${YELLOW}Enter your choice (1, 2, 3, etc):${NC} ")" choice
 
 case $choice in
 1)
+    print_header "Updating system..."
+    # Updating System
+    $script_dir/$distro_path/config/update.sh
+    handle_error $? "Failed to update system."
+    ;;
+2)
+
     print_header "Installing terminal apps..."
 
     # Installing terminal apps
     for script in $script_dir/$distro_path/app/terminal/*.sh; do
-        source $script
-        handle_error $? "Failed to install $script"
-    done
-    ;;
-2)
-    print_header "Installing both terminal and desktop apps..."
-
-    # Installing terminal apps
-    for script in $script_dir/$distro_path/app/terminal/*.sh; do
-        source $script
-        handle_error $? "Failed to install $script"
-    done
-
-    # Print available desktop programs
-    print_header "Available desktop programs:"
-    desktop_apps=($script_dir/$distro_path/app/desktop/*.sh)
-    for script in "${desktop_apps[@]}"; do
-        print_header "Installing $script..."
         source $script
         handle_error $? "Failed to install $script"
     done
@@ -122,44 +110,83 @@ case $choice in
         echo "$((i + 1)). $app_name"
     done
 
-    # Prompt user for desktop program choice
-    echo -e "${YELLOW}Which desktop program would you like to install?${NC}"
-    echo -e "${YELLOW}Enter the program number (or 'all' to install all programs):${NC}"
-    read -p "" app_choice
+    # Prompt user for desktop program choices
+    echo -e "${YELLOW}Which desktop programs would you like to install?${NC}"
+    echo -e "${YELLOW}Enter the program numbers separated by commas (e.g., '1,3,5') or 'all' to install all programs:${NC}"
+    read -p "" app_choices
 
-    if [[ "$app_choice" == "all" ]]; then
-        # Install all desktop programs
-        for script in "${desktop_apps[@]}"; do
-            print_header "Installing $script..."
-            source $script
-            handle_error $? "Failed to install $script"
-        done
-    elif [[ "$app_choice" =~ ^[0-9]+$ ]]; then
-        selected_app_script="${desktop_apps[$((app_choice - 1))]}"
-        if [[ -n $selected_app_script ]]; then
-            print_header "Installing $selected_app_script..."
-            source "$selected_app_script"
-            handle_error $? "Failed to install $selected_app_script"
+    IFS=',' read -ra selected_indices <<<"$app_choices"
+
+    for index in "${selected_indices[@]}"; do
+        if [[ "$app_choices" == "all" ]]; then
+            # Install all desktop programs
+            for script in "${desktop_apps[@]}"; do
+                print_header "Installing $script..."
+                source "$script"
+                handle_error $? "Failed to install $script"
+            done
+        elif [[ "$index" =~ ^[0-9]+$ ]]; then
+            selected_app_script="${desktop_apps[$((index - 1))]}"
+            if [[ -n $selected_app_script ]]; then
+                print_header "Installing $selected_app_script..."
+                source "$selected_app_script"
+                handle_error $? "Failed to install $selected_app_script"
+            else
+                handle_error 1 "Invalid choice" "Please select a valid program number."
+            fi
         else
-            handle_error 1 "Invalid choice" "Please select a valid program number."
+            handle_error 1 "Invalid choice" "Please enter a valid program number or 'all'."
         fi
-    else
-        handle_error 1 "Invalid choice" "Please enter a valid program number or 'all'."
-    fi
+    done
     ;;
 4)
-    print_header "Updating default grub..."
-    # Change default grub
-    source $script_dir/$distro_path/config/grub.sh
-    handle_error $? "Failed to update default grub."
+    print_header "Installing both terminal and desktop apps..."
+
+    # Installing terminal apps
+    for script in $script_dir/$distro_path/app/terminal/*.sh; do
+        source $script
+        handle_error $? "Failed to install $script"
+    done
+
+    # Print available desktop programs
+    print_header "Available desktop programs:"
+    desktop_apps=($script_dir/$distro_path/app/desktop/*.sh)
+    for ((i = 0; i < ${#desktop_apps[@]}; i++)); do
+        app_script="${desktop_apps[$i]}"
+        app_name=$(basename "$app_script" .sh)
+        echo "$((i + 1)). $app_name"
+    done
+
+    # Prompt user for desktop program choices
+    echo -e "${YELLOW}Which desktop programs would you like to install?${NC}"
+    echo -e "${YELLOW}Enter the program numbers separated by commas (e.g., '1,3,5') or 'all' to install all programs:${NC}"
+    read -p "" app_choices
+
+    IFS=',' read -ra selected_indices <<<"$app_choices"
+
+    for index in "${selected_indices[@]}"; do
+        if [[ "$app_choices" == "all" ]]; then
+            # Install all desktop programs
+            for script in "${desktop_apps[@]}"; do
+                print_header "Installing $script..."
+                source "$script"
+                handle_error $? "Failed to install $script"
+            done
+        elif [[ "$index" =~ ^[0-9]+$ ]]; then
+            selected_app_script="${desktop_apps[$((index - 1))]}"
+            if [[ -n $selected_app_script ]]; then
+                print_header "Installing $selected_app_script..."
+                source "$selected_app_script"
+                handle_error $? "Failed to install $selected_app_script"
+            else
+                handle_error 1 "Invalid choice" "Please select a valid program number."
+            fi
+        else
+            handle_error 1 "Invalid choice" "Please enter a valid program number or 'all'."
+        fi
+    done
     ;;
 5)
-    print_header "Updating system..."
-    # Updating System
-    $script_dir/$distro_path/config/update.sh
-    handle_error $? "Failed to update system."
-    ;;
-6)
     print_header "Configuring applications..."
 
     # Print available configure scripts
@@ -196,7 +223,7 @@ case $choice in
         handle_error 1 "Invalid choice" "Please enter a valid script number or 'all'."
     fi
     ;;
-7)
+0)
     print_header "Exiting the installation menu..."
     exit 0
     ;;
