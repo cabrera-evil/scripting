@@ -28,7 +28,7 @@ sudo apt purge docker-desktop
 
 #Apt Packages Install
 echo -e "${BLUE}Installing apt package index for HTTPS${NC}"
-sudo apt-get install ca-certificates curl gnupg -y
+sudo apt install ca-certificates curl gnupg -y
 handle_error $? "apt package" "Failed to install apt packages"
 
 #Setup GPG Key
@@ -48,8 +48,8 @@ handle_error $? "Docker Repository Setup" "Failed to setup Docker repository"
 
 #Installing Docker Engine
 echo -e "${BLUE}Installing Docker Engine${NC}"
-sudo apt-get update -y
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt update -y
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 handle_error $? "Docker Engine Installation" "Failed to install Docker Engine"
 
 #Download Docker Desktop
@@ -59,7 +59,7 @@ handle_error $? "Docker Desktop Download" "Failed to download Docker Desktop"
 
 #Install The Downloaded Package
 echo -e "${BLUE}Installing Docker Desktop${NC}"
-sudo apt-get update
+sudo apt update -y
 sudo apt install /tmp/docker-desktop.deb
 handle_error $? "Docker Desktop Installation" "Failed to install Docker Desktop"
 

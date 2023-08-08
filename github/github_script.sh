@@ -37,32 +37,32 @@ case $choice in
 1)
     print_header "Cloning a repository..."
     # Cloning a GitHub repository
-    sh ./github/scripts/clone_repo.sh
+    ./github/scripts/clone_repo.sh
     ;;
 2)
     print_header "Creating a repository..."
     # Creating a GitHub repository
-    sh ./github/scripts/create_repo.sh
+    ./github/scripts/create_repo.sh
     ;;
 3)
     print_header "Deleting a repository..."
     # Deleting a GitHub repository
-    sh ./github/scripts/delete_repo.sh
+    ./github/scripts/delete_repo.sh
     ;;
 4)
     print_header "Resetting a repository..."
     # Resetting a GitHub repository
-    sh ./github/scripts/reset_repo.sh
+    ./github/scripts/reset_repo.sh
     ;;
 5)
     print_header "Setting up gitconfig..."
     # Setting up gitconfig
-    sh ./github/scripts/git_config.sh
+    ./github/scripts/git_config.sh
     ;;
 6)
     print_header "Setting up git credential manager (Linux)..."
     # Setting up git credential manager (Linux)
-    sh ./github/scripts/ssh_config.sh
+    ./github/scripts/ssh_config.sh
     ;;
 7)
     print_header "Exiting the GitHub scripting menu..."

@@ -23,8 +23,8 @@ handle_error() {
 echo -e "${BLUE}Installing Kvantum...${NC}"
 sudo add-apt-repository ppa:papirus/papirus -y
 handle_error $? "add-apt-repository" "Failed to add PPA repository"
-sudo apt-get update
-handle_error $? "apt-get update" "Failed to update package lists"
-sudo apt-get install --install-recommends kvantum -y
-handle_error $? "apt-get install" "Failed to install Kvantum"
+sudo apt update
+handle_error $? "apt update" "Failed to update package lists"
+sudo apt install --install-recommends kvantum -y
+handle_error $? "apt install" "Failed to install Kvantum"
 echo -e "${GREEN}Kvantum installed.${NC}"

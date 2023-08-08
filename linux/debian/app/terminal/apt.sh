@@ -21,24 +21,24 @@ handle_error() {
 
 # Install basic applications
 echo -e "${BLUE}Installing Basic Applications...${NC}"
-sudo apt-get install htop -y
-handle_error $? "apt-get install htop" "Failed to install htop"
-sudo apt-get install neofetch -y
-handle_error $? "apt-get install neofetch" "Failed to install neofetch"
+sudo apt install htop -y
+handle_error $? "apt install htop" "Failed to install htop"
+sudo apt install neofetch -y
+handle_error $? "apt install neofetch" "Failed to install neofetch"
 
 # Install Git as version controller
 echo -e "${BLUE}Installing Git as version controller${NC}"
-sudo apt-get install git -y
-handle_error $? "apt-get install git" "Failed to install git"
-sudo apt-get install gnome-keyring -y
-handle_error $? "apt-get install gnome-keyring" "Failed to install gnome-keyring"
+sudo apt install git -y
+handle_error $? "apt install git" "Failed to install git"
+sudo apt install gnome-keyring -y
+handle_error $? "apt install gnome-keyring" "Failed to install gnome-keyring"
 
 # Install basic development tools
 echo -e "${BLUE}Installing Basic Development Tools...${NC}"
-sudo apt-get install build-essential -y
-handle_error $? "apt-get install build-essential" "Failed to install build-essential"
+sudo apt install build-essential -y
+handle_error $? "apt install build-essential" "Failed to install build-essential"
 
 # Install xclip as clipboard manager
 echo -e "${BLUE}Installing xclip as clipboard manager...${NC}"
-sudo apt-get install xclip -y
-handle_error $? "apt-get install xclip" "Failed to install xclip"
+sudo apt install xclip -y
+handle_error $? "apt install xclip" "Failed to install xclip"

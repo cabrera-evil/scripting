@@ -26,8 +26,8 @@ handle_error $? "wget" "Failed to download JDK 17"
 
 # Install JDK 17
 echo -e "${BLUE}Installing JDK 17 dependencies...${NC}"
-sudo apt-get install libc6-i386 libc6-x32 -y
-handle_error $? "apt-get install libc6-i386 libc6-x32" "Failed to install JDK 17 dependencies"
+sudo apt install libc6-i386 libc6-x32 -y
+handle_error $? "apt install libc6-i386 libc6-x32" "Failed to install JDK 17 dependencies"
 
 echo -e "${BLUE}Installing JDK 17...${NC}"
 sudo apt install /tmp/jdk-17_linux-x64_bin.deb

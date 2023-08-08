@@ -22,22 +22,22 @@ handle_error() {
 # Updating system
 echo -e "${BLUE}Updating System${NC}"
 sudo apt update -y
-handle_error $? "apt-get update" "Failed to update system"
+handle_error $? "apt update" "Failed to update system"
 
 # Upgrading packages
 echo -e "${BLUE}Upgrading Packages${NC}"
 sudo apt upgrade -y
-handle_error $? "apt-get upgrade" "Failed to upgrade packages"
+handle_error $? "apt upgrade" "Failed to upgrade packages"
 
 # Dist-upgrade
 echo -e "${BLUE}Dist-Upgrade${NC}"
 sudo apt dist-upgrade -y
-handle_error $? "apt-get dist-upgrade" "Failed to perform dist-upgrade"
+handle_error $? "apt dist-upgrade" "Failed to perform dist-upgrade"
 
 # Full-upgrade
 echo -e "${BLUE}Full-Upgrade${NC}"
 sudo apt full-upgrade -y
-handle_error $? "apt-get full-upgrade" "Failed to perform full-upgrade"
+handle_error $? "apt full-upgrade" "Failed to perform full-upgrade"
 
 # Autoremove packages
 echo -e "${BLUE}Autoremove Packages${NC}"

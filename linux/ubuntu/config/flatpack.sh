@@ -24,12 +24,12 @@ handle_error() {
 
 # Installing flatpack
 echo -e "${BLUE}Installing flatpack${NC}"
-sudo apt install flatpak
+sudo apt install flatpak -y
 handle_error $? "sudo apt install flatpak" "Flatpack installed successfully" "Error installing flatpack"
 
 # Install flatpack plugin for gnome software
 echo -e "${BLUE}Installing flatpack plugin for gnome software${NC}"
-sudo apt install gnome-software-plugin-flatpak
+sudo apt install gnome-software-plugin-flatpak -y
 handle_error $? "sudo apt install gnome-software-plugin-flatpak" "Flatpack plugin for gnome software installed successfully" "Error installing flatpack plugin for gnome software"
 
 # Add flathub repository

@@ -156,7 +156,7 @@ case $choice in
 5)
     print_header "Updating system..."
     # Updating System
-    sh $script_dir/$distro_path/config/update.sh
+    $script_dir/$distro_path/config/update.sh
     handle_error $? "Failed to update system."
     ;;
 6)
