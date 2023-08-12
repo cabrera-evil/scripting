@@ -30,8 +30,8 @@ handle_error $? "apt install neofetch" "Failed to install neofetch"
 echo -e "${BLUE}Installing Git as version controller${NC}"
 sudo apt install git -y
 handle_error $? "apt install git" "Failed to install git"
-sudo apt install gnome-keyring -y
-handle_error $? "apt install gnome-keyring" "Failed to install gnome-keyring"
+sudo apt install vim -y
+handle_error $? "apt install vim" "Failed to install vim"
 
 # Install basic development tools
 echo -e "${BLUE}Installing Basic Development Tools...${NC}"

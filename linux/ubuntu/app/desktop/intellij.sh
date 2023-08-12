@@ -19,9 +19,9 @@ handle_error() {
     fi
 }
 
-# Install FireFox via Flatpak
-echo -e "${BLUE}Installing FireFox...${NC}"
-flatpak install flathub org.mozilla.firefox -y
-handle_error $? "flatpak install" "Failed to install FireFox."
+# Install Intellij via Flatpak
+echo -e "${BLUE}Installing Intellij...${NC}"
+flatpak install flathub com.jetbrains.IntelliJ-IDEA-Ultimate -y
+handle_error $? "flatpak install" "Failed to install Intellij."
 
-echo -e "${GREEN}FireFox installation complete!${NC}"
+echo -e "${GREEN}Intellij installation complete!${NC}"

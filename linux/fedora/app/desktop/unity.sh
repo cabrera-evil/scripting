@@ -19,9 +19,9 @@ handle_error() {
     fi
 }
 
-# Install Kvantum
-echo -e "${BLUE}Installing Kvantum...${NC}"
-sudo dnf install -y kvantum
-handle_error $? "sudo dnf install" "Failed to install Kvantum."
+# Install Unity via Flatpak
+echo -e "${BLUE}Installing Unity...${NC}"
+flatpak install flathub com.unity.UnityHub -y
+handle_error $? "flatpak install" "Failed to install Unity."
 
-echo -e "${GREEN}Kvantum installation complete!${NC}"
+echo -e "${GREEN}Unity installation complete!${NC}"

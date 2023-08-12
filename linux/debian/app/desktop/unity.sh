@@ -19,9 +19,9 @@ handle_error() {
     fi
 }
 
-# Install FireFox via Flatpak
-echo -e "${BLUE}Installing FireFox...${NC}"
-flatpak install flathub org.mozilla.firefox -y
-handle_error $? "flatpak install" "Failed to install FireFox."
+# Install Unity via Flatpak
+echo -e "${BLUE}Installing Unity...${NC}"
+flatpak install flathub com.unity.UnityHub -y
+handle_error $? "flatpak install" "Failed to install Unity."
 
-echo -e "${GREEN}FireFox installation complete!${NC}"
+echo -e "${GREEN}Unity installation complete!${NC}"

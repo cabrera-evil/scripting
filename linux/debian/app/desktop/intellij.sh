@@ -3,6 +3,7 @@
 # Colors for terminal output
 RED='\e[0;31m'
 GREEN='\e[0;32m'
+YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
@@ -18,7 +19,9 @@ handle_error() {
     fi
 }
 
-echo -e "${BLUE}Installing IntelliJ IDEA Ultimate...${NC}"
+# Install Intellij via Flatpak
+echo -e "${BLUE}Installing Intellij...${NC}"
 flatpak install flathub com.jetbrains.IntelliJ-IDEA-Ultimate -y
-handle_error $? "Flatpak install" "Failed to install IntelliJ IDEA Ultimate"
-echo -e "${GREEN}IntelliJ IDEA Ultimate installed successfully!${NC}"
+handle_error $? "flatpak install" "Failed to install Intellij."
+
+echo -e "${GREEN}Intellij installation complete!${NC}"
