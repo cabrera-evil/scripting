@@ -18,18 +18,22 @@ handle_error() {
     fi
 }
 
-# Prompt user for default boot loader option
-echo -e "${YELLOW}Please enter the default boot loader option (e.g. 0, 1, 2, etc.):${NC}"
-read option
+# Save GRUB default configuration
+echo -e "${YELLOW}Saving GRUB default configuration...${NC}"
+sudo cp /etc/default/grub /etc/default/grub.bak
+handle_error $? "cp /etc/default/grub /etc/default/grub.bak" "Failed to save GRUB default configuration"
 
-# Update /etc/default/grub file
-echo -e "${GREEN}Updating /etc/default/grub file${NC}"
-sudo sed -i "s/GRUB_DEFAULT=.*/GRUB_DEFAULT=$option/" /etc/default/grub
-handle_error $? "sed" "Failed to update /etc/default/grub file"
+# Set GRUB default configuration
+echo -e "${YELLOW}Setting GRUB default configuration...${NC}"
+sudo sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/g' /etc/default/grub
+handle_error $? "sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/g' /etc/default/grub" "Failed to update GRUB configuration"
+
+# Add GRUB_SAVEDEFAULT to GRUB configuration just below GRUB_DEFAULT
+sudo sed -i '/GRUB_DEFAULT=saved/a GRUB_SAVEDEFAULT=true' /etc/default/grub
 
 # Update GRUB configuration
-echo -e "${GREEN}Updating GRUB configuration${NC}"
-sudo update-grub2
-handle_error $? "update-grub2" "Failed to update GRUB configuration"
+echo -e "${YELLOW}Updating GRUB configuration...${NC}"
+sudo update-grub
+handle_error $? "update-grub" "Failed to update GRUB configuration"
 
 echo -e "${GREEN}GRUB configuration updated successfully!${NC}"

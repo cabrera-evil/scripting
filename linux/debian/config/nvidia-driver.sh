@@ -22,13 +22,7 @@ handle_error() {
     fi
 }
 
-# Creating folder for NVIDIA drivers
-echo -e "${BLUE}Creating folder for NVIDIA drivers...${NC}"
-sudo mkdir -p ~/.drivers/nvidia
-cd ~/.drivers/nvidia
-handle_error $? "sudo mkdir -p .drivers/nvidia" "Folder for NVIDIA drivers created successfully!" "Failed to create folder for NVIDIA drivers."
-
 # Install NVIDIA drivers
 echo -e "${BLUE}Installing NVIDIA drivers...${NC}"
-sudo apt install nvidia-kernel-common nvidia-kernel-dkms nvidia-xconfig nvidia-settings nvidia-detect nvidia-smi nvidia-support -y
-handle_error $? "sudo apt install nvidia-kernel-common nvidia-kernel-dkms nvidia-xconfig nvidia-settings nvidia-detect nvidia-smi nvidia-support -y" "NVIDIA drivers installed successfully!" "Failed to install NVIDIA drivers."
+sudo apt install nvidia-driver -y
+handle_error $? "sudo apt install nvidia-driver -y" "NVIDIA drivers installed successfully!" "Failed to install NVIDIA drivers."
