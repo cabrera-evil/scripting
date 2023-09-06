@@ -21,19 +21,27 @@ handle_error() {
 
 # Install NVM
 echo -e "${BLUE}Installing NVM...${NC}"
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-handle_error $? "NVM installation" "Failed to install NVM."
 
-# Load NVM
-echo -e "${BLUE}Loading NVM...${NC}"
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-handle_error $? "NVM configuration" "Failed to configure NVM."
+# Verify if wget is installed if not, install wget
+if ! [ -x "$(command -v wget)" ]; then
+    echo -e "${YELLOW}Wget is not installed, installing...${NC}"
+    sudo apt install wget -y
+    handle_error $? "Wget installation" "Failed to install Wget."
+fi
+
+# Install NVM using wget
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+handle_error $? "NVM installation" "Failed to install NVM."
 
 # Install Node.js LTS
 echo -e "${BLUE}Installing Node.js LTS...${NC}"
 nvm install --lts
 handle_error $? "Node.js LTS installation" "Failed to install Node.js LTS."
+
+# Install Node.js gallium
+echo -e "${BLUE}Installing Node.js gallium...${NC}"
+nvm install lts/gallium
+handle_error $? "Node.js gallium installation" "Failed to install Node.js gallium."
 
 # Set default Node.js version
 echo -e "${BLUE}Setting default Node.js version...${NC}"
@@ -46,6 +54,9 @@ echo -e "${BLUE}Installing Node.js modules...${NC}"
 npm install -g typescript
 handle_error $? "TypeScript installation" "Failed to install TypeScript."
 
+npm install -g yarn
+handle_error $? "Yarn installation" "Failed to install Yarn."
+
 npm install -g @nestjs/cli
 handle_error $? "NestJS CLI installation" "Failed to install NestJS CLI."
 
@@ -54,6 +65,9 @@ handle_error $? "Nodemon installation" "Failed to install Nodemon."
 
 npm install -g vite
 handle_error $? "Vite installation" "Failed to install Vite."
+
+npm install -g hbs
+handle_error $? "HBS installation" "Failed to install HBS."
 
 npm install -g express-generator
 handle_error $? "Express generator installation" "Failed to install Express generator."
