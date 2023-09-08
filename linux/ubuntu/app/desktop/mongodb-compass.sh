@@ -19,6 +19,13 @@ handle_error() {
     fi
 }
 
+# If Flatpak is not installed, install it
+if ! [ -x "$(command -v flatpak)" ]; then
+    echo -e "${BLUE}Installing Flatpak...${NC}"
+    sudo apt install flatpak -y
+    handle_error $? "sudo apt install" "Failed to install Flatpak."
+fi
+
 # Install MongoDB Compass via Flatpak
 echo -e "${BLUE}Installing MongoDB Compass...${NC}"
 flatpak install flathub com.mongodb.Compass -y

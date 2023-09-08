@@ -18,6 +18,13 @@ handle_error() {
     fi
 }
 
+# If Flatpak is not installed, install it
+if ! [ -x "$(command -v flatpak)" ]; then
+    echo -e "${BLUE}Installing Flatpak...${NC}"
+    sudo apt install flatpak -y
+    handle_error $? "sudo apt install" "Failed to install Flatpak."
+fi
+
 # Install Google Android Studio via Flatpak
 echo -e "${BLUE}Installing Google Android Studio...${NC}"
 flatpak install flathub com.google.AndroidStudio -y

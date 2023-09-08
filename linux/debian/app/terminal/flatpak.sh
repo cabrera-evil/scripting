@@ -22,20 +22,20 @@ handle_error() {
     fi
 }
 
-# Installing flatpack
-echo -e "${BLUE}Installing flatpack${NC}"
+# Installing flatpak
+echo -e "${BLUE}Installing flatpak${NC}"
 sudo apt install flatpak -y
-handle_error $? "sudo apt install flatpak" "Flatpack installed successfully" "Error installing flatpack"
+handle_error $? "sudo apt install flatpak" "flatpak installed successfully" "Error installing flatpak"
 
-# Install flatpack plugin for gnome software
-echo -e "${BLUE}Installing flatpack plugin for gnome software${NC}"
+# Install flatpak plugin for gnome software
+echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
 sudo apt install gnome-software-plugin-flatpak -y
-handle_error $? "sudo apt install gnome-software-plugin-flatpak" "Flatpack plugin for gnome software installed successfully" "Error installing flatpack plugin for gnome software"
+handle_error $? "sudo apt install gnome-software-plugin-flatpak" "flatpak plugin for gnome software installed successfully" "Error installing flatpak plugin for gnome software"
 
-# Install flatpack plugin for kde discover
-echo -e "${BLUE}Installing flatpack plugin for kde discover${NC}"
+# Install flatpak plugin for kde discover
+echo -e "${BLUE}Installing flatpak plugin for kde discover${NC}"
 sudo apt install plasma-discover-flatpak-backend -y
-handle_error $? "sudo apt install plasma-discover-flatpak-backend" "Flatpack plugin for kde discover installed successfully" "Error installing flatpack plugin for kde discover"
+handle_error $? "sudo apt install plasma-discover-flatpak-backend" "flatpak plugin for kde discover installed successfully" "Error installing flatpak plugin for kde discover"
 
 # Add flathub repository
 echo -e "${BLUE}Adding flathub repository${NC}"
