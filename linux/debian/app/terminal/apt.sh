@@ -27,9 +27,7 @@ sudo apt install neofetch -y
 handle_error $? "apt install neofetch" "Failed to install neofetch"
 
 # Install Git as version controller
-echo -e "${BLUE}Installing Git as version controller${NC}"
-sudo apt install git -y
-handle_error $? "apt install git" "Failed to install git"
+echo -e "${BLUE}Installing Vim...${NC}"
 sudo apt install vim -y
 handle_error $? "apt install vim" "Failed to install vim"
 
