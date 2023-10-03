@@ -14,7 +14,7 @@ handle_error() {
     local message=$3
 
     if [ $exit_code -ne 0 ]; then
-        echo -e "${RED}Error: $command failed - $message${NC}" >&2
+        echo -e "${RED}Error: $command failed - $message${NC}"
         exit $exit_code
     fi
 }
@@ -26,9 +26,9 @@ if ! [ -x "$(command -v flatpak)" ]; then
     handle_error $? "sudo apt install" "Failed to install Flatpak."
 fi
 
-# Install CLion via Flatpak
-echo -e "${BLUE}Installing CLion...${NC}"
-flatpak install flathub com.jetbrains.CLion -y
-handle_error $? "flatpak install" "Failed to install CLion."
+# Install SaveDesktop via Flatpak
+echo -e "${BLUE}Installing SaveDesktop...${NC}"
+flatpak install flathub io.github.vikdevelop.SaveDesktop -y
+handle_error $? "Failed to install SaveDesktop."
 
-echo -e "${GREEN}CLion installation complete!${NC}"
+echo -e "${GREEN}SaveDesktop installation complete!${NC}"

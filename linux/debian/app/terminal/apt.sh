@@ -40,3 +40,8 @@ handle_error $? "apt install build-essential" "Failed to install build-essential
 echo -e "${BLUE}Installing xclip as clipboard manager...${NC}"
 sudo apt install xclip -y
 handle_error $? "apt install xclip" "Failed to install xclip"
+
+# Install gnome-icons
+echo -e "${BLUE}Installing gnome-icons...${NC}"
+sudo apt install numix-icon-theme-circle -y
+handle_error $? "apt install numix-icon-theme-circle" "Failed to install numix-icon-theme-circle"
