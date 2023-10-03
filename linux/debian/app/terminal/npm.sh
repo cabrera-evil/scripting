@@ -33,6 +33,9 @@ fi
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 handle_error $? "NVM installation" "Failed to install NVM."
 
+echo -e "${BLUE}Reloading bash...${NC}"
+source ~/.nvm/nvm.sh
+
 # Install Node.js LTS
 echo -e "${BLUE}Installing Node.js LTS...${NC}"
 nvm install --lts
