@@ -18,8 +18,8 @@ handle_error() {
     fi
 }
 
-# Input email and key name
-read -p "Enter your email for GitHub: " email
+# Get the email from git config
+email=$(git config user.email)  
 key_name="id_ed25519"
 
 # Generate SSH key
