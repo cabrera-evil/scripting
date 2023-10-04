@@ -21,9 +21,20 @@ handle_error() {
 
 # If Flatpak is not installed, install it
 if ! [ -x "$(command -v flatpak)" ]; then
-    echo -e "${BLUE}Installing Flatpak...${NC}"
+    # Installing flatpak
+    echo -e "${BLUE}Installing flatpak${NC}"
     sudo apt install flatpak -y
-    handle_error $? "sudo apt install" "Failed to install Flatpak."
+    handle_error $? "sudo apt install flatpak" "flatpak installed successfully" "Error installing flatpak"
+
+    # Install flatpak plugin for gnome software
+    echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
+    sudo apt install gnome-software-plugin-flatpak -y
+    handle_error $? "sudo apt install gnome-software-plugin-flatpak" "flatpak plugin for gnome software installed successfully" "Error installing flatpak plugin for gnome software"
+
+    # Add flathub repository
+    echo -e "${BLUE}Adding flathub repository${NC}"
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    handle_error $? "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo" "Flathub repository added successfully" "Error adding flathub repository"
 fi
 
 # Install WhatsApp via Flatpak
