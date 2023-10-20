@@ -55,11 +55,11 @@ handle_error $? "Node.js LTS default version" "Failed to set default Node.js LTS
 # Install Modules
 echo -e "${BLUE}Installing Node.js modules...${NC}"
 
-npm install -g typescript
-handle_error $? "TypeScript installation" "Failed to install TypeScript."
-
 npm install -g yarn
 handle_error $? "Yarn installation" "Failed to install Yarn."
+
+npm install -g typescript
+handle_error $? "TypeScript installation" "Failed to install TypeScript."
 
 npm install -g @nestjs/cli
 handle_error $? "NestJS CLI installation" "Failed to install NestJS CLI."
@@ -67,16 +67,7 @@ handle_error $? "NestJS CLI installation" "Failed to install NestJS CLI."
 npm install -g nodemon
 handle_error $? "Nodemon installation" "Failed to install Nodemon."
 
-npm install -g vite
-handle_error $? "Vite installation" "Failed to install Vite."
-
-npm install -g hbs
-handle_error $? "HBS installation" "Failed to install HBS."
-
 npm install -g express-generator
 handle_error $? "Express generator installation" "Failed to install Express generator."
-
-npm install -g http-server
-handle_error $? "HTTP Server installation" "Failed to install HTTP Server."
 
 echo -e "${GREEN}Script execution complete!${NC}"
