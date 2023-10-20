@@ -19,27 +19,34 @@ handle_error() {
     fi
 }
 
-# If Flatpak is not installed, install it
-if ! [ -x "$(command -v flatpak)" ]; then
-    # Installing flatpak
-    echo -e "${BLUE}Installing flatpak${NC}"
-    sudo apt install flatpak -y
-    handle_error $? "sudo apt install flatpak" "flatpak installed successfully" "Error installing flatpak"
+# Download Postman
+echo -e "${YELLOW}Downloading Postman...${NC}"
+wget https://dl.pstmn.io/download/latest/linux64 -O /tmp/postman.tar.gz
 
-    # Install flatpak plugin for gnome software
-    echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
-    sudo apt install gnome-software-plugin-flatpak -y
-    handle_error $? "sudo apt install gnome-software-plugin-flatpak" "flatpak plugin for gnome software installed successfully" "Error installing flatpak plugin for gnome software"
+# Extract Postman
+echo -e "${YELLOW}Extracting Postman...${NC}"
+tar -xvf /tmp/postman.tar.gz -C /tmp
 
-    # Add flathub repository
-    echo -e "${BLUE}Adding flathub repository${NC}"
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    handle_error $? "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo" "Flathub repository added successfully" "Error adding flathub repository"
-fi
+# Move Postman to /opt
+echo -e "${YELLOW}Moving Postman to /opt...${NC}"
+sudo mv /tmp/Postman /opt
 
-# Install Postman via Flatpak
-echo -e "${BLUE}Installing Postman...${NC}"
-flatpak install flathub com.getpostman.Postman -y
-handle_error $? "Failed to install Postman."
+# Create Postman desktop entry
+echo -e "${YELLOW}Creating Postman desktop entry...${NC}"
+sudo tee /usr/share/applications/postman.desktop > /dev/null <<EOL
+[Desktop Entry]
+Name=Postman
+GenericName=API Testing Tool
+Comment=Simplify the process of developing APIs that allow you to connect to web services
+Exec=/opt/Postman/Postman
+Terminal=false
+Type=Application
+Icon=/opt/Postman/app/resources/app/assets/icon.png
+Categories=Development;
+EOL
+
+# Create Postman symbolic link
+echo -e "${YELLOW}Creating Postman symbolic link...${NC}"
+sudo ln -s /opt/Postman/Postman /usr/bin/postman
 
 echo -e "${GREEN}Postman installation complete!${NC}"
