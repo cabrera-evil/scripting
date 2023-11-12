@@ -42,11 +42,6 @@ echo -e "${BLUE}Installing Node.js LTS...${NC}"
 nvm install --lts
 handle_error $? "Node.js LTS installation" "Failed to install Node.js LTS."
 
-# Install Node.js gallium
-echo -e "${BLUE}Installing Node.js gallium...${NC}"
-nvm install lts/gallium
-handle_error $? "Node.js gallium installation" "Failed to install Node.js gallium."
-
 # Set default Node.js version
 echo -e "${BLUE}Setting default Node.js version...${NC}"
 nvm use --lts

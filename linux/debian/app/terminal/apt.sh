@@ -41,6 +41,13 @@ echo -e "${BLUE}Installing xclip as clipboard manager...${NC}"
 sudo apt install xclip -y
 handle_error $? "apt install xclip" "Failed to install xclip"
 
+# Install unzip and unrar
+echo -e "${BLUE}Installing unzip and unrar...${NC}"
+sudo apt install unzip -y
+handle_error $? "apt install unzip" "Failed to install unzip"
+sudo apt install unrar -y
+handle_error $? "apt install unrar" "Failed to install unrar"
+
 # Install gnome-icons
 echo -e "${BLUE}Installing gnome-icons...${NC}"
 sudo apt install numix-icon-theme-circle -y

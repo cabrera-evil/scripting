@@ -54,12 +54,12 @@ echo -e "${BLUE}Fixing Broken Packages${NC}"
 sudo apt --fix-broken install -y
 handle_error $? "apt --fix-broken install" "Failed to fix broken packages"
 
+# Install Flatpak if not installed
 if [ -x "$(command -v flatpak)" ]; then
     echo -e "${BLUE}Updating Flatpak Packages${NC}"
     if flatpak update --assumeyes; then
         echo "Flatpak updates completed"
     fi
 fi
-
 
 echo -e "${GREEN}System updates and package management completed successfully!${NC}"
