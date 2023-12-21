@@ -11,28 +11,26 @@ NC='\e[0m' # No Color
 handle_error() {
     local exit_code=$1
     local command=$2
-    local success_message=$3
-    local error_message=$4
+    local message=$3
 
-    if [ $exit_code -eq 0 ]; then
-        echo -e "${GREEN}$success_message${NC}"
-    else
-        echo -e "${RED}$error_message${NC}"
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}" >&2
         exit $exit_code
     fi
 }
 
+
 # Installing flatpak
 echo -e "${BLUE}Installing flatpak${NC}"
 sudo apt install flatpak -y
-handle_error $? "sudo apt install flatpak" "flatpak installed successfully" "Error installing flatpak"
+handle_error $? "sudo apt install flatpak -y" "Failed to install flatpak"
 
 # Install flatpak plugin for gnome software
 echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
 sudo apt install gnome-software-plugin-flatpak -y
-handle_error $? "sudo apt install gnome-software-plugin-flatpak" "flatpak plugin for gnome software installed successfully" "Error installing flatpak plugin for gnome software"
+handle_error $? "sudo apt install gnome-software-plugin-flatpak -y" "Failed to install flatpak plugin for gnome software"
 
 # Add flathub repository
 echo -e "${BLUE}Adding flathub repository${NC}"
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-handle_error $? "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo" "Flathub repository added successfully" "Error adding flathub repository"
+handle_error $? "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo" "Failed to add flathub repository"

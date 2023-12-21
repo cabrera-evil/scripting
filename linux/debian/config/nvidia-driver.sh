@@ -11,18 +11,16 @@ NC='\e[0m' # No Color
 handle_error() {
     local exit_code=$1
     local command=$2
-    local success_message=$3
-    local error_message=$4
+    local message=$3
 
-    if [ $exit_code -eq 0 ]; then
-        echo -e "${GREEN}$success_message${NC}"
-    else
-        echo -e "${RED}$error_message${NC}"
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $command failed - $message${NC}" >&2
         exit $exit_code
     fi
 }
 
+
 # Install NVIDIA drivers
 echo -e "${BLUE}Installing NVIDIA drivers...${NC}"
 sudo apt install nvidia-driver -y
-handle_error $? "sudo apt install nvidia-driver -y" "NVIDIA drivers installed successfully!" "Failed to install NVIDIA drivers."
+handle_error $? "apt install nvidia-driver" "Failed to install NVIDIA drivers"

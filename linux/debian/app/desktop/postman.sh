@@ -22,14 +22,17 @@ handle_error() {
 # Download Postman
 echo -e "${YELLOW}Downloading Postman...${NC}"
 wget https://dl.pstmn.io/download/latest/linux64 -O /tmp/postman.tar.gz
+handle_error $? "wget https://dl.pstmn.io/download/latest/linux64 -O /tmp/postman.tar.gz" "Failed to download Postman"
 
 # Extract Postman
 echo -e "${YELLOW}Extracting Postman...${NC}"
 tar -xvf /tmp/postman.tar.gz -C /tmp
+handle_error $? "tar -xvf /tmp/postman.tar.gz -C /tmp" "Failed to extract Postman"
 
 # Move Postman to /opt
 echo -e "${YELLOW}Moving Postman to /opt...${NC}"
 sudo mv /tmp/Postman /opt
+handle_error $? "sudo mv /tmp/Postman /opt" "Failed to move Postman to /opt"
 
 # Create Postman desktop entry
 echo -e "${YELLOW}Creating Postman desktop entry...${NC}"

@@ -131,7 +131,6 @@ distro_menu() {
 # Function to update the system
 update_system() {
     $script_dir/$distro_path/config/update.sh
-    handle_error $? "Failed to update system."
 }
 
 # Function to install terminal apps
@@ -184,13 +183,11 @@ prompt_menu() {
             # Install all desktop programs
             for script in "${script_list[@]}"; do
                 source "$script"
-                handle_error $? "Failed to install $script"
             done
         elif [[ "$index" =~ ^[0-9]+$ ]]; then
             selected_script="${script_list[$((index - 1))]}"
             if [[ -n $selected_script ]]; then
                 source "$selected_script"
-                handle_error $? "Failed to install $selected_script"
             else
                 handle_error 1 "Invalid choice" "Please select a valid program number."
             fi
