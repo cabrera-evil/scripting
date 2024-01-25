@@ -37,9 +37,9 @@ if ! [ -x "$(command -v flatpak)" ]; then
     handle_error $? "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo" "Flathub repository added successfully" "Error adding flathub repository"
 fi
 
-# Install Postman via Flatpak
-echo -e "${BLUE}Installing Postman...${NC}"
-flatpak install flathub com.getpostman.Postman -y
-handle_error $? "Failed to install Postman."
+# Install Slack via Flatpak
+echo -e "${BLUE}Installing Slack...${NC}"
+flatpak install flathub com.slack.Slack -y
+handle_error $? "Failed to install Slack."
 
-echo -e "${GREEN}Postman installation complete!${NC}"
+echo -e "${GREEN}Slack installation complete!${NC}"

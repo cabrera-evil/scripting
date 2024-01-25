@@ -60,9 +60,7 @@ start_menu() {
     print_header "Welcome to the installation menu."
     print_linux
     printf "Select your Linux distribution:${NC}\n"
-    printf "1. Fedora${NC}\n"
-    printf "2. Ubuntu${NC}\n"
-    printf "3. Debian${NC}\n"
+    printf "1. Debian${NC}\n"
     printf "0. Exit${NC}\n"
 
     # Prompt user for Linux distribution choice
@@ -70,14 +68,6 @@ start_menu() {
 
     case $distro_choice in
     1)
-        distro_name="Fedora"
-        distro_path="linux/fedora"
-        ;;
-    2)
-        distro_name="Ubuntu"
-        distro_path="linux/ubuntu"
-        ;;
-    3)
         distro_name="Debian"
         distro_path="linux/debian"
         ;;
