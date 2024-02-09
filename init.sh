@@ -45,13 +45,8 @@ print_header() {
 
 # Function to handle errors
 handle_error() {
-    # Define your error handling logic here
     echo -e "${RED}Error: $2 - $3"
-
-    # Print press any key to continue
     read -n 1 -s -r -p "Press any key to continue..."
-
-    # Exit the script
     exit "$1"
 }
 
@@ -60,23 +55,26 @@ start_menu() {
     print_header "Welcome to the installation menu."
     print_linux
     printf "Select your Linux distribution:${NC}\n"
-    printf "1. Debian${NC}\n"
+    distros=(linux/*)
+    num_distros=${#distros[@]}
+    for ((i=0; i<num_distros; i++)); do
+        distro_name=$(basename "${distros[i]}")
+        printf "%d. %s${NC}\n" "$((i+1))" "$distro_name"
+    done
     printf "0. Exit${NC}\n"
-
-    # Prompt user for Linux distribution choice
-    read -p "$(printf "Enter your choice (1, 2, 3):${NC} ")" distro_choice
-
+    read -p "$(printf "Enter your choice (0-%d):${NC} " "$num_distros")" distro_choice
     case $distro_choice in
-    1)
-        distro_name="Debian"
-        distro_path="linux/debian"
-        ;;
     0)
         print_header "Exiting the installation menu..."
         exit 0
         ;;
     *)
-        handle_error 1 "Invalid choice" "Please enter 1, 2, 3..."
+        if [ "$distro_choice" -ge 1 ] && [ "$distro_choice" -le "$num_distros" ]; then
+            distro_name=$(basename "${distros[distro_choice - 1]}")
+            distro_path="linux/$distro_name"
+        else
+            handle_error 1 "Invalid choice" "Please enter a valid choice"
+        fi
         ;;
     esac
 }
@@ -92,10 +90,7 @@ distro_menu() {
         printf "4. Terminal and desktop apps${NC}\n"
         printf "5. Configure system${NC}\n"
         printf "0. Exit${NC}\n"
-
-        # Prompt user for choice
         read -p "$(printf "Enter your choice (1, 2, 3, etc):${NC} ")" choice
-
         case $choice in
         1) update_system ;;
         2) install_terminal_apps ;;
@@ -113,8 +108,6 @@ distro_menu() {
             handle_error 1 "Invalid choice" "Please enter 1, 2, 3, etc..."
             ;;
         esac
-
-        # Wait for user input before returning to the distro menu
         read -n 1 -s -r -p "Press any key to continue..."
     done
 }
@@ -135,14 +128,10 @@ install_terminal_apps() {
         app_name=$(basename "$app_script" .sh)
         echo "$((i + 1)). $app_name"
     done
-
-    # Prompt user for terminal program choices
     echo -e "${YELLOW}Which terminal programs would you like to install?${NC}"
     echo -e "${YELLOW}Enter the program numbers separated by commas (e.g., '1,3,5'), 'all' to install all programs, or '0' to exit:${NC}"
     read -p "" script_choice
-
     IFS=',' read -ra selected_indices <<<"$script_choice"
-
     prompt_menu
 }
 
@@ -155,14 +144,10 @@ install_desktop_programs() {
         app_name=$(basename "$app_script" .sh)
         echo "$((i + 1)). $app_name"
     done
-
-    # Prompt user for desktop program choices
     echo -e "${YELLOW}Which desktop programs would you like to install?${NC}"
     echo -e "${YELLOW}Enter the program numbers separated by commas (e.g., '1,3,5'), 'all' to install all programs, or '0' to exit:${NC}"
     read -p "" script_choice
-
     IFS=',' read -ra selected_indices <<<"$script_choice"
-
     prompt_menu
 }
 
@@ -173,7 +158,6 @@ prompt_menu() {
             break
         fi
         if [[ "$script_choice" == "all" ]]; then
-            # Install all desktop programs
             for script in "${script_list[@]}"; do
                 source "$script"
             done
@@ -199,23 +183,16 @@ config_system() {
         script_name=$(basename "$script" .sh)
         echo "$((i + 1)). $script_name"
     done
-
-    # Prompt user for configure script choice
     echo -e "${YELLOW}Which configure script would you like to run?${NC}"
     echo -e "${YELLOW}Enter the script number (e.g., '1,3,5'), 'all' to install all programs, or '0' to exit:${NC}"
     read -p "" script_choice
-
     IFS=',' read -ra selected_indices <<<"$script_choice"
-
     prompt_menu
 }
 
 # Main function
 main() {
-    # Start the installation menu
     start_menu
-
-    # Start the installation menu for a specific distribution
     distro_menu
 }
 
