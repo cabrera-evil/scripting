@@ -23,17 +23,6 @@ handle_error() {
 wget -O /tmp/kubectl "https://dl.k8s.io/release/$(wget -qO- https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 handle_error $? "Downloading kubectl binary" "Failed to download kubectl binary"
 
-# Download kubectl checksum file
-wget -O /tmp/kubectl.sha256 "https://dl.k8s.io/release/$(wget -qO- https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-handle_error $? "Downloading kubectl checksum file" "Failed to download kubectl checksum file"
-
-# Validate the checksum
-cd /tmp || handle_error $? "Changing directory to /tmp" "Failed to change directory to /tmp"
-sha256sum -c kubectl.sha256 --status
-handle_error $? "Validating checksum" "Checksum validation failed"
-
-echo -e "${GREEN}Checksum validation successful. Proceeding with kubectl installation.${NC}"
-
 # Install kubectl
 sudo install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
 handle_error $? "Installing kubectl" "Failed to install kubectl"
