@@ -28,13 +28,18 @@ handle_error $? "apt install neofetch" "Failed to install neofetch"
 
 # Install Git as version controller
 echo -e "${BLUE}Installing Vim...${NC}"
-sudo apt install vim -y
+sudo apt install git git-flow -y
 handle_error $? "apt install vim" "Failed to install vim"
 
 # Install basic development tools
 echo -e "${BLUE}Installing Basic Development Tools...${NC}"
 sudo apt install build-essential -y
 handle_error $? "apt install build-essential" "Failed to install build-essential"
+
+# Install vim as text editor
+echo -e "${BLUE}Installing Vim...${NC}"
+sudo apt install vim -y
+handle_error $? "apt install vim" "Failed to install vim"
 
 # Install xclip as clipboard manager
 echo -e "${BLUE}Installing xclip as clipboard manager...${NC}"
