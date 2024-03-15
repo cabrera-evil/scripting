@@ -26,12 +26,19 @@ handle_error $? "Install alacritty" "Failed to install alacritty"
 
 # Add alacritty to bashrc
 echo -e "${BLUE}Adding alacritty to bashrc...${NC}"
-echo 'alias a="alacritty"' >> ~/.bashrc
+echo 'alias a="alacritty"' >>~/.bashrc
 
 # Set alacritty as default terminal
 echo -e "${BLUE}Setting alacritty as default terminal...${NC}"
 gsettings set org.gnome.desktop.default-applications.terminal exec 'alacritty'
 handle_error $? "Set alacritty as default terminal" "Failed to set alacritty as default terminal"
+
+# If node is installed, install alacritty-themes
+if [ -x "$(command -v node)" ]; then
+    echo -e "${BLUE}Installing alacritty-themes...${NC}"
+    npm install -g alacritty-themes
+    handle_error $? "Install alacritty-themes" "Failed to install alacritty-themes"
+fi
 
 # Copy the bashrc file
 echo -e "${BLUE}Copying the bashrc file...${NC}"
@@ -62,6 +69,6 @@ handle_error $? "Install starship prompt" "Failed to install starship prompt"
 
 # Add starship prompt to bashrc
 echo -e "${BLUE}Adding starship prompt to bashrc...${NC}"
-echo 'eval "$(starship init bash)"' >> ~/.bashrc
+echo 'eval "$(starship init bash)"' >>~/.bashrc
 
 echo -e "${GREEN}Alacritty has been installed successfully!${NC}"
