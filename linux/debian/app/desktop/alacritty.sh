@@ -71,4 +71,31 @@ handle_error $? "Install starship prompt" "Failed to install starship prompt"
 echo -e "${BLUE}Adding starship prompt to bashrc...${NC}"
 echo 'eval "$(starship init bash)"' >>~/.bashrc
 
+# Add old bashrc to new bashrc
+echo -e "${BLUE}Adding old bashrc to new bashrc...${NC}"
+if ! grep -q 'export NVM_DIR="$HOME/.nvm"' ~/.bashrc; then
+    echo -e "${BLUE}Adding NVM_DIR to .bashrc...${NC}"
+    echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc
+fi
+if ! grep -q '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' ~/.bashrc; then
+    echo -e "${BLUE}Adding nvm.sh to .bashrc...${NC}"
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> ~/.bashrc
+fi
+if ! grep -q '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' ~/.bashrc; then
+    echo -e "${BLUE}Adding nvm bash_completion to .bashrc...${NC}"
+    echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.bashrc
+fi
+if ! grep -q 'source <(kubectl completion bash)' ~/.bashrc; then
+    echo -e "${BLUE}Adding kubectl completion to .bashrc...${NC}"
+    echo 'source <(kubectl completion bash)' >> ~/.bashrc
+fi
+if ! grep -q 'PATH=~/.console-ninja/.bin:$PATH' ~/.bashrc; then
+    echo -e "${BLUE}Adding custom PATH to .bashrc...${NC}"
+    echo 'PATH=~/.console-ninja/.bin:$PATH' >> ~/.bashrc
+fi
+if ! grep -q 'PATH="$PATH:/opt/nvim-linux64/bin"' ~/.bashrc; then
+    echo -e "${BLUE}Adding nvim PATH to .bashrc...${NC}"
+    echo 'PATH="$PATH:/opt/nvim-linux64/bin"' >> ~/.bashrc
+fi
+
 echo -e "${GREEN}Alacritty has been installed successfully!${NC}"
