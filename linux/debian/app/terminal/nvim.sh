@@ -21,9 +21,9 @@ handle_error() {
 
 # Downlaod nvim pre-built binary
 echo -e "${BLUE}Downloading nvim pre-built binary...${NC}"
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+wget https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz -O /tmp/nvim-linux64.tar.gz
 sudo rm -rf /opt/nvim
-sudo tar -C /opt -xzf nvim-linux64.tar.gz
+sudo tar -C /opt -xzf /tmp/nvim-linux64.tar.gz
 handle_error $? "Download nvim pre-built binary" "Failed to download nvim pre-built binary"
 
 # Create symbolic link
@@ -34,5 +34,10 @@ handle_error $? "Create symbolic link" "Failed to create symbolic link"
 # Add nvim path to environment
 echo -e "${BLUE}Adding nvim path to environment...${NC}"
 echo "export PATH=\$PATH:/opt/nvim-linux64/bin" >> ~/.bashrc
+
+# Install NvChad
+echo -e "${BLUE}Installing NvChad...${NC}"
+git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
+handle_error $? "Install NvChad" "Failed to install NvChad"
 
 echo -e "${GREEN}nvim has been installed successfully!${NC}"
