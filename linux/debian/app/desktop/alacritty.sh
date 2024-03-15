@@ -33,6 +33,11 @@ echo -e "${BLUE}Setting alacritty as default terminal...${NC}"
 gsettings set org.gnome.desktop.default-applications.terminal exec 'alacritty'
 handle_error $? "Set alacritty as default terminal" "Failed to set alacritty as default terminal"
 
+# Create alacritty config file
+echo -e "${BLUE}Creating alacritty config file...${NC}"
+mkdir -p ~/.config/alacritty
+touch ~/.config/alacritty/alacritty.yml
+
 # If node is installed, install alacritty-themes
 if [ -x "$(command -v node)" ]; then
     echo -e "${BLUE}Installing alacritty-themes...${NC}"
@@ -44,11 +49,6 @@ fi
 echo -e "${BLUE}Copying the bashrc file...${NC}"
 cp ~/.bashrc ~/.bashrc.bak
 handle_error $? "Copy the bashrc file" "Failed to copy the bashrc file"
-
-# Download Oh My Bash
-echo -e "${BLUE}Downloading Oh My Bash...${NC}"
-bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)"
-handle_error $? "Download Oh My Bash" "Failed to download Oh My Bash"
 
 # Download NerdFonts
 echo -e "${BLUE}Downloading NerdFonts...${NC}"
@@ -64,38 +64,21 @@ handle_error $? "Update font cache" "Failed to update font cache"
 
 # Install starship prompt
 echo -e "${BLUE}Installing starship prompt...${NC}"
-curl -fsSL https://starship.rs/install.sh | bash
+curl -fsSL https://starship.rs/install.sh | sh
 handle_error $? "Install starship prompt" "Failed to install starship prompt"
 
 # Add starship prompt to bashrc
 echo -e "${BLUE}Adding starship prompt to bashrc...${NC}"
 echo 'eval "$(starship init bash)"' >>~/.bashrc
 
-# Add old bashrc to new bashrc
-echo -e "${BLUE}Adding old bashrc to new bashrc...${NC}"
-if ! grep -q 'export NVM_DIR="$HOME/.nvm"' ~/.bashrc; then
-    echo -e "${BLUE}Adding NVM_DIR to .bashrc...${NC}"
-    echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc
-fi
-if ! grep -q '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' ~/.bashrc; then
-    echo -e "${BLUE}Adding nvm.sh to .bashrc...${NC}"
-    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> ~/.bashrc
-fi
-if ! grep -q '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' ~/.bashrc; then
-    echo -e "${BLUE}Adding nvm bash_completion to .bashrc...${NC}"
-    echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.bashrc
-fi
-if ! grep -q 'source <(kubectl completion bash)' ~/.bashrc; then
-    echo -e "${BLUE}Adding kubectl completion to .bashrc...${NC}"
-    echo 'source <(kubectl completion bash)' >> ~/.bashrc
-fi
-if ! grep -q 'PATH=~/.console-ninja/.bin:$PATH' ~/.bashrc; then
-    echo -e "${BLUE}Adding custom PATH to .bashrc...${NC}"
-    echo 'PATH=~/.console-ninja/.bin:$PATH' >> ~/.bashrc
-fi
-if ! grep -q 'PATH="$PATH:/opt/nvim-linux64/bin"' ~/.bashrc; then
-    echo -e "${BLUE}Adding nvim PATH to .bashrc...${NC}"
-    echo 'PATH="$PATH:/opt/nvim-linux64/bin"' >> ~/.bashrc
-fi
+# Download Oh My Bash
+echo -e "${BLUE}Downloading Oh My Bash...${NC}"
+bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)"
+handle_error $? "Download Oh My Bash" "Failed to download Oh My Bash"
+
+# Add the old bashrc to the new bashrc
+echo -e "${BLUE}Adding the old bashrc to the new bashrc...${NC}"
+awk '/export NVM_DIR/,0' ~/.bashrc.bak >>~/.bashrc
+handle_error $? "Add the old bashrc to the new bashrc" "Failed to add the old bashrc to the new bashrc"
 
 echo -e "${GREEN}Alacritty has been installed successfully!${NC}"
