@@ -19,8 +19,14 @@ handle_error() {
 }
 
 # Get the email from git config
-email=$(git config user.email)  
+email=$(git config user.email)
 key_name="id_ed25519"
+
+# Throw error if email is not set
+if [ -z "$email" ]; then
+    echo -e "${RED}Error: Git email is not set. Please set it using 'git config --global user.email <email> or run github-user.sh script.${NC}" >&2
+    exit 1
+fi
 
 # Generate SSH key
 ssh-keygen -t ed25519 -C "$email" -f ~/.ssh/$key_name
@@ -31,6 +37,12 @@ eval "$(ssh-agent -s)"
 handle_error $? "ssh-agent" "Failed to start SSH agent"
 ssh-add ~/.ssh/$key_name
 handle_error $? "ssh-add" "Failed to add SSH key to agent"
+
+# Install xclip if not already installed
+if ! command -v xclip &>/dev/null; then
+    sudo apt install xclip -y
+    handle_error $? "apt" "Failed to install xclip"
+fi
 
 # Copy public key to clipboard
 cat ~/.ssh/$key_name.pub | xclip -selection clipboard
@@ -47,9 +59,4 @@ echo -e "${BLUE}The public key has been copied to the clipboard. Please add it t
 read -p "Press Enter to open GitHub SSH settings in your default browser..."
 xdg-open "https://github.com/settings/ssh/new"
 
-# Clone a GitHub repository to test SSH connection
-read -p "Do you want to clone a GitHub repository to test the SSH connection? (y/n): " choice
-if [ "$choice" == "y" ]; then
-    read -p "Enter the repository URL: " repository_url
-    git clone $repository_url
-fi
+echo -e "${GREEN}SSH key has been generated and added to the SSH agent.${NC}"

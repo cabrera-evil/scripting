@@ -20,17 +20,17 @@ handle_error() {
 
 # Get the username from user input
 echo -e "${BLUE}Enter GitHub username:${NC}"
-read github_username
+read username
 
 # Get the user email from user input
 echo -e "${BLUE}Enter GitHub email:${NC}"
-read github_email
+read email
 
 # Gitconfig setup
-git config --global user.name "$github_username"
+git config --global user.name "$username"
 handle_error $? "git config" "Failed to set username"
 
-git config --global user.email "$github_email"
+git config --global user.email "$email"
 handle_error $? "git config" "Failed to set email"
 
-echo -e "${GREEN}Gitconfig setup successfully!${NC}"
+echo -e "${GREEN}GitHub username and email have been set.${NC}"
