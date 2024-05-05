@@ -41,4 +41,10 @@ echo -e "${BLUE}Installing Google Android Studio...${NC}"
 flatpak install flathub com.google.AndroidStudio -y
 handle_error $? "flatpak install" "Failed to install Google Android Studio."
 
+# Export Android Sdk path
+echo -e "${BLUE}Exporting Android Sdk path...${NC}"
+echo "export ANDROID_HOME=$HOME/Android/Sdk" >> ~/.bashrc
+echo "export PATH=\$PATH:\$ANDROID_HOME/emulator" >> ~/.bashrc
+echo "export PATH=\$PATH:\$ANDROID_HOME/platform-tools" >> ~/.bashrc
+
 echo -e "${GREEN}Google Android Studio installation complete!${NC}"

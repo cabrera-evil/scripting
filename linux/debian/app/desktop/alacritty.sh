@@ -24,8 +24,8 @@ echo -e "${BLUE}Installing alacritty...${NC}"
 sudo apt install -y alacritty
 handle_error $? "Install alacritty" "Failed to install alacritty"
 
-# Add alacritty to bashrc
-echo -e "${BLUE}Adding alacritty to bashrc...${NC}"
+# Export alacritty alias to bashrc
+echo -e "${BLUE}Exporting alacritty alias to bashrc...${NC}"
 echo 'alias a="alacritty"' >>~/.bashrc
 
 # Set alacritty as default terminal
