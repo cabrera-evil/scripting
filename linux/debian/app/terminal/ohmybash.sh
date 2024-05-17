@@ -23,7 +23,7 @@ handle_error() {
 echo -e "${BLUE}Downloading NerdFonts...${NC}"
 mkdir -p ~/.local/share/fonts
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/CascadiaCode.zip -O /tmp/CascadiaCode.zip
-unzip /tmp/CascadiaCode.zip -d ~/.local/share/fonts
+unzip -q /tmp/CascadiaCode.zip -d ~/.local/share/fonts
 handle_error $? "Download NerdFonts" "Failed to download NerdFonts"
 
 # Update font cache
