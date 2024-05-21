@@ -19,10 +19,12 @@ handle_error() {
     fi
 }
 
+# Global Variables
+CODE_VERSION=1.89.1-1715060508
 
 # Download Code
 echo -e "${BLUE}Downloading Code...${NC}"
-wget -O /tmp/code.deb "https://az764295.vo.msecnd.net/stable/6445d93c81ebe42c4cbd7a60712e0b17d9463e97/code_1.81.0-1690980880_amd64.deb"
+wget -O /tmp/code.deb "https://az764295.vo.msecnd.net/stable/6445d93c81ebe42c4cbd7a60712e0b17d9463e97/code_${CODE_VERSION}_amd64.deb"
 handle_error $? "wget -O /tmp/code.deb" "Failed to download Code"
 
 # Install Code
