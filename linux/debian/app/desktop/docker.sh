@@ -41,6 +41,11 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt update -y
 
+#Installing Docker Engine
+echo -e "${BLUE}Installing Docker Engine${NC}"
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+handle_error $? "Docker Engine Installation" "Failed to install Docker Engine"
+
 #Download Docker Desktop
 echo -e "${BLUE}Downloading latest version of Docker Desktop${NC}"
 download_url='https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64&_gl=1*1atagp5*_ga*OTA3OTE1NjExLjE2OTY3MTA0NDY.*_ga_XJWPQMJYHQ*MTY5OTA3NDM1NS4zLjEuMTY5OTA3NDM1Ny41OC4wLjA.'
