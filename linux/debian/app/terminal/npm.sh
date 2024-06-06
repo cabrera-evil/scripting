@@ -43,4 +43,9 @@ echo -e "${BLUE}Setting default Node.js version...${NC}"
 nvm use --lts
 handle_error $? "Node.js LTS default version" "Failed to set default Node.js LTS version."
 
+# Install the latest npm version
+echo -e "${BLUE}Installing the latest npm version...${NC}"
+npm install -g npm@latest
+handle_error $? "NPM latest version installation" "Failed to install the latest npm version."
+
 echo -e "${GREEN}NVM installation completed successfully.${NC}"

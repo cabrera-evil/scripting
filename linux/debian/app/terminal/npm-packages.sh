@@ -30,12 +30,6 @@ handle_error $? "PNPM installation" "Failed to install PNPM."
 npm install -g pm2
 handle_error $? "PM2 installation" "Failed to install PM2."
 
-npm install -g ts-node
-handle_error $? "TS-Node installation" "Failed to install TS-Node."
-
-npm install -g typescript
-handle_error $? "TypeScript installation" "Failed to install TypeScript."
-
 npm install -g @nestjs/cli
 handle_error $? "NestJS CLI installation" "Failed to install NestJS CLI."
 
