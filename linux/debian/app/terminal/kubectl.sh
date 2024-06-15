@@ -28,7 +28,7 @@ sudo install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
 handle_error $? "Installing kubectl" "Failed to install kubectl"
 
 # Enable autocompletion with bash
-echo "source <(kubectl completion bash)" >> ~/.bashrc
+echo "source <(kubectl completion bash)" >> ~/.bashrc ~/.zshrc
 handle_error $? "Enabling autocompletion with bash" "Failed to enable autocompletion with bash"
 
 echo -e "${GREEN}kubectl installation completed successfully.${NC}"

@@ -38,7 +38,7 @@ handle_error $? "Install starship prompt" "Failed to install starship prompt"
 
 # Add starship prompt to bashrc
 echo -e "${BLUE}Adding starship prompt to bashrc...${NC}"
-echo 'eval "$(starship init bash)"' >>~/.bashrc
+echo 'eval "$(starship init bash)"' >>~/.bashrc ~/.zshrc
 
 # Download Oh My Bash
 echo -e "${BLUE}Downloading Oh My Bash...${NC}"
@@ -47,5 +47,5 @@ handle_error $? "Download Oh My Bash" "Failed to download Oh My Bash"
 
 # Add the old bashrc to the new bashrc
 echo -e "${BLUE}Adding the old bashrc to the new bashrc...${NC}"
-awk '/export NVM_DIR/,0' ~/.bashrc.bak >>~/.bashrc
+awk '/export NVM_DIR/,0' ~/.bashrc ~/.zshrc.bak >>~/.bashrc ~/.zshrc
 handle_error $? "Add the old bashrc to the new bashrc" "Failed to add the old bashrc to the new bashrc"
