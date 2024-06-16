@@ -33,11 +33,12 @@ handle_error $? "Create symbolic link" "Failed to create symbolic link"
 
 # Add nvim path to environment
 echo -e "${BLUE}Adding nvim path to environment...${NC}"
-echo "export PATH=\$PATH:/opt/nvim-linux64/bin" >> ~/.bashrc ~/.zshrc
+echo "export PATH=\$PATH:/opt/nvim-linux64/bin" >>~/.bashrc
 
 # Export nvim alias to bashrc (overwrite the vim alias)
 echo -e "${BLUE}Exporting nvim alias to bashrc...${NC}"
-echo 'alias vim="nvim"' >>~/.bashrc ~/.zshrc
+echo 'alias vim="nvim"' >>~/.bashrc
+echo 'alias vi="nvim"' >>~/.bashrc
 
 # Install NvChad
 echo -e "${BLUE}Installing NvChad...${NC}"

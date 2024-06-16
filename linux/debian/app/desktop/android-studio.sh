@@ -43,7 +43,7 @@ handle_error $? "flatpak install" "Failed to install Google Android Studio."
 
 # Export Android Sdk path
 echo -e "${BLUE}Exporting Android Sdk path...${NC}"
-cat << 'EOF' | tee -a ~/.bashrc ~/.zshrc
+cat <<'EOF' | tee -a ~/.bashrc
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=\$PATH:\$ANDROID_HOME/emulator
 export PATH=\$PATH:\$ANDROID_HOME/platform-tools
