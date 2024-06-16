@@ -8,12 +8,18 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-distro_name=""
-distro_path=""
+distro_name=$(. /etc/os-release && echo "$ID")
+distro_path="linux/$distro_name"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# If the distro is not supported, exit
+if [ ! -d "$script_dir/$distro_path" ]; then
+    echo -e "${RED}Error: $distro_name is not supported.${NC}"
+    exit 1
+fi
+
 # Print distro logo ASCII art
-print_linux() {
+header() {
     cat <<"EOF"
                                  ,        ,
                                 /(        )`
@@ -38,9 +44,10 @@ EOF
 }
 
 # Function to print header
-print_header() {
+title() {
     clear
     printf "${BLUE}%s${NC}\n" "$1"
+    header
 }
 
 # Function to handle errors
@@ -50,39 +57,10 @@ handle_error() {
     exit "$1"
 }
 
-# Function to start the installation menu
-start_menu() {
-    print_header "Welcome to the installation menu."
-    print_linux
-    printf "Select your Linux distribution:${NC}\n"
-    distros=(linux/*)
-    num_distros=${#distros[@]}
-    for ((i=0; i<num_distros; i++)); do
-        distro_name=$(basename "${distros[i]}")
-        printf "%d. %s${NC}\n" "$((i+1))" "$distro_name"
-    done
-    printf "0. Exit${NC}\n"
-    read -p "$(printf "Enter your choice (0-%d):${NC} " "$num_distros")" distro_choice
-    case $distro_choice in
-    0)
-        print_header "Exiting the installation menu..."
-        exit 0
-        ;;
-    *)
-        if [ "$distro_choice" -ge 1 ] && [ "$distro_choice" -le "$num_distros" ]; then
-            distro_name=$(basename "${distros[distro_choice - 1]}")
-            distro_path="linux/$distro_name"
-        else
-            handle_error 1 "Invalid choice" "Please enter a valid choice"
-        fi
-        ;;
-    esac
-}
-
 # Function for the installation menu for a specific distribution
-distro_menu() {
+menu() {
     while true; do
-        print_header "Welcome to the installation menu for $distro_name."
+        title "Welcome to the installation menu for $distro_name."
         printf "What would you like to install?${NC}\n"
         printf "1. Update system${NC}\n"
         printf "2. Terminal apps only${NC}\n"
@@ -101,7 +79,7 @@ distro_menu() {
             ;;
         5) config_system ;;
         0)
-            print_header "Exiting the installation menu for $distro_name..."
+            title "Exiting the installation menu for $distro_name..."
             break
             ;;
         *)
@@ -112,45 +90,31 @@ distro_menu() {
     done
 }
 
-# Helper functions
-
 # Function to update the system
 update_system() {
     $script_dir/$distro_path/config/update.sh
 }
 
-# Function to install terminal apps
-install_terminal_apps() {
-    print_header "Available terminal programs:"
-    script_list=($script_dir/$distro_path/app/terminal/*.sh)
+# Generic function to handle installation and configuration
+handle_scripts() {
+    local action_type=$1
+    local script_subdir=$2
+    local script_desc=$3
+    title "Available $script_desc scripts:"
+    script_list=($script_dir/$distro_path/$script_subdir/*.sh)
     for ((i = 0; i < ${#script_list[@]}; i++)); do
-        app_script="${script_list[$i]}"
-        app_name=$(basename "$app_script" .sh)
-        echo "$((i + 1)). $app_name"
+        script="${script_list[$i]}"
+        script_name=$(basename "$script" .sh)
+        echo "$((i + 1)). $script_name"
     done
-    echo -e "${YELLOW}Which terminal programs would you like to install?${NC}"
-    echo -e "${YELLOW}Enter the program numbers separated by commas (e.g., '1,3,5'), 'all' to install all programs, or '0' to exit:${NC}"
+    echo -e "${YELLOW}Which $script_desc scripts would you like to $action_type?${NC}"
+    echo -e "${YELLOW}Enter the script numbers separated by commas (e.g., '1,3,5'), 'all' to select all scripts, or '0' to exit:${NC}"
     read -p "" script_choice
     IFS=',' read -ra selected_indices <<<"$script_choice"
     prompt_menu
 }
 
-# Function to install desktop programs
-install_desktop_programs() {
-    print_header "Available desktop programs:"
-    script_list=($script_dir/$distro_path/app/desktop/*.sh)
-    for ((i = 0; i < ${#script_list[@]}; i++)); do
-        app_script="${script_list[$i]}"
-        app_name=$(basename "$app_script" .sh)
-        echo "$((i + 1)). $app_name"
-    done
-    echo -e "${YELLOW}Which desktop programs would you like to install?${NC}"
-    echo -e "${YELLOW}Enter the program numbers separated by commas (e.g., '1,3,5'), 'all' to install all programs, or '0' to exit:${NC}"
-    read -p "" script_choice
-    IFS=',' read -ra selected_indices <<<"$script_choice"
-    prompt_menu
-}
-
+# Function to prompt the user to select a program
 prompt_menu() {
     for index in "${selected_indices[@]}"; do
         if [[ "$index" == "0" ]]; then
@@ -174,26 +138,24 @@ prompt_menu() {
     done
 }
 
+# Function to install terminal programs
+install_terminal_apps() {
+    handle_scripts "install" "app/terminal" "terminal program"
+}
+
+# Function to install desktop programs
+install_desktop_programs() {
+    handle_scripts "install" "app/desktop" "desktop program"
+}
+
 # Function to configure the system
 config_system() {
-    print_header "Available configure scripts:"
-    script_list=($script_dir/$distro_path/config/*.sh)
-    for ((i = 0; i < ${#script_list[@]}; i++)); do
-        script="${script_list[$i]}"
-        script_name=$(basename "$script" .sh)
-        echo "$((i + 1)). $script_name"
-    done
-    echo -e "${YELLOW}Which configure script would you like to run?${NC}"
-    echo -e "${YELLOW}Enter the script number (e.g., '1,3,5'), 'all' to install all programs, or '0' to exit:${NC}"
-    read -p "" script_choice
-    IFS=',' read -ra selected_indices <<<"$script_choice"
-    prompt_menu
+    handle_scripts "configure" "config" "configure"
 }
 
 # Main function
 main() {
-    start_menu
-    distro_menu
+    menu
 }
 
 # Main loop
