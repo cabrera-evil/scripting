@@ -120,20 +120,37 @@ prompt_menu() {
         if [[ "$index" == "0" ]]; then
             echo -e "${BLUE}Nothing to do...${NC}"
             break
-        fi
-        if [[ "$script_choice" == "all" ]]; then
+        elif [[ "$script_choice" == "all" ]]; then
             for script in "${script_list[@]}"; do
                 source "$script"
             done
-        elif [[ "$index" =~ ^[0-9]+$ ]]; then
+            break
+        fi
+        if [[ "$index" =~ ^[0-9]+$ ]]; then
             selected_script="${script_list[$((index - 1))]}"
             if [[ -n $selected_script ]]; then
                 source "$selected_script"
             else
                 handle_error 1 "Invalid choice" "Please select a valid program number."
             fi
+        elif [[ "$index" =~ ^[0-9]+-[0-9]+$ ]]; then
+            IFS='-' read -ra range <<<"$index"
+            start=${range[0]}
+            end=${range[1]}
+            if [[ "$start" -le "$end" ]]; then
+                for ((i = start; i <= end; i++)); do
+                    selected_script="${script_list[$((i - 1))]}"
+                    if [[ -n $selected_script ]]; then
+                        source "$selected_script"
+                    else
+                        handle_error 1 "Invalid range" "Please select a valid range of program numbers."
+                    fi
+                done
+            else
+                handle_error 1 "Invalid range" "The start of the range cannot be greater than the end."
+            fi
         else
-            handle_error 1 "Invalid choice" "Please enter a valid program number or 'all'."
+            handle_error 1 "Invalid choice" "Please enter a valid program number, range, or 'all'."
         fi
     done
 }
