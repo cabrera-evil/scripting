@@ -70,14 +70,14 @@ menu() {
         printf "0. Exit${NC}\n"
         read -p "$(printf "Enter your choice (1, 2, 3, etc):${NC} ")" choice
         case $choice in
-        1) update_system ;;
-        2) install_terminal_apps ;;
-        3) install_desktop_programs ;;
+        1) update ;;
+        2) show_terminal ;;
+        3) show_desktop ;;
         4)
-            install_terminal_apps
-            install_desktop_programs
+            show_terminal
+            show_desktop
             ;;
-        5) config_system ;;
+        5) show_config ;;
         0)
             title "Exiting the installation menu for $distro_name..."
             break
@@ -91,7 +91,7 @@ menu() {
 }
 
 # Function to update the system
-update_system() {
+update() {
     $script_dir/$distro_path/config/update.sh
 }
 
@@ -111,11 +111,11 @@ handle_scripts() {
     echo -e "${YELLOW}Enter the script numbers separated by commas (e.g., '1,3,5'), 'all' to select all scripts, or '0' to exit:${NC}"
     read -p "" script_choice
     IFS=',' read -ra selected_indices <<<"$script_choice"
-    prompt_menu
+    install_selected
 }
 
 # Function to prompt the user to select a program
-prompt_menu() {
+install_selected() {
     for index in "${selected_indices[@]}"; do
         if [[ "$index" == "0" ]]; then
             echo -e "${BLUE}Nothing to do...${NC}"
@@ -156,17 +156,17 @@ prompt_menu() {
 }
 
 # Function to install terminal programs
-install_terminal_apps() {
+show_terminal() {
     handle_scripts "install" "app/terminal" "terminal program"
 }
 
 # Function to install desktop programs
-install_desktop_programs() {
+show_desktop() {
     handle_scripts "install" "app/desktop" "desktop program"
 }
 
 # Function to configure the system
-config_system() {
+show_config() {
     handle_scripts "configure" "config" "configure"
 }
 
