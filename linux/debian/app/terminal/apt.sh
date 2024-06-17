@@ -22,5 +22,5 @@ handle_error() {
 # Install packages
 echo -e "${BLUE}Installing packages...${NC}"
 sudo apt update -y
-sudo apt install -y htop neofetch git git-flow vim build-essential xclip unzip unrar numix-icon-theme-circle tmux ncdu trash-cli ranger zsh
+sudo apt install -y htop neofetch git git-flow vim build-essential xclip unzip unrar tmux ncdu trash-cli ranger zsh bluez
 handle_error $? "apt install packages" "Failed to install packages"
