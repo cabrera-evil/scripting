@@ -29,6 +29,12 @@ echo -e "${BLUE}Installing microk8s...${NC}"
 sudo snap install microk8s --classic
 handle_error $? "snap install microk8s" "Failed to install microk8s"
 
+# Create microk8s cache dir
+echo -e "${BLUE}Creating microk8s cache dir...${NC}"
+mkdir -p $HOME/.kube
+chmod 0700 $HOME/.kube
+handle_error $? "mkdir" "Failed to create microk8s cache dir"
+
 # Add user to microk8s group
 echo -e "${BLUE}Adding user to microk8s group...${NC}"
 sudo usermod -aG microk8s $USER
@@ -43,12 +49,6 @@ handle_error $? "newgrp" "Failed to reload user groups"
 echo -e "${BLUE}Waiting for microk8s to start...${NC}"
 microk8s status --wait-ready
 handle_error $? "microk8s status" "Failed to start microk8s"
-
-# Create microk8s cache dir
-echo -e "${BLUE}Creating microk8s cache dir...${NC}"
-mkdir -p $HOME/.kube
-chmod 0700 $HOME/.kube
-handle_error $? "mkdir" "Failed to create microk8s cache dir"
 
 # Enable microk8s services
 echo -e "${BLUE}Enabling microk8s services...${NC}"
