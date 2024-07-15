@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Colors for terminal output
 RED='\e[0;31m'
@@ -49,6 +49,11 @@ handle_error $? "newgrp" "Failed to reload user groups"
 echo -e "${BLUE}Waiting for microk8s to start...${NC}"
 microk8s status --wait-ready
 handle_error $? "microk8s status" "Failed to start microk8s"
+
+# Export kubeconfig
+echo -e "${BLUE}Exporting kubeconfig...${NC}"
+microk8s kubectl config view --raw >$HOME/.kube/config
+handle_error $? "microk8s kubectl config view" "Failed to export kubeconfig"
 
 # Enable microk8s services
 echo -e "${BLUE}Enabling microk8s services...${NC}"
