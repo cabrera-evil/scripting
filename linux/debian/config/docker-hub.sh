@@ -18,9 +18,8 @@ handle_error() {
     fi
 }
 
-# Enable keyring for docker hub
-# Install the necessary package to use the pass credential store
-sudo dnf install -y pass gnupg2
+# Install required packages
+sudo apt install -y pass gnupg2
 handle_error $? "Installation" "Failed to install required packages."
 
 # Generate a new GPG key
