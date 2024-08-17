@@ -51,11 +51,32 @@ title() {
 }
 
 # Function to handle errors
-handle_error() {
+handle_not_found() {
     echo -e "${RED}Error: $2 - $3"
     read -n 1 -s -r -p "Press any key to continue..."
     exit "$1"
 }
+
+# Function to exit the script
+function ctrl_c() {
+	echo -e "\n\n${RED}[!] Exiting..."
+	exit 1
+}
+
+# Error handling function
+function handle_error() {
+	local exit_code=$1
+	local command="${BASH_COMMAND}"
+
+	if [ $exit_code -ne 0 ]; then
+		echo -e "\n${RED}[-] Error: Command \"${command}\" failed with exit code ${exit_code}\n${NC}"
+		exit 1
+	fi
+}
+
+# Trap events
+trap ctrl_c INT
+trap 'handle_error $?' ERR
 
 # Function for the installation menu for a specific distribution
 menu() {
@@ -83,7 +104,7 @@ menu() {
             break
             ;;
         *)
-            handle_error 1 "Invalid choice" "Please enter 1, 2, 3, etc..."
+            handle_not_found 1 "Invalid choice" "Please enter 1, 2, 3, etc..."
             ;;
         esac
         read -n 1 -s -r -p "Press any key to continue..."
@@ -131,7 +152,7 @@ install_selected() {
             if [[ -n $selected_script ]]; then
                 source "$selected_script"
             else
-                handle_error 1 "Invalid choice" "Please select a valid program number."
+                handle_not_found 1 "Invalid choice" "Please select a valid program number."
             fi
         elif [[ "$index" =~ ^[0-9]+-[0-9]+$ ]]; then
             IFS='-' read -ra range <<<"$index"
@@ -143,14 +164,14 @@ install_selected() {
                     if [[ -n $selected_script ]]; then
                         source "$selected_script"
                     else
-                        handle_error 1 "Invalid range" "Please select a valid range of program numbers."
+                        handle_not_found 1 "Invalid range" "Please select a valid range of program numbers."
                     fi
                 done
             else
-                handle_error 1 "Invalid range" "The start of the range cannot be greater than the end."
+                handle_not_found 1 "Invalid range" "The start of the range cannot be greater than the end."
             fi
         else
-            handle_error 1 "Invalid choice" "Please enter a valid program number, range, or 'all'."
+            handle_not_found 1 "Invalid choice" "Please enter a valid program number, range, or 'all'."
         fi
     done
 }
