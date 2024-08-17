@@ -10,16 +10,40 @@ NC='\e[0m' # No Color
 # Define variables
 distro_name=$(. /etc/os-release && echo "$ID")
 distro_path="linux/$distro_name"
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# If the distro is not supported, exit
-if [ ! -d "$script_dir/$distro_path" ]; then
-    echo -e "${RED}Error: $distro_name is not supported.${NC}"
+# Function to exit the script
+function ctrl_c() {
+    echo -e "\n\n${RED}[!] Exiting..."
     exit 1
-fi
+}
 
-# Print distro logo ASCII art
-header() {
+# Error handling function
+function handle_error() {
+    local exit_code=$1
+    local command="${BASH_COMMAND}"
+
+    if [ $exit_code -ne 0 ]; then
+        echo -e "\n${RED}[-] Error: Command \"${command}\" failed with exit code ${exit_code}\n${NC}"
+        exit 1
+    fi
+}
+
+# Trap events
+trap ctrl_c INT
+trap 'handle_error $?' ERR
+
+# Function to handle not found errors
+handle_not_found() {
+    echo -e "${RED}Error: $2 - $3"
+    read -n 1 -s -r -p "Press any key to continue..."
+    exit "$1"
+}
+
+# Function to print header
+title() {
+    clear
+    echo -e "${BLUE}$1${NC}"
     cat <<"EOF"
                                  ,        ,
                                 /(        )`
@@ -43,53 +67,18 @@ header() {
 EOF
 }
 
-# Function to print header
-title() {
-    clear
-    printf "${BLUE}%s${NC}\n" "$1"
-    header
-}
-
-# Function to handle errors
-handle_not_found() {
-    echo -e "${RED}Error: $2 - $3"
-    read -n 1 -s -r -p "Press any key to continue..."
-    exit "$1"
-}
-
-# Function to exit the script
-function ctrl_c() {
-	echo -e "\n\n${RED}[!] Exiting..."
-	exit 1
-}
-
-# Error handling function
-function handle_error() {
-	local exit_code=$1
-	local command="${BASH_COMMAND}"
-
-	if [ $exit_code -ne 0 ]; then
-		echo -e "\n${RED}[-] Error: Command \"${command}\" failed with exit code ${exit_code}\n${NC}"
-		exit 1
-	fi
-}
-
-# Trap events
-trap ctrl_c INT
-trap 'handle_error $?' ERR
-
 # Function for the installation menu for a specific distribution
 menu() {
     while true; do
         title "Welcome to the installation menu for $distro_name."
-        printf "What would you like to install?${NC}\n"
-        printf "1. Update system${NC}\n"
-        printf "2. Terminal apps only${NC}\n"
-        printf "3. Desktop programs only${NC}\n"
-        printf "4. Terminal and desktop apps${NC}\n"
-        printf "5. Configure system${NC}\n"
-        printf "0. Exit${NC}\n"
-        read -p "$(printf "Enter your choice (1, 2, 3, etc):${NC} ")" choice
+        echo "What would you like to install?"
+        echo "1. Update system"
+        echo "2. Terminal apps only"
+        echo "3. Desktop programs only"
+        echo "4. Terminal and desktop apps"
+        echo "5. Configure system"
+        echo "0. Exit"
+        read -p "$(echo "Enter your choice (1, 2, 3, etc): ")" choice
         case $choice in
         1) update ;;
         2) show_terminal ;;
@@ -113,7 +102,7 @@ menu() {
 
 # Function to update the system
 update() {
-    $script_dir/$distro_path/config/update.sh
+    $dir/$distro_path/config/update.sh
 }
 
 # Generic function to handle installation and configuration
@@ -122,7 +111,7 @@ handle_scripts() {
     local script_subdir=$2
     local script_desc=$3
     title "Available $script_desc scripts:"
-    script_list=($script_dir/$distro_path/$script_subdir/*.sh)
+    script_list=($dir/$distro_path/$script_subdir/*.sh)
     for ((i = 0; i < ${#script_list[@]}; i++)); do
         script="${script_list[$i]}"
         script_name=$(basename "$script" .sh)
@@ -193,6 +182,10 @@ show_config() {
 
 # Main function
 main() {
+    if [ ! -d "$dir/$distro_path" ]; then
+        echo -e "${RED}Error: $distro_name is not supported.${NC}"
+        exit 1
+    fi
     menu
 }
 
