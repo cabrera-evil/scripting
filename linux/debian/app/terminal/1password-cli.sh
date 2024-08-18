@@ -9,11 +9,11 @@ NC='\e[0m' # No Color
 
 # Download 1Password CLI
 echo -e "${BLUE}Downloading 1Password CLI...${NC}"
-wget -O /tmp/op.deb "https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.0/op_linux_amd64_v2.30.0.zip"
+wget -O /tmp/op.zip "https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.0/op_linux_amd64_v2.30.0.zip"
 
 # Decompress the downloaded file
 echo -e "${BLUE}Decompressing the downloaded file...${NC}"
-unzip /tmp/op.deb -d /tmp/op-dir
+unzip /tmp/op.zip -d /tmp/op-dir
 
 # Install 1Password CLI
 echo -e "${BLUE}Installing 1Password CLI...${NC}"
