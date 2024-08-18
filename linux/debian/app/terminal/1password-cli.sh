@@ -19,5 +19,11 @@ unzip /tmp/op.deb -d /tmp/op-dir
 echo -e "${BLUE}Installing 1Password CLI...${NC}"
 sudo mv /tmp/op-dir/op /usr/local/bin
 
+# Set permissions
+echo -e "${BLUE}Setting permissions...${NC}"
+sudo groupadd -f onepassword-cli && \
+sudo chgrp onepassword-cli /usr/local/bin/op && \
+sudo chmod g+s /usr/local/bin/op
+
 echo -e "${GREEN}1Password CLI installation completed successfully.${NC}"
 
