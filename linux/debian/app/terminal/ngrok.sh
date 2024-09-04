@@ -23,4 +23,4 @@ sudo mv /tmp/ngrok /usr/local/bin/ngrok
 echo -e "${BLUE}Making ngrok executable...${NC}"
 sudo chmod +x /usr/local/bin/ngrok
 
-echo -e "${GREEN}ngrok installation complete!${NC}"
+echo -e "${GREEN}Ngrok installation complete!${NC}"

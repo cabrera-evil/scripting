@@ -27,10 +27,12 @@ flatpak install flathub com.google.AndroidStudio -y
 
 # Export Android Sdk path
 echo -e "${BLUE}Exporting Android Sdk path...${NC}"
-cat <<'EOF' | tee -a ~/.bashrc
+if ! grep -q "ANDROID_HOME" ~/.bashrc; then
+    cat <<'EOF' | tee -a ~/.bashrc
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=\$PATH:\$ANDROID_HOME/emulator
 export PATH=\$PATH:\$ANDROID_HOME/platform-tools
 EOF
+fi
 
 echo -e "${GREEN}Google Android Studio installation complete!${NC}"

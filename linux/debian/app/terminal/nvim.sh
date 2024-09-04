@@ -23,11 +23,14 @@ echo "export PATH=\$PATH:/opt/nvim-linux64/bin" >>~/.bashrc
 
 # Export nvim alias to bashrc (overwrite the vim alias)
 echo -e "${BLUE}Exporting nvim alias to bashrc...${NC}"
-echo 'alias vim="nvim"' >>~/.bashrc
-echo 'alias vi="nvim"' >>~/.bashrc
-
+if ! grep -q "alias vim=\"nvim\"" ~/.bashrc; then
+    echo 'alias vim="nvim"' >>~/.bashrc
+fi
+if ! grep -q "alias vi=\"nvim\"" ~/.bashrc; then
+    echo 'alias vi="nvim"' >>~/.bashrc
+fi
 # Install NvChad
 echo -e "${BLUE}Installing NvChad...${NC}"
 git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
 
-echo -e "${GREEN}nvim has been installed successfully!${NC}"
+echo -e "${GREEN}Nvim has been installed successfully!${NC}"
