@@ -18,6 +18,6 @@ chmod 0700 $HOME/.kube
 
 # Export kubeconfig
 echo -e "${BLUE}Exporting kubeconfig...${NC}"
-microk8s kubectl config view --raw >$HOME/.kube/config-dev
+microk8s kubectl config view --raw >$HOME/.kube/config-microk8s
 
 echo -e "${GREEN}Microk8s kubeconfig exported successfully!${NC}"
