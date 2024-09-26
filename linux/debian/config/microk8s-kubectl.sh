@@ -14,7 +14,7 @@ microk8s status --wait-ready
 # Create microk8s cache dir
 echo -e "${BLUE}Creating microk8s cache dir...${NC}"
 mkdir -p $HOME/.kube
-chmod 0700 $HOME/.kube
+chmod 700 $HOME/.kube
 
 # Export kubeconfig
 echo -e "${BLUE}Exporting kubeconfig...${NC}"
