@@ -18,6 +18,7 @@ packages=(
     lsd
     ncdu
     neofetch
+    net-tools
     ranger
     resolvconf
     rsync
