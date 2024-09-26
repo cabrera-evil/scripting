@@ -24,6 +24,6 @@ fi
 
 # Install WhatsApp via Flatpak
 echo -e "${BLUE}Installing WhatsApp...${NC}"
-flatpak install flathub io.github.mimbrero.WhatsAppDesktop -y
+sudo flatpak install flathub io.github.mimbrero.WhatsAppDesktop -y
 
 echo -e "${GREEN}WhatsApp installation complete!${NC}"

@@ -23,7 +23,7 @@ fi
 
 # Install Google Android Studio via Flatpak
 echo -e "${BLUE}Installing Google Android Studio...${NC}"
-flatpak install flathub com.google.AndroidStudio -y
+sudo flatpak install flathub com.google.AndroidStudio -y
 
 # Export Android Sdk path
 echo -e "${BLUE}Exporting Android Sdk path...${NC}"

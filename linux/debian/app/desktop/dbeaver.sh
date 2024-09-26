@@ -24,6 +24,6 @@ fi
 
 # Install DBeaverCommunity via Flatpak
 echo -e "${BLUE}Installing DBeaverCommunity...${NC}"
-flatpak install flathub io.dbeaver.DBeaverCommunity -y
+sudo flatpak install flathub io.dbeaver.DBeaverCommunity -y
 
 echo -e "${GREEN}DBeaverCommunity installation complete!${NC}"

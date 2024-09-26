@@ -24,6 +24,6 @@ fi
 
 # Install Spotify via Flatpak
 echo -e "${BLUE}Installing Spotify...${NC}"
-flatpak install flathub com.spotify.Client -y
+sudo flatpak install flathub com.spotify.Client -y
 
 echo -e "${GREEN}Spotify installation complete!${NC}"

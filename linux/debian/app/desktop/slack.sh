@@ -24,6 +24,6 @@ fi
 
 # Install Slack via Flatpak
 echo -e "${BLUE}Installing Slack...${NC}"
-flatpak install flathub com.slack.Slack -y
+sudo flatpak install flathub com.slack.Slack -y
 
 echo -e "${GREEN}Slack installation complete!${NC}"

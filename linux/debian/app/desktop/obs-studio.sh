@@ -24,6 +24,6 @@ fi
 
 # Install OBS Studio via Flatpak
 echo -e "${BLUE}Installing OBS Studio...${NC}"
-flatpak install flathub com.obsproject.Studio -y
+sudo flatpak install flathub com.obsproject.Studio -y
 
 echo -e "${GREEN}OBS Studio installation complete!${NC}"

@@ -38,9 +38,13 @@ sudo apt --fix-broken install -y
 # Update flatpak packages if flatpak is installed
 if [ -x "$(command -v flatpak)" ]; then
     echo -e "${BLUE}Updating Flatpak Packages${NC}"
-    if flatpak update --assumeyes; then
-        echo "Flatpak updates completed"
-    fi
+    sudo flatpak update --assumeyes
+fi
+
+# Update snap packages if snap is installed
+if [ -x "$(command -v snap)" ]; then
+    echo -e "${BLUE}Updating Snap Packages${NC}"
+    sudo snap refresh
 fi
 
 echo -e "${GREEN}System updates and package management completed successfully!${NC}"

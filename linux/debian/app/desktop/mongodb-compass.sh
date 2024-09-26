@@ -24,6 +24,6 @@ fi
 
 # Install MongoDB Compass via Flatpak
 echo -e "${BLUE}Installing MongoDB Compass...${NC}"
-flatpak install flathub com.mongodb.Compass -y
+sudo flatpak install flathub com.mongodb.Compass -y
 
 echo -e "${GREEN}MongoDB Compass installation complete!${NC}"

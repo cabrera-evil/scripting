@@ -18,6 +18,6 @@ sudo apt install gnome-software-plugin-flatpak -y
 
 # Add flathub repository
 echo -e "${BLUE}Adding flathub repository${NC}"
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 
-echo -e "${GREEN}Flatpak installation complete!${NC}"
+echo -e "${GREEN}sudo flatpak installation complete!${NC}"

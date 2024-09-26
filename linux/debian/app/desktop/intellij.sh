@@ -24,6 +24,6 @@ fi
 
 # Install Intellij via Flatpak
 echo -e "${BLUE}Installing Intellij...${NC}"
-flatpak install flathub com.jetbrains.IntelliJ-IDEA-Ultimate -y
+sudo flatpak install flathub com.jetbrains.IntelliJ-IDEA-Ultimate -y
 
 echo -e "${GREEN}Intellij installation complete!${NC}"

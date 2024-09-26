@@ -24,6 +24,6 @@ fi
 
 # Install Discord via Flatpak
 echo -e "${BLUE}Installing Discord...${NC}"
-flatpak install flathub com.discordapp.Discord -y
+sudo flatpak install flathub com.discordapp.Discord -y
 
 echo -e "${GREEN}Discord installation complete!${NC}"
