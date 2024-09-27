@@ -11,6 +11,7 @@ NC='\e[0m' # No Color
 plugins=(
     dns
     dashboard
+    cert-manager
     helm
     hostpath-storage
     ingress
