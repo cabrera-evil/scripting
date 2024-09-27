@@ -12,7 +12,6 @@ plugins=(
     dns
     dashboard
     cert-manager
-    helm
     hostpath-storage
     ingress
 )
