@@ -23,12 +23,8 @@ microk8s status --wait-ready
 # Enable microk8s plugins
 echo -e "${BLUE}Enabling microk8s plugins...${NC}"
 for plugin in "${plugins[@]}"; do
-    if microk8s enable "$plugin"; then
-        echo -e "${GREEN}$plugin enabled successfully!${NC}"
-    else
-        echo -e "${RED}Failed to enable $plugin${NC}"
-        exit 1
-    fi
+    microk8s enable "$plugin"
+    echo -e "${GREEN}$plugin enabled successfully!${NC}"
 done
 
 echo -e "${GREEN}All Microk8s plugins enabled successfully!${NC}"

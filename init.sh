@@ -14,7 +14,7 @@ dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Function to exit the script
 function ctrl_c() {
-    echo -e "\n\n${RED}[!] Exiting..."
+    echo -e "\n\n${RED}Exiting..."
     exit 1
 }
 
@@ -24,7 +24,7 @@ function handle_error() {
     local command="${BASH_COMMAND}"
 
     if [ $exit_code -ne 0 ]; then
-        echo -e "\n${RED}[-] Error: Command \"${command}\" failed with exit code ${exit_code}\n${NC}"
+        echo -e "\n${RED}Error: Command \"${command}\" failed with exit code ${exit_code}\n${NC}"
         exit 1
     fi
 }
