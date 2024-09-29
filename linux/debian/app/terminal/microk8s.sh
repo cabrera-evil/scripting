@@ -19,8 +19,4 @@ sudo snap install microk8s --classic
 echo -e "${BLUE}Adding user to microk8s group...${NC}"
 sudo usermod -aG microk8s $USER
 
-# Reload user groups
-echo -e "${BLUE}Reloading user groups...${NC}"
-newgrp microk8s
-
 echo -e "${GREEN}Microk8s installed successfully!${NC}"

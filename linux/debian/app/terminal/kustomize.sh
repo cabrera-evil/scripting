@@ -14,7 +14,6 @@ wget -O /tmp/kustomize_installer "https://raw.githubusercontent.com/kubernetes-s
 # Install Kustomize
 echo -e "${BLUE}Installing Kustomize...${NC}"
 chmod +x /tmp/kustomize_installer
-/tmp/kustomize_installer
 
 # Moving Kustomize to /usr/local/bin
 echo -e "${BLUE}Moving Kustomize to /usr/local/bin...${NC}"
