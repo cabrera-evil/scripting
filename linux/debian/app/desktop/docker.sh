@@ -6,9 +6,6 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-# Global Variables
-DOCKER_VERSION=4.30.0
-
 # Uninstall docker desktop
 echo -e "${BLUE}Cleaning old installations${NC}"
 sudo apt purge --remove docker-desktop -y
@@ -42,7 +39,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 
 # Download Docker Desktop
 echo -e "${BLUE}Downloading latest version of Docker Desktop${NC}"
-wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/149282/docker-desktop-${DOCKER_VERSION}-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64"
+wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/167172/docker-desktop-amd64.deb"
 
 # Install The Downloaded Package
 echo -e "${BLUE}Installing Docker Desktop${NC}"
