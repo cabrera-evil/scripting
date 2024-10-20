@@ -7,9 +7,12 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
+
 # Download ngrok
 echo -e "${BLUE}Downloading ngrok...${NC}"
-wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -O /tmp/ngrok.zip
+wget -O /tmp/ngrok.zip "$URL"
 
 # Unzip ngrok
 echo -e "${BLUE}Unzipping ngrok...${NC}"

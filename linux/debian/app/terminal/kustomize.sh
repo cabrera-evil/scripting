@@ -7,9 +7,12 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
+
 # Download Kustomize
 echo -e "${BLUE}Downloading Kustomize...${NC}"
-wget -O /tmp/kustomize_installer "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
+wget -O /tmp/kustomize_installer "$URL"
 
 # Install Kustomize
 echo -e "${BLUE}Installing Kustomize...${NC}"

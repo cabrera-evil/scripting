@@ -7,9 +7,12 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://get.helm.sh/helm-v3.15.2-linux-amd64.tar.gz"
+
 # Download helm binary
 echo -e "${BLUE}Downloading Helm...${NC}"
-wget -O /tmp/helm "https://get.helm.sh/helm-v3.15.2-linux-amd64.tar.gz"
+wget -O /tmp/helm "$URL"
 
 # Install helm
 echo -e "${BLUE}Installing Helm...${NC}"

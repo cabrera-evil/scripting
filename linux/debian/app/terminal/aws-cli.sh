@@ -7,9 +7,12 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+
 # Download AWS CLI installer
 echo -e "${BLUE}Downloading AWS CLI installer...${NC}"
-wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -O /tmp/awscliv2.zip
+wget -O /tmp/awscliv2.zip "$URL"
 
 # Unzip the installer
 echo -e "${BLUE}Unzipping AWS CLI installer...${NC}"

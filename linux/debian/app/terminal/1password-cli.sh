@@ -7,9 +7,12 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.0/op_linux_amd64_v2.30.0.zip"
+
 # Download 1Password CLI
 echo -e "${BLUE}Downloading 1Password CLI...${NC}"
-wget -O /tmp/op.zip "https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.0/op_linux_amd64_v2.30.0.zip"
+wget -O /tmp/op.zip "$URL"
 
 # Decompress the downloaded file
 echo -e "${BLUE}Decompressing the downloaded file...${NC}"
