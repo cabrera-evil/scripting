@@ -7,23 +7,15 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# If Flatpak is not installed, install it
-if ! [ -x "$(command -v flatpak)" ]; then
-    # Installing flatpak
-    echo -e "${BLUE}Installing flatpak${NC}"
-    sudo apt install flatpak -y
+# Define variables
+URL="https://downloads.mongodb.com/compass/mongodb-compass_1.44.5_amd64.deb"
 
-    # Install flatpak plugin for gnome software
-    echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
-    sudo apt install gnome-software-plugin-flatpak -y
+# Download MongoDB Compass
+echo -e "${BLUE}Downloading MongoDB Compass...${NC}"
+wget -O /tmp/mongodb-compass.deb "$URL"
 
-    # Add flathub repository
-    echo -e "${BLUE}Adding flathub repository${NC}"
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-fi
-
-# Install MongoDB Compass via Flatpak
+# Install MongoDB Compass
 echo -e "${BLUE}Installing MongoDB Compass...${NC}"
-sudo flatpak install flathub com.mongodb.Compass -y
+sudo apt install -y /tmp/mongodb-compass.deb
 
 echo -e "${GREEN}MongoDB Compass installation complete!${NC}"

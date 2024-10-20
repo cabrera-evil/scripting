@@ -6,6 +6,9 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Define variables
+URL="https://desktop.docker.com/linux/main/amd64/167172/docker-desktop-amd64.deb"
+
 # Uninstall docker desktop
 echo -e "${BLUE}Cleaning old installations${NC}"
 sudo apt purge --remove docker-desktop -y
@@ -39,7 +42,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 
 # Download Docker Desktop
 echo -e "${BLUE}Downloading latest version of Docker Desktop${NC}"
-wget -O /tmp/docker-desktop.deb "https://desktop.docker.com/linux/main/amd64/167172/docker-desktop-amd64.deb"
+wget -O /tmp/docker-desktop.deb "$URL"
 
 # Install The Downloaded Package
 echo -e "${BLUE}Installing Docker Desktop${NC}"
@@ -49,7 +52,6 @@ sudo apt install -y /tmp/docker-desktop.deb
 # Add User To Docker
 echo -e "${BLUE}Adding user to Docker organization${NC}"
 sudo usermod -aG docker $USER
-newgrp docker
 
 # Enable the Docker service
 echo -e "${BLUE}Enabling Docker service${NC}"

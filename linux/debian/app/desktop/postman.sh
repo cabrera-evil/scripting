@@ -7,20 +7,23 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://dl.pstmn.io/download/latest/linux64"
+
 # Download Postman
-echo -e "${YELLOW}Downloading Postman...${NC}"
-wget https://dl.pstmn.io/download/latest/linux64 -O /tmp/postman.tar.gz
+echo -e "${BLUE}Downloading Postman...${NC}"
+wget -O /tmp/postman.tar.gz "$URL"
 
 # Extract Postman
-echo -e "${YELLOW}Extracting Postman...${NC}"
+echo -e "${BLUE}Extracting Postman...${NC}"
 tar -xvf /tmp/postman.tar.gz -C /tmp
 
 # Move Postman to /opt
-echo -e "${YELLOW}Moving Postman to /opt...${NC}"
+echo -e "${BLUE}Moving Postman to /opt...${NC}"
 sudo mv /tmp/Postman /opt
 
 # Create Postman desktop entry
-echo -e "${YELLOW}Creating Postman desktop entry...${NC}"
+echo -e "${BLUE}Creating Postman desktop entry...${NC}"
 sudo tee /usr/share/applications/postman.desktop > /dev/null <<EOL
 [Desktop Entry]
 Name=Postman
@@ -34,7 +37,7 @@ Categories=Development;
 EOL
 
 # Create Postman symbolic link
-echo -e "${YELLOW}Creating Postman symbolic link...${NC}"
+echo -e "${BLUE}Creating Postman symbolic link...${NC}"
 sudo ln -s /opt/Postman/Postman /usr/bin/postman
 
 echo -e "${GREEN}Postman installation complete!${NC}"

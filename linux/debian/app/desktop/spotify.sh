@@ -7,23 +7,17 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# If Flatpak is not installed, install it
-if ! [ -x "$(command -v flatpak)" ]; then
-    # Installing flatpak
-    echo -e "${BLUE}Installing flatpak${NC}"
-    sudo apt install flatpak -y
+# Set up the Spotify repository
+echo -e "${BLUE}Setting up the Spotify repository...${NC}"
+curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 
-    # Install flatpak plugin for gnome software
-    echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
-    sudo apt install gnome-software-plugin-flatpak -y
+# Update the package list
+echo -e "${BLUE}Updating the package list...${NC}"
+sudo apt update
 
-    # Add flathub repository
-    echo -e "${BLUE}Adding flathub repository${NC}"
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-fi
-
-# Install Spotify via Flatpak
+# Install Spotify
 echo -e "${BLUE}Installing Spotify...${NC}"
-sudo flatpak install flathub com.spotify.Client -y
+sudo apt install -y spotify-client
 
 echo -e "${GREEN}Spotify installation complete!${NC}"

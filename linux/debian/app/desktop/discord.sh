@@ -7,23 +7,15 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# If Flatpak is not installed, install it
-if ! [ -x "$(command -v flatpak)" ]; then
-    # Installing flatpak
-    echo -e "${BLUE}Installing flatpak${NC}"
-    sudo apt install flatpak -y
+# Define variables
+URL="https://discord.com/api/download?platform=linux"
 
-    # Install flatpak plugin for gnome software
-    echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
-    sudo apt install gnome-software-plugin-flatpak -y
+# Download Discord
+echo -e "${BLUE}Downloading Discord...${NC}"
+wget -O /tmp/discord.deb "https://discord.com/api/download?platform=linux"
 
-    # Add flathub repository
-    echo -e "${BLUE}Adding flathub repository${NC}"
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-fi
-
-# Install Discord via Flatpak
+# Install Discord
 echo -e "${BLUE}Installing Discord...${NC}"
-sudo flatpak install flathub com.discordapp.Discord -y
+sudo apt install -y /tmp/discord.deb
 
 echo -e "${GREEN}Discord installation complete!${NC}"

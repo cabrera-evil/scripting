@@ -7,9 +7,12 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+
 # Download Code
 echo -e "${BLUE}Downloading Code...${NC}"
-wget -O /tmp/code.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+wget -O /tmp/code.deb "$URL"
 
 # Install Code
 echo -e "${BLUE}Installing Code...${NC}"

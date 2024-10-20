@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2204-x86_64-100.7.0.deb"
+URL="https://fastdl.mongodb.org/tools/db/mongodb-database-tools-debian12-x86_64-100.10.0.deb"
 
 # Download MongoDB Database Tools
 echo -e "${BLUE}Downloading MongoDB Database Tools...${NC}"

@@ -7,9 +7,12 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# Define variables
+URL="https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
+
 # Download 1Password
 echo -e "${BLUE}Downloading 1Password...${NC}"
-wget -O /tmp/1password.deb "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
+wget -O /tmp/1password.deb "$URL"
 
 # Install 1Password
 echo -e "${BLUE}Installing 1Password...${NC}"
