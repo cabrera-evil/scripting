@@ -7,23 +7,18 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
-URL="https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
+echo -e "${BLUE}Adding Ngrok GPG key...${NC}"
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc |
+    sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
 
-# Download ngrok
-echo -e "${BLUE}Downloading ngrok...${NC}"
-wget -O /tmp/ngrok.zip "$URL"
+echo -e "${BLUE}Adding Ngrok APT source...${NC}"
+echo "deb https://ngrok-agent.s3.amazonaws.com buster main" |
+    sudo tee /etc/apt/sources.list.d/ngrok.list >/dev/null
 
-# Unzip ngrok
-echo -e "${BLUE}Unzipping ngrok...${NC}"
-unzip /tmp/ngrok.zip -d /tmp
+echo -e "${BLUE}Updating package lists...${NC}"
+sudo apt update
 
-# Move ngrok to /usr/local/bin
-echo -e "${BLUE}Moving ngrok to /usr/local/bin...${NC}"
-sudo mv /tmp/ngrok /usr/local/bin/ngrok
-
-# Make ngrok executable
-echo -e "${BLUE}Making ngrok executable...${NC}"
-sudo chmod +x /usr/local/bin/ngrok
+echo -e "${BLUE}Installing Ngrok...${NC}"
+sudo apt install -y ngrok
 
 echo -e "${GREEN}Ngrok installation complete!${NC}"
