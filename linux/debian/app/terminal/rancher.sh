@@ -46,6 +46,9 @@ helm repo add jetstack https://charts.jetstack.io
 echo -e "${BLUE}Creating cattle-system namespace...${NC}"
 kubectl create namespace cattle-system
 
+echo -e "${BLUE}Installing cert-manager...${NC}"
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.16/cert-manager.crds.yaml
+
 echo -e "${BLUE}Updating helm repositories...${NC}"
 helm repo update
 
