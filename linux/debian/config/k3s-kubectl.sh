@@ -14,10 +14,10 @@ chmod 700 $HOME/.kube
 
 # Export kubeconfig
 echo -e "${BLUE}Exporting kubeconfig...${NC}"
-sudo cat /etc/rancher/k3s/k3s.yaml | sudo tee $HOME/.kube/config-k3s > /dev/null
+sudo cat /etc/rancher/k3s/k3s.yaml | sudo tee $HOME/.kube/config-k3s-local > /dev/null
 
 # Change ownership of kubeconfig
 echo -e "${BLUE}Changing ownership of kubeconfig...${NC}"
-sudo chown $(id -u):$(id -g) $HOME/.kube/config-k3s
+sudo chown $(id -u):$(id -g) $HOME/.kube/config-k3s-local
 
 echo -e "${GREEN}K3s kubeconfig exported successfully!${NC}"

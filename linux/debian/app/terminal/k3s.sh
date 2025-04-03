@@ -9,6 +9,6 @@ NC='\e[0m' # No Color
 
 # Install k3s with get-k3s script
 echo -e "${BLUE}Installing k3s...${NC}"
-curl -sfL https://get.k3s.io | sh -s - server --cluster-init
+curl -sfL https://get.k3s.io | sh -
 
 echo -e "${GREEN}k3s installation completed successfully.${NC}"
