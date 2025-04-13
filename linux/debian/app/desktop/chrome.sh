@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.de"
+URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
 
 # Download Chrome
 echo -e "${BLUE}Downloading Chrome...${NC}"
