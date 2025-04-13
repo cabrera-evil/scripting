@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Colors for terminal output
@@ -7,37 +8,41 @@ YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
-URL="https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.4.2.32922.tar.gz"
+# Define constants
+TOOLBOX_VERSION="2.5.4.38621"
+TOOLBOX_URL="https://download.jetbrains.com/toolbox/jetbrains-toolbox-${TOOLBOX_VERSION}.tar.gz"
+TMP_DIR="/tmp/jetbrains-toolbox"
+INSTALL_DIR="/opt/jetbrains-toolbox"
 
-# Download Toolbox
-echo -e "${BLUE}Downloading Toolbox...${NC}"
-wget -O /tmp/toolbox.tar.gz "$URL"
+# Start
+echo -e "${BLUE}Downloading JetBrains Toolbox ${TOOLBOX_VERSION}...${NC}"
+mkdir -p "$TMP_DIR"
+wget -q --show-progress -O "$TMP_DIR/toolbox.tar.gz" "$TOOLBOX_URL"
 
-# Extract Toolbox
-echo -e "${BLUE}Installing Toolbox...${NC}"
-tar -xzf /tmp/toolbox.tar.gz -C /tmp
+echo -e "${BLUE}Extracting Toolbox...${NC}"
+tar -xzf "$TMP_DIR/toolbox.tar.gz" -C "$TMP_DIR"
 
-# Move Toolbox to /opt
-echo -e "${BLUE}Moving Toolbox to /opt...${NC}"
-sudo mv /tmp/jetbrains-toolbox-* /opt/jetbrains-toolbox
+EXTRACTED_DIR=$(find "$TMP_DIR" -maxdepth 1 -type d -name "jetbrains-toolbox-*")
 
-# Create Toolbox desktop entry
-echo -e "${BLUE}Creating Toolbox desktop entry...${NC}"
-# sudo tee /usr/share/applications/toolbox.desktop > /dev/null <<EOL
-# [Desktop Entry]
-# Name=Toolbox
-# GenericName=JetBrains Toolbox
-# Comment=Manage JetBrains tools
-# Exec=/opt/jetbrains-toolbox/jetbrains-toolbox
-# Terminal=false
-# Type=Application
-# Icon=/opt/jetbrains-toolbox/toolbox.svg
-# Categories=Development;
-# EOL
+echo -e "${BLUE}Installing Toolbox to ${INSTALL_DIR}...${NC}"
+sudo rm -rf "$INSTALL_DIR"
+sudo mv "$EXTRACTED_DIR" "$INSTALL_DIR"
 
-# Create symbolic link
-echo -e "${BLUE}Creating symbolic link...${NC}"
-# sudo ln -s /opt/jetbrains-toolbox/jetbrains-toolbox /usr/local/bin/jetbrains-toolbox
+echo -e "${BLUE}Creating symbolic link in /usr/local/bin...${NC}"
+sudo ln -sf "$INSTALL_DIR/jetbrains-toolbox" /usr/local/bin/jetbrains-toolbox
 
-echo -e "${GREEN}Toolbox installation complete!${NC}"
+echo -e "${BLUE}Creating desktop entry...${NC}"
+sudo tee /usr/share/applications/jetbrains-toolbox.desktop > /dev/null <<EOL
+[Desktop Entry]
+Name=JetBrains Toolbox
+GenericName=JetBrains Toolbox
+Comment=Manage JetBrains IDEs
+Exec=${INSTALL_DIR}/jetbrains-toolbox
+Icon=${INSTALL_DIR}/toolbox.svg
+Terminal=false
+Type=Application
+Categories=Development;
+EOL
+
+echo -e "${GREEN}JetBrains Toolbox installation complete! You can run it with 'jetbrains-toolbox'.${NC}"
+
