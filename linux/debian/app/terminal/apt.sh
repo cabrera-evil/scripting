@@ -12,6 +12,7 @@ packages=(
     bluez
     build-essential
     curl
+    filezilla
     git
     git-flow
     htop
