@@ -8,9 +8,11 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-distro_name=$(. /etc/os-release && echo "$ID")
-distro_path="linux/$distro_name"
-dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DISTRO_NAME=$(. /etc/os-release && echo "$ID")
+DISTRO_PATH="linux/$DISTRO_NAME"
+export OS_ARCH_RAW=$(uname -m)
+export OS_ARCH=$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/; s/armv7l/armhf/; s/i[3-6]86/386/')
+PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Function to exit the script
 function ctrl_c() {
@@ -42,9 +44,9 @@ handle_not_found() {
 
 # Function to print header
 title() {
-    clear
+    /usr/bin/clear
     echo -e "${BLUE}$1${NC}"
-    cat <<"EOF"
+    /usr/bin/cat <<"EOF"
                                  ,        ,
                                 /(        )`
                                 \ \___   / |
@@ -70,7 +72,7 @@ EOF
 # Function for the installation menu for a specific distribution
 menu() {
     while true; do
-        title "Welcome to the installation menu for $distro_name."
+        title "Welcome to the installation menu for $DISTRO_NAME/$OS_ARCH"
         echo "What would you like to install?"
         echo "1. Update system"
         echo "2. Terminal apps only"
@@ -89,7 +91,7 @@ menu() {
             ;;
         5) show_config ;;
         0)
-            title "Exiting the installation menu for $distro_name..."
+            title "Exiting the installation menu for $DISTRO_NAME/$OS_ARCH..."
             break
             ;;
         *)
@@ -102,7 +104,7 @@ menu() {
 
 # Function to update the system
 update() {
-    $dir/$distro_path/config/update.sh
+    $PATH/$DISTRO_PATH/config/update.sh
 }
 
 # Generic function to handle installation and configuration
@@ -111,7 +113,7 @@ handle_scripts() {
     local script_subdir=$2
     local script_desc=$3
     title "Available $script_desc scripts:"
-    script_list=($dir/$distro_path/$script_subdir/*.sh)
+    script_list=($PATH/$DISTRO_PATH/$script_subdir/*.sh)
     for ((i = 0; i < ${#script_list[@]}; i++)); do
         script="${script_list[$i]}"
         script_name=$(basename "$script" .sh)
@@ -182,8 +184,8 @@ show_config() {
 
 # Main function
 main() {
-    if [ ! -d "$dir/$distro_path" ]; then
-        echo -e "${RED}Error: $distro_name is not supported.${NC}"
+    if [ ! -d "$PATH/$DISTRO_PATH" ]; then
+        echo -e "${RED}Error: $DISTRO_NAME/$OS_ARCH is not supported.${NC}"
         exit 1
     fi
     menu

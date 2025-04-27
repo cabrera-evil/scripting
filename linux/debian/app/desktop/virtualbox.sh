@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://download.virtualbox.org/virtualbox/7.1.4/virtualbox-7.1_7.1.4-165100~Debian~bookworm_amd64.deb"
+URL="https://download.virtualbox.org/virtualbox/7.1.4/virtualbox-7.1_7.1.4-165100~Debian~bookworm_${OS_ARCH}.deb"
 
 # Downloading VirtualBox
 echo -e "${BLUE}Downloading VirtualBox${NC}"

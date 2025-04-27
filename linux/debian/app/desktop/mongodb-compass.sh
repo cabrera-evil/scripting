@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://downloads.mongodb.com/compass/mongodb-compass_1.44.5_amd64.deb"
+URL="https://downloads.mongodb.com/compass/mongodb-compass_1.44.5_${OS_ARCH}.deb"
 
 # Download MongoDB Compass
 echo -e "${BLUE}Downloading MongoDB Compass...${NC}"

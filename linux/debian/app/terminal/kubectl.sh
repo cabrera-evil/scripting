@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://dl.k8s.io/release/$(wget -qO- https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+URL="https://dl.k8s.io/release/$(wget -qO- https://dl.k8s.io/release/stable.txt)/bin/linux/${OS_ARCH}/kubectl"
 
 # Download kubectl binary
 echo -e "${BLUE}Downloading kubectl...${NC}"

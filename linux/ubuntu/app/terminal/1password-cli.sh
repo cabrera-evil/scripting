@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.0/op_linux_amd64_v2.30.0.zip"
+URL="https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.0/op_linux_${OS_ARCH}_v2.30.0.zip"
 
 # Download 1Password CLI
 echo -e "${BLUE}Downloading 1Password CLI...${NC}"
@@ -24,9 +24,8 @@ sudo mv /tmp/op-dir/op /usr/local/bin
 
 # Set permissions
 echo -e "${BLUE}Setting permissions...${NC}"
-sudo groupadd -f onepassword-cli && \
-sudo chgrp onepassword-cli /usr/local/bin/op && \
+sudo groupadd -f onepassword-cli
+sudo chgrp onepassword-cli /usr/local/bin/op
 sudo chmod g+s /usr/local/bin/op
 
 echo -e "${GREEN}1Password CLI installation completed successfully.${NC}"
-

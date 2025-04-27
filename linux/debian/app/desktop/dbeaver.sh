@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb"
+URL="https://dbeaver.io/files/dbeaver-ce_latest_${OS_ARCH}.deb"
 
 # Download Dbeaver
 echo -e "${BLUE}Downloading DBeaverCommunity...${NC}"

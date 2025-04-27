@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://github.com/JoseExposito/touchegg/releases/download/2.0.17/touchegg_2.0.17_amd64.deb"
+URL="https://github.com/JoseExposito/touchegg/releases/download/2.0.17/touchegg_2.0.17_${OS_ARCH}.deb"
 
 # Download touchegg
 echo -e "${BLUE}Downloading touchegg...${NC}"

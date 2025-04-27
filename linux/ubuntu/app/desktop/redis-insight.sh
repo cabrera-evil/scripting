@@ -8,7 +8,7 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # Define variables
-URL="https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-linux-amd64.deb"
+URL="https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-linux-${OS_ARCH}.deb"
 
 # Download RedisInsight
 echo -e "${BLUE}Downloading RedisInsight...${NC}"

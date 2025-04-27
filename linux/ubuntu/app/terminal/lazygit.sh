@@ -13,7 +13,7 @@ LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/re
 
 # Download lazygit
 echo -e "${BLUE}Downloading Lazygit v${LAZYGIT_VERSION}...${NC}"
-wget -O /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+wget -O /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_${OS_ARCH_RAW}.tar.gz"
 
 # Extract and install
 echo -e "${BLUE}Extracting Lazygit...${NC}"
