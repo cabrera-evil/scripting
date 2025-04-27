@@ -12,7 +12,7 @@ DISTRO_NAME=$(. /etc/os-release && echo "$ID")
 DISTRO_PATH="linux/$DISTRO_NAME"
 export OS_ARCH_RAW=$(uname -m)
 export OS_ARCH=$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/; s/armv7l/armhf/; s/i[3-6]86/386/')
-PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR="$(pwd)"
 
 # Function to exit the script
 function ctrl_c() {
@@ -44,9 +44,9 @@ handle_not_found() {
 
 # Function to print header
 title() {
-    /usr/bin/clear
+    clear
     echo -e "${BLUE}$1${NC}"
-    /usr/bin/cat <<"EOF"
+    cat <<"EOF"
                                  ,        ,
                                 /(        )`
                                 \ \___   / |
@@ -104,7 +104,7 @@ menu() {
 
 # Function to update the system
 update() {
-    $PATH/$DISTRO_PATH/config/update.sh
+    $DIR/$DISTRO_PATH/config/update.sh
 }
 
 # Generic function to handle installation and configuration
@@ -113,7 +113,7 @@ handle_scripts() {
     local script_subdir=$2
     local script_desc=$3
     title "Available $script_desc scripts:"
-    script_list=($PATH/$DISTRO_PATH/$script_subdir/*.sh)
+    script_list=($DIR/$DISTRO_PATH/$script_subdir/*.sh)
     for ((i = 0; i < ${#script_list[@]}; i++)); do
         script="${script_list[$i]}"
         script_name=$(basename "$script" .sh)
@@ -184,7 +184,7 @@ show_config() {
 
 # Main function
 main() {
-    if [ ! -d "$PATH/$DISTRO_PATH" ]; then
+    if [ ! -d "$DIR/$DISTRO_PATH" ]; then
         echo -e "${RED}Error: $DISTRO_NAME/$OS_ARCH is not supported.${NC}"
         exit 1
     fi
