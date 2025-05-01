@@ -28,12 +28,8 @@ nvm install --lts
 echo -e "${BLUE}Setting default Node.js version...${NC}"
 nvm use --lts
 
-# Install the latest npm version
-echo -e "${BLUE}Installing the latest npm version...${NC}"
-npm install -g npm@latest
-
 # Install npm packages
 echo -e "${BLUE}Installing npm packages...${NC}"
-npm install -g yarn pnpm pm2 @nestjs/cli nodemon express-generator
+npm install -g npm@latest yarn@latest pnpm@latest 
 
 echo -e "${GREEN}NVM installation completed successfully.${NC}"
