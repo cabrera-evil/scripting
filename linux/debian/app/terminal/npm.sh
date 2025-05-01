@@ -14,7 +14,7 @@ if ! [ -x "$(command -v wget)" ]; then
     sudo apt install wget -y
 
 fi
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
 # Reload bash
 echo -e "${BLUE}Reloading bash...${NC}"
