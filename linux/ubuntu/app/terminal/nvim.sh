@@ -20,10 +20,4 @@ sudo tar -C /opt -xzf /tmp/nvim-linux-${OS_ARCH_RAW}.tar.gz
 echo -e "${BLUE}Creating symbolic link...${NC}"
 sudo ln -sf /opt/nvim-linux-${OS_ARCH_RAW}/bin/nvim /usr/local/bin/nvim
 
-# Install NvChad
-echo -e "${BLUE}Installing NvChad...${NC}"
-if [ ! -d ~/.config/nvim ]; then
-    git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
-fi
-
 echo -e "${GREEN}Nvim has been installed successfully!${NC}"
