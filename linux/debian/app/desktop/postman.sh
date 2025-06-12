@@ -1,43 +1,81 @@
 #!/bin/bash
+set -euo pipefail
 
+# ===================================
 # Colors for terminal output
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
+# ===================================
+# Variables
+# ===================================
 URL="https://dl.pstmn.io/download/latest/linux64"
+DEST_DIR="/opt/Postman"
+TMP_TAR="/tmp/postman.tar.gz"
 
-# Download Postman
-echo -e "${BLUE}Downloading Postman...${NC}"
-wget -O /tmp/postman.tar.gz "$URL"
+# ===================================
+# Functions
+# ===================================
+log() {
+	echo -e "${BLUE}$1${NC}"
+}
+success() {
+	echo -e "${GREEN}$1${NC}"
+}
 
-# Extract Postman
-echo -e "${BLUE}Extracting Postman...${NC}"
-tar -xvf /tmp/postman.tar.gz -C /tmp
+# ===================================
+# Download
+# ===================================
+log "Downloading Postman..."
+wget -q --show-progress -O "$TMP_TAR" "$URL"
 
-# Move Postman to /opt
-echo -e "${BLUE}Moving Postman to /opt...${NC}"
-sudo mv /tmp/Postman /opt
+# ===================================
+# Extract
+# ===================================
+log "Extracting Postman..."
+tar -xf "$TMP_TAR" -C /tmp
 
-# Create Postman desktop entry
-echo -e "${BLUE}Creating Postman desktop entry...${NC}"
-sudo tee /usr/share/applications/postman.desktop > /dev/null <<EOL
+# ===================================
+# Remove existing Postman if it exists
+# ===================================
+if [ -d "$DEST_DIR" ]; then
+	log "Removing existing Postman installation..."
+	sudo rm -rf "$DEST_DIR"
+fi
+
+# ===================================
+# Move to /opt
+# ===================================
+log "Moving Postman to /opt..."
+sudo mv /tmp/Postman "$DEST_DIR"
+
+# ===================================
+# Create or update desktop entry
+# ===================================
+log "Creating Postman desktop entry..."
+sudo tee /usr/share/applications/postman.desktop >/dev/null <<EOL
 [Desktop Entry]
 Name=Postman
 GenericName=API Testing Tool
 Comment=Simplify the process of developing APIs that allow you to connect to web services
-Exec=/opt/Postman/Postman
+Exec=${DEST_DIR}/Postman
 Terminal=false
 Type=Application
-Icon=/opt/Postman/app/resources/app/assets/icon.png
+Icon=${DEST_DIR}/app/resources/app/assets/icon.png
 Categories=Development;
 EOL
 
-# Create Postman symbolic link
-echo -e "${BLUE}Creating Postman symbolic link...${NC}"
-sudo ln -s /opt/Postman/Postman /usr/bin/postman
+# ===================================
+# Create symbolic link
+# ===================================
+if [ -L /usr/bin/postman ] || [ -f /usr/bin/postman ]; then
+	sudo rm -f /usr/bin/postman
+fi
+log "Creating Postman symbolic link..."
+sudo ln -s "${DEST_DIR}/Postman" /usr/bin/postman
 
-echo -e "${GREEN}Postman installation complete!${NC}"
+success "Postman installation or update complete!"
