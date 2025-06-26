@@ -1,48 +1,48 @@
-# Linux Scripting
+<!--
 
-[![Release Version](https://img.shields.io/github/v/release/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting/releases)
-[![Last Commit](https://img.shields.io/github/last-commit/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting/commits/master)
-[![Issues](https://img.shields.io/github/issues/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting/pulls)
-[![Forks](https://img.shields.io/github/forks/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting/network/members)
-[![Stars](https://img.shields.io/github/stars/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting/stargazers)
-[![License](https://img.shields.io/github/license/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting/blob/master/LICENSE)
-[![Top Language](https://img.shields.io/github/languages/top/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting)
-[![Code Size](https://img.shields.io/github/languages/code-size/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting)
-[![Repository Size](https://img.shields.io/github/repo-size/cabrera-evil/scripting)](https://github.com/cabrera-evil/scripting)
+********************************************************************************
 
-Welcome to the Linux Scripting repository!
+WARNING:
 
-## Table of Contents
+    DO NOT EDIT "scripting/README.md"
 
-- [Linux Scripting](#linux-scripting)
-  - [Table of Contents](#table-of-contents)
-  - [Usage](#usage)
-  - [License](#license)
+    IT IS PARTIALLY AUTO-GENERATED
 
-## Usage
+    (based on scripts, usage examples, and init logic)
 
-In order to use the scripts in this repository, you will need to follow these steps:
+********************************************************************************
+
+-->
+
+# Quick reference
+
+- **Maintained by**:
+  [Douglas Cabrera](https://github.com/cabrera-evil)
+
+- **Where to get help**:
+  [GitHub Issues](https://github.com/cabrera-evil/scripting/issues)
+
+# What is scripting?
+
+**scripting** is a curated collection of modular and reusable Bash scripts built for Linux system automation. It includes CLI tools for system setup, package installation, backup management, Docker/Kubernetes operations, and more — all structured with best practices, logging, versioning, and extensibility in mind.
+
+These scripts follow a strict template-based CLI format and are ideal for sysadmins, DevOps engineers, or Linux enthusiasts automating dotfiles, services, environments, and infrastructure components.
+
+# How to use this repository
 
 Clone the repository:
-```bash
-$ git clone https://github.com/cabrera-evil/scripting
-```
 
-Change to the scripting directory:
 ```bash
-$ cd scripting
+git clone https://github.com/cabrera-evil/scripting
+cd scripting
 ```
 
 Run the initialization script:
+
 ```bash
-$ ./init.sh
+./init.sh
 ```
 
-## License
+# License
 
-This repository is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute the scripts as long as you include the original license text.
-
----
-
-Happy linux scripting!
+This project is released under the [MIT License](https://github.com/cabrera-evil/scripting/blob/main/LICENSE).
