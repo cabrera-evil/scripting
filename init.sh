@@ -1,149 +1,85 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
-DISTRO_NAME=$(. /etc/os-release && echo "$ID")
-DISTRO_PATH="linux/$DISTRO_NAME"
-export OS_ARCH_RAW=$(uname -m)
-export OS_ARCH=$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/; s/armv7l/armhf/; s/i[3-6]86/386/')
-DIR="$(pwd)"
-
-# Function to exit the script
-function ctrl_c() {
-    echo -e "${RED}Exiting...${NC}"
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
     exit 1
 }
 
-# Error handling function
-function handle_error() {
-    local exit_code=$1
-    local command="${BASH_COMMAND}"
+# ===================================
+# Checks
+# ===================================
+for cmd in curl grep awk sed basename dirname source; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-    if [ $exit_code -ne 0 ]; then
-        echo -e "${RED}Error: Command \"${command}\" failed with exit code ${exit_code}${NC}"
-        exit 1
-    fi
-}
+# ===================================
+# Config
+# ===================================
+DISTRO_NAME=$(. /etc/os-release && echo "$ID")
+DISTRO_PATH="linux/$DISTRO_NAME"
+DIR="$(pwd)"
 
-# Trap events
-trap ctrl_c INT
-trap 'handle_error $?' ERR
+[[ ! -d "$DIR/$DISTRO_PATH" ]] && abort "$DISTRO_NAME is not supported."
 
-# Function to handle not found errors
-handle_not_found() {
-    echo -e "${RED}Error: $2 - $3"
-    read -n 1 -s -r -p "Press any key to continue..."
-    exit "$1"
-}
+# ===================================
+# Error handlers
+# ===================================
+trap 'abort "Aborted."' INT
+trap 'abort "Last command \"$BASH_COMMAND\" failed with exit code $?."' ERR
 
-# Function to print header
+# ===================================
+# Utilities
+# ===================================
 title() {
     clear
-    echo -e "${BLUE}$1${NC}"
+    log "$1"
     cat <<"EOF"
-                                 ,        ,
-                                /(        )`
-                                \ \___   / |
-                                /- _  `-/  '
-                               (/\/ \ \   /\
-                               / /   | `    \
-                               O O   ) /    |
-                               `-^--'`<     '
-                   TM         (_.)  _  )   /
-|  | |\  | ~|~ \ /             `.___/`    /
-|  | | \ |  |   X                `-----' /
-`__| |  \| _|_ / \  <----.     __ / __   \
-                    <----|====O)))==) \) /====
-                    <----'    `--' `.__,' \
-                                 |        |
-                                  \       /
-                             ______( (_  / \______
-                           ,'  ,-----'   |        \
-                           `--{__________)        \/
+  __  __       _         __  __                  
+ |  \/  | __ _(_)_ __   |  \/  | ___ _ __  _   _ 
+ | |\/| |/ _` | | '_ \  | |\/| |/ _ \ '_ \| | | |
+ | |  | | (_| | | | | | | |  | |  __/ | | | |_| |
+ |_|  |_|\__,_|_|_| |_| |_|  |_|\___|_| |_|\__,_|
+
 EOF
 }
 
-# Function for the installation menu for a specific distribution
-menu() {
-    while true; do
-        title "Welcome to the installation menu for $DISTRO_NAME/$OS_ARCH"
-        echo "What would you like to install?"
-        echo "1. Update system"
-        echo "2. Terminal apps only"
-        echo "3. Desktop programs only"
-        echo "4. Terminal and desktop apps"
-        echo "5. Configure system"
-        echo "0. Exit"
-        read -p "$(echo "Enter your choice (1, 2, 3, etc): ")" choice
-        case $choice in
-        1) update ;;
-        2) show_terminal ;;
-        3) show_desktop ;;
-        4)
-            show_terminal
-            show_desktop
-            ;;
-        5) show_config ;;
-        0)
-            title "Exiting the installation menu for $DISTRO_NAME/$OS_ARCH..."
-            break
-            ;;
-        *)
-            handle_not_found 1 "Invalid choice" "Please enter 1, 2, 3, etc..."
-            ;;
-        esac
-        read -n 1 -s -r -p "Press any key to continue..."
-    done
-}
-
-# Function to update the system
-update() {
-    $DIR/$DISTRO_PATH/config/update.sh
-}
-
-# Generic function to handle installation and configuration
-handle_scripts() {
-    local action_type=$1
-    local script_subdir=$2
-    local script_desc=$3
-    title "Available $script_desc scripts:"
-    script_list=($DIR/$DISTRO_PATH/$script_subdir/*.sh)
-    for ((i = 0; i < ${#script_list[@]}; i++)); do
-        script="${script_list[$i]}"
-        script_name=$(basename "$script" .sh)
-        echo "$((i + 1)). $script_name"
-    done
-    echo -e "${YELLOW}Which $script_desc scripts would you like to $action_type?${NC}"
-    echo -e "${YELLOW}Enter the script numbers separated by commas (e.g., '1,3,5'), 'all' to select all scripts, or '0' to exit:${NC}"
-    read -p "" script_choice
-    IFS=',' read -ra selected_indices <<<"$script_choice"
-    install_selected
-}
-
-# Function to prompt the user to select a program
 install_selected() {
+    if [[ "$script_choice" == "0" ]]; then
+        echo -e "${BLUE}Nothing to do...${NC}"
+        return
+    fi
+
+    if [[ "$script_choice" =~ ^[Aa][Ll][Ll]$ ]]; then
+        for script in "${script_list[@]}"; do
+            source "$script"
+        done
+        return
+    fi
+
+    IFS=',' read -ra selected_indices <<<"$script_choice"
+
     for index in "${selected_indices[@]}"; do
-        if [[ "$index" == "0" ]]; then
-            echo -e "${BLUE}Nothing to do...${NC}"
-            break
-        elif [[ "$script_choice" == "all" ]]; then
-            for script in "${script_list[@]}"; do
-                source "$script"
-            done
-            break
-        fi
         if [[ "$index" =~ ^[0-9]+$ ]]; then
             selected_script="${script_list[$((index - 1))]}"
-            if [[ -n $selected_script ]]; then
+            if [[ -n "$selected_script" && -f "$selected_script" ]]; then
                 source "$selected_script"
             else
-                handle_not_found 1 "Invalid choice" "Please select a valid program number."
+                handle_not_found 1 "Invalid choice" "Script $index does not exist."
             fi
         elif [[ "$index" =~ ^[0-9]+-[0-9]+$ ]]; then
             IFS='-' read -ra range <<<"$index"
@@ -152,46 +88,69 @@ install_selected() {
             if [[ "$start" -le "$end" ]]; then
                 for ((i = start; i <= end; i++)); do
                     selected_script="${script_list[$((i - 1))]}"
-                    if [[ -n $selected_script ]]; then
+                    if [[ -n "$selected_script" && -f "$selected_script" ]]; then
                         source "$selected_script"
                     else
-                        handle_not_found 1 "Invalid range" "Please select a valid range of program numbers."
+                        handle_not_found 1 "Invalid range" "Script $i does not exist."
                     fi
                 done
             else
-                handle_not_found 1 "Invalid range" "The start of the range cannot be greater than the end."
+                handle_not_found 1 "Invalid range" "Start index cannot be greater than end."
             fi
         else
-            handle_not_found 1 "Invalid choice" "Please enter a valid program number, range, or 'all'."
+            handle_not_found 1 "Invalid choice" "Please enter valid numbers, range or 'all'."
         fi
     done
 }
 
-# Function to install terminal programs
-show_terminal() {
-    handle_scripts "install" "app/terminal" "terminal program"
+handle_scripts() {
+    local action_type=$1
+    local script_subdir=$2
+    local script_desc=$3
+    local path="$DIR/$DISTRO_PATH/$script_subdir"
+
+    [[ ! -d "$path" ]] && abort "Path not found: $path"
+
+    script_list=("$path"/*.sh)
+    ((${#script_list[@]} == 0)) && abort "No scripts found in $script_subdir"
+
+    title "Available $script_desc:"
+    for i in "${!script_list[@]}"; do
+        echo "$((i + 1)). $(basename "${script_list[$i]}" .sh)"
+    done
+
+    echo -e "${YELLOW}Select $script_desc to $action_type:${NC}"
+    echo -e "${YELLOW}Enter script numbers (e.g. 1,2,4), range (1-3), 'all' or 0 to cancel:${NC}"
+    read -rp "==> " script_choice
+
+    install_selected
 }
 
-# Function to install desktop programs
-show_desktop() {
-    handle_scripts "install" "app/desktop" "desktop program"
+menu() {
+    while true; do
+        title "Main Menu - $DISTRO_NAME"
+        echo "1. Update system"
+        echo "2. Install terminal apps"
+        echo "3. Install desktop apps"
+        echo "4. Install both terminal and desktop"
+        echo "5. Run configuration scripts"
+        echo "0. Exit"
+        read -p "Choose an option: " opt
+        case "$opt" in
+        1) bash "$DIR/$DISTRO_PATH/config/update.sh" ;;
+        2) handle_scripts install "app/terminal" "terminal apps" ;;
+        3) handle_scripts install "app/desktop" "desktop apps" ;;
+        4)
+            handle_scripts install "app/terminal" "terminal apps"
+            handle_scripts install "app/desktop" "desktop apps"
+            ;;
+        5) handle_scripts configure "config" "configuration scripts" ;;
+        0) break ;;
+        *) abort "Invalid option: $opt" ;;
+        esac
+        read -n1 -rsp $'\nPress any key to continue...\n'
+    done
 }
 
-# Function to configure the system
-show_config() {
-    handle_scripts "configure" "config" "configure"
-}
-
-# Main function
-main() {
-    if [ ! -d "$DIR/$DISTRO_PATH" ]; then
-        echo -e "${RED}Error: $DISTRO_NAME/$OS_ARCH is not supported.${NC}"
-        exit 1
-    fi
-    menu
-}
-
-# Main loop
-while true; do
-    main
-done
+main() { menu; }
+main
