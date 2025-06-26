@@ -46,8 +46,4 @@ wget -q --show-progress -O "$TMP_DEB" "$URL"
 log "Installing Google Chrome..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "Google Chrome installed successfully!"

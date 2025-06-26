@@ -1,49 +1,85 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+# ===================================
+# Colors
+# ===================================
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[0;34m'
+NC='\e[0m' # No Color
 
-# Define variables
-URL="https://desktop.docker.com/linux/main/$(dpkg --print-architecture)/167172/docker-desktop-$(dpkg --print-architecture).deb"
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+  echo -e "${RED}✗ $1${NC}" >&2
+  exit 1
+}
 
-# Setup The Repository
-echo -e "${BLUE}Setting up Docker repository${NC}"
+# ===================================
+# Checks
+# ===================================
+for cmd in curl jq wget dpkg; do
+  command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+ARCH="$(dpkg --print-architecture)"
+CODENAME="$(. /etc/os-release && echo "$VERSION_CODENAME")"
+
+# ===================================
+# Fetch latest Docker Desktop version
+# ===================================
+log "Detecting latest Docker Desktop version for $ARCH..."
+VERSION=$(curl -s "https://desktop.docker.com/linux/main/$ARCH/versions.json" | jq -r '.[0].version') || abort "Failed to fetch Docker Desktop version"
+URL="https://desktop.docker.com/linux/main/$ARCH/${VERSION}/docker-desktop-${ARCH}.deb"
+
+# ===================================
+# Setup Docker APT Repository
+# ===================================
+log "Setting up Docker repository..."
 sudo apt update -y
-sudo apt install ca-certificates curl gnupg -y
+sudo apt install -y ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |
+  "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $CODENAME stable" |
   sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+
 sudo apt update -y
 
-# Installing Docker Engine
-echo -e "${BLUE}Installing Docker Engine${NC}"
-sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+# ===================================
+# Install Docker Engine
+# ===================================
+log "Installing Docker Engine components..."
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# ===================================
 # Download Docker Desktop
-echo -e "${BLUE}Downloading latest version of Docker Desktop${NC}"
-wget -O /tmp/docker-desktop.deb "$URL"
+# ===================================
+TMP_DEB="$(mktemp --suffix=.deb)"
+log "Downloading Docker Desktop $VERSION..."
+wget -q --show-progress -O "$TMP_DEB" "$URL"
 
-# Install The Downloaded Package
-echo -e "${BLUE}Installing Docker Desktop${NC}"
-sudo apt update -y
-sudo apt install -y /tmp/docker-desktop.deb
+# ===================================
+# Install Docker Desktop
+# ===================================
+log "Installing Docker Desktop..."
+sudo apt install -y "$TMP_DEB"
 
-# Add User To Docker
-echo -e "${BLUE}Adding user to Docker organization${NC}"
-sudo usermod -aG docker $USER
+# ===================================
+# Post-installation steps
+# ===================================
+log "Adding user '$USER' to docker group..."
+sudo usermod -aG docker "$USER"
 
-# Enable the Docker service
-echo -e "${BLUE}Enabling Docker service${NC}"
+log "Enabling Docker services..."
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 
-echo -e "${GREEN}Docker installation and configuration complete!${NC}"
+success "Docker Desktop $VERSION installed successfully. Please reboot or re-login for group changes to take effect."

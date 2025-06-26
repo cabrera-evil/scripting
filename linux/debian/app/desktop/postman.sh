@@ -31,8 +31,9 @@ done
 # Config
 # ===================================
 URL="https://dl.pstmn.io/download/latest/linux64"
-DEST_DIR="/opt/Postman"
-TMP_TAR="$(mktemp --suffix=.tar.gz)"
+INSTALL_DIR="/opt/Postman"
+TMP_DIR="$(mktemp -d)"
+TAR_FILE="${TMP_DIR}/toolbox.tar.gz"
 DESKTOP_ENTRY="/usr/share/applications/postman.desktop"
 POSTMAN_BIN="/usr/bin/postman"
 
@@ -46,19 +47,19 @@ wget -q --show-progress -O "$TMP_TAR" "$URL"
 # Extract
 # ===================================
 log "Extracting archive..."
-tar -xf "$TMP_TAR" -C /tmp
-rm -f "$TMP_TAR"
+tar -xzf "$TAR_FILE" -C "$TMP_DIR"
+EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'Postman*' | head -n1)"
 
 # ===================================
 # Replace existing installation
 # ===================================
-if [ -e "$DEST_DIR" ]; then
-	log "Removing existing Postman at $DEST_DIR..."
-	sudo rm -rf "$DEST_DIR"
+if [ -e "$INSTALL_DIR" ]; then
+	log "Removing existing Postman at $INSTALL_DIR..."
+	sudo rm -rf "$INSTALL_DIR"
 fi
 
-log "Installing Postman to $DEST_DIR..."
-sudo mv /tmp/Postman "$DEST_DIR"
+log "Installing Postman to $INSTALL_DIR..."
+sudo mv $EXTRACTED_DIR "$INSTALL_DIR"
 
 # ===================================
 # Create .desktop file
@@ -69,10 +70,10 @@ sudo tee "$DESKTOP_ENTRY" >/dev/null <<EOF
 Name=Postman
 GenericName=API Testing Tool
 Comment=Simplify API development and testing
-Exec=${DEST_DIR}/Postman
+Exec=${INSTALL_DIR}/Postman
 Terminal=false
 Type=Application
-Icon=${DEST_DIR}/app/resources/app/assets/icon.png
+Icon=${INSTALL_DIR}/app/resources/app/assets/icon.png
 Categories=Development;
 EOF
 
@@ -85,6 +86,6 @@ if [ -e "$POSTMAN_BIN" ]; then
 fi
 
 log "Linking Postman binary to $POSTMAN_BIN..."
-sudo ln -s "${DEST_DIR}/Postman" "$POSTMAN_BIN"
+sudo ln -s "${INSTALL_DIR}/Postman" "$POSTMAN_BIN"
 
 success "Postman has been installed or updated successfully."

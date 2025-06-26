@@ -13,9 +13,12 @@ NC='\e[0m' # No Color
 # ===================================
 # Logging
 # ===================================
-log()     { echo -e "${BLUE}==> $1${NC}"; }
+log() { echo -e "${BLUE}==> $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
-abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
+abort() {
+  echo -e "${RED}✗ $1${NC}" >&2
+  exit 1
+}
 
 # ===================================
 # Checks
@@ -28,9 +31,9 @@ done
 # Detect latest version from product history page
 # ===================================
 log "Detecting latest 1Password CLI version..."
-LATEST_VERSION=$(curl -s https://app-updates.agilebits.com/product_history/CLI2 \
-  | grep -oP '^\s*\K[0-9]+\.[0-9]+\.[0-9]+' \
-  | head -n1)
+LATEST_VERSION=$(curl -s https://app-updates.agilebits.com/product_history/CLI2 |
+  grep -oP '^\s*\K[0-9]+\.[0-9]+\.[0-9]+' |
+  head -n1)
 
 [ -z "$LATEST_VERSION" ] && abort "Could not extract the latest version."
 
@@ -71,8 +74,4 @@ sudo groupadd -f "$GROUP"
 sudo chgrp "$GROUP" "$INSTALL_PATH"
 sudo chmod g+s "$INSTALL_PATH"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -rf "$TMP_ZIP" "$TMP_DIR"
 success "1Password CLI v${LATEST_VERSION} installed successfully!"

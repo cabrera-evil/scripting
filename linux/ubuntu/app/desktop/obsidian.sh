@@ -53,8 +53,4 @@ wget -q --show-progress -O "$TMP_DEB" "$DOWNLOAD_URL"
 log "Installing Obsidian..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "Obsidian v${VERSION} installed successfully!"

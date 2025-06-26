@@ -46,8 +46,4 @@ wget -q --show-progress -O "$TMP_DEB" "$URL"
 log "Installing RedisInsight..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "RedisInsight installation complete!"

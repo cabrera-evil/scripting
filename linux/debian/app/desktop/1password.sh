@@ -46,8 +46,4 @@ wget -q --show-progress -O "$TMP_DEB" "$URL"
 log "Installing 1Password..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "1Password installed successfully!"

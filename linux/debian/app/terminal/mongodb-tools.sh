@@ -59,8 +59,4 @@ wget -q --show-progress -O "$TMP_DEB" "$URL"
 log "Installing package..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "MongoDB Database Tools v${LATEST_VERSION} installed successfully!"

@@ -13,9 +13,12 @@ NC='\e[0m'
 # ===================================
 # Logging
 # ===================================
-log()     { echo -e "${BLUE}==> $1${NC}"; }
+log() { echo -e "${BLUE}==> $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
-abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
+abort() {
+  echo -e "${RED}✗ $1${NC}" >&2
+  exit 1
+}
 
 # ===================================
 # Checks
@@ -44,7 +47,7 @@ EXPECTED_HASH=$(echo "$RELEASE_DATA" | jq -r '.body' | grep -i "${FILENAME}" | g
 # Paths
 # ===================================
 TMP_TAR="$(mktemp --suffix=.tar.gz)"
-DEST_DIR="/usr/local/actions-runner"
+INSTALL_DIR="/usr/local/actions-runner"
 
 # ===================================
 # Download
@@ -61,14 +64,10 @@ echo "${EXPECTED_HASH}  ${TMP_TAR}" | shasum -a 256 -c - || abort "Checksum veri
 # ===================================
 # Extract
 # ===================================
-log "Creating destination directory at ${DEST_DIR}..."
-sudo mkdir -p "$DEST_DIR"
+log "Creating destination directory at ${INSTALL_DIR}..."
+sudo mkdir -p "$INSTALL_DIR"
 
 log "Extracting runner package..."
-sudo tar -xzf "$TMP_TAR" -C "$DEST_DIR"
+sudo tar -xzf "$TMP_TAR" -C "$INSTALL_DIR"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_TAR"
-success "GitHub Actions Runner ${RUNNER_VERSION} setup complete in '${DEST_DIR}'"
+success "GitHub Actions Runner ${RUNNER_VERSION} setup complete in '${INSTALL_DIR}'"

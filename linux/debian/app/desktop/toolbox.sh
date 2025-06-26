@@ -58,7 +58,6 @@ EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'jetbrains-toolbox-*'
 # Install
 # ===================================
 log "Installing to ${INSTALL_DIR}..."
-sudo rm -rf "$INSTALL_DIR"
 sudo mv "$EXTRACTED_DIR" "$INSTALL_DIR"
 
 # ===================================
@@ -83,8 +82,4 @@ Type=Application
 Categories=Development;
 EOF
 
-# ===================================
-# Cleanup
-# ===================================
-rm -rf "$TMP_DIR"
 success "JetBrains Toolbox v${TOOLBOX_VERSION} installed successfully. Run with 'jetbrains-toolbox'."

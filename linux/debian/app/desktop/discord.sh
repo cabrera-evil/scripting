@@ -45,8 +45,4 @@ wget -q --show-progress -O "$TMP_DEB" "$URL"
 log "Installing Discord..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "Discord installed successfully!"

@@ -55,8 +55,4 @@ wget -q --show-progress -O "$TMP_DEB" "$DEB_URL"
 log "Installing RealVNC Connect..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "RealVNC Connect v$VERSION installed successfully!"

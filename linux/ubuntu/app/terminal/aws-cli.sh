@@ -13,9 +13,12 @@ NC='\e[0m'
 # ===================================
 # Logging
 # ===================================
-log()     { echo -e "${BLUE}==> $1${NC}"; }
+log() { echo -e "${BLUE}==> $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
-abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
+abort() {
+  echo -e "${RED}✗ $1${NC}" >&2
+  exit 1
+}
 
 # ===================================
 # Checks
@@ -50,8 +53,4 @@ unzip -q "$TMP_ZIP" -d "$TMP_DIR"
 log "Installing AWS CLI..."
 sudo "${TMP_DIR}/aws/install" --update
 
-# ===================================
-# Cleanup
-# ===================================
-rm -rf "$TMP_ZIP" "$TMP_DIR"
 success "AWS CLI v2 installed successfully!"

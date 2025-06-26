@@ -63,8 +63,4 @@ if ! grep -q "source <(helm completion bash)" ~/.bashrc; then
     echo "source <(helm completion bash)" >>~/.bashrc
 fi
 
-# ===================================
-# Cleanup
-# ===================================
-rm -rf "$TMP_DIR"
 success "Helm $LATEST installed successfully. Run with 'helm version'."

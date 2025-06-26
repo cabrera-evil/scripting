@@ -62,8 +62,4 @@ wget -q --show-progress -O "$TMP_DEB" "$URL"
 log "Installing VirtualBox..."
 sudo apt install -y "$TMP_DEB"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_DEB"
 success "VirtualBox $LATEST_VERSION installed successfully!"

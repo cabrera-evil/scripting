@@ -49,7 +49,6 @@ wget -q --show-progress -O "$TMP_DEB" "$URL"
 # ===================================
 log "Installing MongoDB Compass..."
 sudo apt install -y "$TMP_DEB"
-rm -f "$TMP_DEB"
 
 # ===================================
 # Patch .desktop launcher

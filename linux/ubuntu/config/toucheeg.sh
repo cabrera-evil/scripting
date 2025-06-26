@@ -59,5 +59,4 @@ sudo apt install -y "$TMP_DEB"
 # ================================
 # Done
 # ================================
-rm -f "$TMP_DEB"
 success "touchegg ${LATEST_VERSION} installed successfully!"

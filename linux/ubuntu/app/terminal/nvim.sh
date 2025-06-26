@@ -46,7 +46,6 @@ wget -q --show-progress -O "$TMP_TAR" "$URL"
 # Install
 # ===================================
 log "Extracting Neovim into ${INSTALL_DIR}..."
-sudo rm -rf "$INSTALL_DIR"
 sudo mkdir -p "$INSTALL_DIR"
 sudo tar -xzf "$TMP_TAR" -C "$INSTALL_DIR" --strip-components=1
 
@@ -56,8 +55,4 @@ sudo tar -xzf "$TMP_TAR" -C "$INSTALL_DIR" --strip-components=1
 log "Creating symlink to ${BIN_LINK}..."
 sudo ln -sf "$INSTALL_DIR/bin/nvim" "$BIN_LINK"
 
-# ===================================
-# Cleanup
-# ===================================
-rm -f "$TMP_TAR"
 success "Neovim installed successfully at ${BIN_LINK}"
