@@ -32,7 +32,7 @@ done
 # ===================================
 log "Detecting latest JetBrains Toolbox version..."
 TOOLBOX_VERSION=$(curl -s "https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release" |
-    jq -r '.TBA[0].version') || abort "Failed to fetch Toolbox version"
+    jq -r '.TBA[0].build') || abort "Failed to fetch Toolbox version"
 
 TOOLBOX_URL="https://download.jetbrains.com/toolbox/jetbrains-toolbox-${TOOLBOX_VERSION}.tar.gz"
 TMP_DIR="$(mktemp -d)"
