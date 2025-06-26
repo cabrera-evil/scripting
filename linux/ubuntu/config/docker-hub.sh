@@ -1,21 +1,56 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Define colors
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m'
+# ===================================
+# Colors
+# ===================================
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[0;34m'
+NC='\e[0m' # No Color
 
-# Install required packages
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
+
+# ===================================
+# Checks
+# ===================================
+for cmd in gpg pass awk grep cut sudo; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ===================================
+# Install Required Packages
+# ===================================
+log "Installing required packages: pass, gnupg2..."
 sudo apt install -y pass gnupg2
 
-# Generate a new GPG key
+# ===================================
+# Generate GPG Key
+# ===================================
+log "Generating a new GPG key..."
 gpg --generate-key
 
-# Get the generated public GPG key ID
-gpg_key=$(gpg --list-keys --keyid-format LONG | grep pub | awk '{print $2}' | cut -d'/' -f2)
+# ===================================
+# Retrieve GPG Key ID
+# ===================================
+log "Extracting newly generated GPG key ID..."
+gpg_key=$(gpg --list-keys --keyid-format LONG | awk '/^pub/ {print $2}' | cut -d'/' -f2 | head -n1)
 
-# Initialize pass using the generated public GPG key
+[ -z "$gpg_key" ] && abort "Could not extract GPG key ID."
+
+# ===================================
+# Initialize pass with GPG key
+# ===================================
+log "Initializing pass with GPG key: $gpg_key"
 pass init "$gpg_key"
 
-echo -e "${GREEN}Docker Hub credentials are now stored in the pass credential store.${NC}"
+success "pass is now initialized and ready to store Docker Hub credentials."

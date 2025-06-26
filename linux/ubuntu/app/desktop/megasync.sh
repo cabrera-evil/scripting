@@ -23,31 +23,32 @@ abort() {
 # ===================================
 # Checks
 # ===================================
-for cmd in wget sudo dpkg apt; do
+for cmd in wget sudo dpkg apt lsb_release; do
     command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
 # Config
 # ===================================
-ARCH="$(dpkg --print-architecture)"
+DISTRO_CODENAME="$(lsb_release -cs)" # e.g., bookworm, bullseye, etc.
+ARCH="$(dpkg --print-architecture)"  # e.g., amd64, arm64
+URL="https://mega.nz/linux/repo/Debian_12/${ARCH}/megasync-Debian_12_${ARCH}.deb"
 TMP_DEB="$(mktemp --suffix=.deb)"
-URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
 
 # ===================================
 # Download
 # ===================================
-log "Downloading Visual Studio Code (stable, ${ARCH})..."
+log "Downloading MegaSync for Debian 12 (${ARCH})..."
 wget -q --show-progress -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install
 # ===================================
-log "Installing Visual Studio Code..."
+log "Installing MegaSync..."
 sudo apt install -y "$TMP_DEB"
 
 # ===================================
 # Cleanup
 # ===================================
 rm -f "$TMP_DEB"
-success "Visual Studio Code installed successfully!"
+success "MegaSync installed successfully!"

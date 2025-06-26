@@ -1,27 +1,61 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Create K3s cache dir
-echo -e "${BLUE}Creating k3s cache dir...${NC}"
-mkdir -p $HOME/.kube
-chmod 700 $HOME/.kube
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
+# ===================================
+# Checks
+# ===================================
+for cmd in sudo cat sed tee chown mkdir chmod; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ===================================
+# Config
+# ===================================
+KUBECONFIG_SRC="/etc/rancher/k3s/k3s.yaml"
+KUBECONFIG_DST="$HOME/.kube/config-local"
+
+# ===================================
+# Create .kube directory
+# ===================================
+log "Creating ~/.kube directory with correct permissions..."
+mkdir -p "$HOME/.kube"
+chmod 700 "$HOME/.kube"
+
+# ===================================
 # Export kubeconfig
-echo -e "${BLUE}Exporting kubeconfig...${NC}"
-sudo cat /etc/rancher/k3s/k3s.yaml | sudo tee $HOME/.kube/config-local > /dev/null
+# ===================================
+log "Exporting K3s kubeconfig to $KUBECONFIG_DST..."
+sudo cat "$KUBECONFIG_SRC" | tee "$KUBECONFIG_DST" >/dev/null
 
-# Change context to local
-echo -e "${BLUE}Changing context from 'default' to 'local'...${NC}"
-sudo sed -i 's/default/local/g' $HOME/.kube/config-local
+# ===================================
+# Update context name to 'local'
+# ===================================
+log "Replacing context name from 'default' to 'local'..."
+sed -i 's/default/local/g' "$KUBECONFIG_DST"
 
-# Change ownership of kubeconfig
-echo -e "${BLUE}Changing ownership of kubeconfig...${NC}"
-sudo chown $(id -u):$(id -g) $HOME/.kube/config-local
+# ===================================
+# Fix permissions
+# ===================================
+log "Setting correct ownership on kubeconfig..."
+sudo chown "$(id -u):$(id -g)" "$KUBECONFIG_DST"
 
-echo -e "${GREEN}K3s kubeconfig exported successfully!${NC}"
+success "K3s kubeconfig exported and configured successfully!"

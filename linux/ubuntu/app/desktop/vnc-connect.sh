@@ -1,20 +1,62 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
-URL=https://downloads.realvnc.com/download/file/realvnc-connect/RealVNC-Connect-8.0.0-Linux-x64.deb?lai_vid=K9z1LO2XPI9n&lai_sr=5-9&lai_sl=l&lai_p=1
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Download VNC Connect
-echo -e "${BLUE}Downloading VNC Connect...${NC}"
-wget -O /tmp/vnc-connect.deb "$URL"
+# ===================================
+# Checks
+# ===================================
+for cmd in wget curl grep sed sudo dpkg apt; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-# Install VNC Connect
-echo -e "${BLUE}Installing VNC Connect...${NC}"
-sudo apt install -y /tmp/vnc-connect.deb
+# ===================================
+# Detect latest version
+# ===================================
+log "Detecting latest RealVNC Connect .deb version..."
+PAGE_URL="https://www.realvnc.com/en/connect/download/vnc/"
+ARCH="x64"
 
-echo -e "${GREEN}VNC Connect installation complete!${NC}"
+DEB_URL=$(curl -s "$PAGE_URL" |
+    grep -oP "https://.*?RealVNC-Connect-[\d\.]+-Linux-${ARCH}\.deb\?[^\"']+" |
+    head -n1)
+
+[ -z "$DEB_URL" ] && abort "Could not find latest RealVNC .deb URL."
+
+FILENAME="$(basename "${DEB_URL%%\?*}")"
+VERSION="$(echo "$FILENAME" | grep -oP '[\d]+\.[\d]+\.[\d]+')"
+TMP_DEB="$(mktemp --suffix=.deb)"
+
+# ===================================
+# Download
+# ===================================
+log "Downloading RealVNC Connect v$VERSION..."
+wget -q --show-progress -O "$TMP_DEB" "$DEB_URL"
+
+# ===================================
+# Install
+# ===================================
+log "Installing RealVNC Connect..."
+sudo apt install -y "$TMP_DEB"
+
+# ===================================
+# Cleanup
+# ===================================
+rm -f "$TMP_DEB"
+success "RealVNC Connect v$VERSION installed successfully!"

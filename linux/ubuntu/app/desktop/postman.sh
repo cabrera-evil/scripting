@@ -1,43 +1,90 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+	echo -e "${RED}✗ $1${NC}" >&2
+	exit 1
+}
+
+# ===================================
+# Checks
+# ===================================
+for cmd in wget tar sudo; do
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ===================================
+# Config
+# ===================================
 URL="https://dl.pstmn.io/download/latest/linux64"
+DEST_DIR="/opt/Postman"
+TMP_TAR="$(mktemp --suffix=.tar.gz)"
+DESKTOP_ENTRY="/usr/share/applications/postman.desktop"
+POSTMAN_BIN="/usr/bin/postman"
 
-# Download Postman
-echo -e "${BLUE}Downloading Postman...${NC}"
-wget -O /tmp/postman.tar.gz "$URL"
+# ===================================
+# Download
+# ===================================
+log "Downloading Postman..."
+wget -q --show-progress -O "$TMP_TAR" "$URL"
 
-# Extract Postman
-echo -e "${BLUE}Extracting Postman...${NC}"
-tar -xvf /tmp/postman.tar.gz -C /tmp
+# ===================================
+# Extract
+# ===================================
+log "Extracting archive..."
+tar -xf "$TMP_TAR" -C /tmp
+rm -f "$TMP_TAR"
 
-# Move Postman to /opt
-echo -e "${BLUE}Moving Postman to /opt...${NC}"
-sudo mv /tmp/Postman /opt
+# ===================================
+# Replace existing installation
+# ===================================
+if [ -e "$DEST_DIR" ]; then
+	log "Removing existing Postman at $DEST_DIR..."
+	sudo rm -rf "$DEST_DIR"
+fi
 
-# Create Postman desktop entry
-echo -e "${BLUE}Creating Postman desktop entry...${NC}"
-sudo tee /usr/share/applications/postman.desktop > /dev/null <<EOL
+log "Installing Postman to $DEST_DIR..."
+sudo mv /tmp/Postman "$DEST_DIR"
+
+# ===================================
+# Create .desktop file
+# ===================================
+log "Creating desktop entry..."
+sudo tee "$DESKTOP_ENTRY" >/dev/null <<EOF
 [Desktop Entry]
 Name=Postman
 GenericName=API Testing Tool
-Comment=Simplify the process of developing APIs that allow you to connect to web services
-Exec=/opt/Postman/Postman
+Comment=Simplify API development and testing
+Exec=${DEST_DIR}/Postman
 Terminal=false
 Type=Application
-Icon=/opt/Postman/app/resources/app/assets/icon.png
+Icon=${DEST_DIR}/app/resources/app/assets/icon.png
 Categories=Development;
-EOL
+EOF
 
-# Create Postman symbolic link
-echo -e "${BLUE}Creating Postman symbolic link...${NC}"
-sudo ln -s /opt/Postman/Postman /usr/bin/postman
+# ===================================
+# Create symlink
+# ===================================
+if [ -e "$POSTMAN_BIN" ]; then
+	log "Removing existing Postman binary link..."
+	sudo rm -f "$POSTMAN_BIN"
+fi
 
-echo -e "${GREEN}Postman installation complete!${NC}"
+log "Linking Postman binary to $POSTMAN_BIN..."
+sudo ln -s "${DEST_DIR}/Postman" "$POSTMAN_BIN"
+
+success "Postman has been installed or updated successfully."

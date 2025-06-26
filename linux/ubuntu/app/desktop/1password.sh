@@ -31,23 +31,23 @@ done
 # Config
 # ===================================
 ARCH="$(dpkg --print-architecture)"
+URL="https://downloads.1password.com/linux/debian/${ARCH}/stable/1password-latest.deb"
 TMP_DEB="$(mktemp --suffix=.deb)"
-URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
 
 # ===================================
 # Download
 # ===================================
-log "Downloading Visual Studio Code (stable, ${ARCH})..."
+log "Downloading 1Password for ${ARCH}..."
 wget -q --show-progress -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install
 # ===================================
-log "Installing Visual Studio Code..."
+log "Installing 1Password..."
 sudo apt install -y "$TMP_DEB"
 
 # ===================================
 # Cleanup
 # ===================================
 rm -f "$TMP_DEB"
-success "Visual Studio Code installed successfully!"
+success "1Password installed successfully!"

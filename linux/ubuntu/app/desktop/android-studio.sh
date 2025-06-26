@@ -1,38 +1,69 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# If Flatpak is not installed, install it
-if ! [ -x "$(command -v flatpak)" ]; then
-    # Installing flatpak
-    echo -e "${BLUE}Installing flatpak${NC}"
-    sudo apt install flatpak -y
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-    # Install flatpak plugin for gnome software
-    echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
-    sudo apt install gnome-software-plugin-flatpak -y
+# ===================================
+# Checks
+# ===================================
+for cmd in sudo apt tee; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-    # Add flathub repository
-    echo -e "${BLUE}Adding flathub repository${NC}"
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+# ===================================
+# Install Flatpak if missing
+# ===================================
+if ! command -v flatpak &>/dev/null; then
+    log "Installing Flatpak..."
+    sudo apt update
+    sudo apt install -y flatpak
+
+    log "Installing GNOME plugin for Flatpak..."
+    sudo apt install -y gnome-software-plugin-flatpak
+
+    log "Adding Flathub repository..."
+    sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+else
+    log "Flatpak already installed."
 fi
 
-# Install Google Android Studio via Flatpak
-echo -e "${BLUE}Installing Google Android Studio...${NC}"
-sudo flatpak install flathub com.google.AndroidStudio -y
+# ===================================
+# Install Android Studio via Flatpak
+# ===================================
+APP_ID="com.google.AndroidStudio"
+log "Installing Android Studio from Flathub..."
+sudo flatpak install -y flathub "$APP_ID"
 
-# Export Android Sdk path
-echo -e "${BLUE}Exporting Android Sdk path...${NC}"
+# ===================================
+# Export Android SDK path (bashrc)
+# ===================================
+log "Configuring ANDROID_HOME in ~/.bashrc..."
 if ! grep -q "ANDROID_HOME" ~/.bashrc; then
-    cat <<'EOF' | tee -a ~/.bashrc
+    tee -a ~/.bashrc >/dev/null <<'EOF'
+
+# Android SDK
 export ANDROID_HOME=$HOME/Android/Sdk
-export PATH=\$PATH:\$ANDROID_HOME/emulator
-export PATH=\$PATH:\$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
 EOF
+else
+    log "ANDROID_HOME already configured in ~/.bashrc"
 fi
 
-echo -e "${GREEN}Google Android Studio installation complete!${NC}"
+success "Android Studio installed and environment variables configured!"

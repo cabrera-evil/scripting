@@ -23,28 +23,14 @@ abort() {
 # ===================================
 # Checks
 # ===================================
-for cmd in curl sudo tee apt; do
+for cmd in curl sudo; do
     command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Add GPG key and repository
+# Install Tailscale
 # ===================================
-log "Adding Ngrok GPG key..."
-curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc |
-    sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+log "Installing Tailscale..."
+curl -fsSL https://tailscale.com/install.sh | sh
 
-log "Adding Ngrok APT source..."
-echo "deb https://ngrok-agent.s3.amazonaws.com buster main" |
-    sudo tee /etc/apt/sources.list.d/ngrok.list >/dev/null
-
-# ===================================
-# Install package
-# ===================================
-log "Updating package lists..."
-sudo apt update -y
-
-log "Installing Ngrok..."
-sudo apt install -y ngrok
-
-success "Ngrok installation complete!"
+success "Tailscale installation complete!"

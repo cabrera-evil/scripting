@@ -1,38 +1,77 @@
+#!/usr/bin/env bash
+set -euo pipefail
 
-#!/bin/bash
-
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define constants
-TOOLBOX_VERSION="2.5.4.38621"
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
+
+# ===================================
+# Checks
+# ===================================
+for cmd in wget curl jq tar sudo tee find; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ===================================
+# Detect latest version
+# ===================================
+log "Detecting latest JetBrains Toolbox version..."
+TOOLBOX_VERSION=$(curl -s "https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release" |
+    jq -r '.TBA[0].version') || abort "Failed to fetch Toolbox version"
+
 TOOLBOX_URL="https://download.jetbrains.com/toolbox/jetbrains-toolbox-${TOOLBOX_VERSION}.tar.gz"
-TMP_DIR="/tmp/jetbrains-toolbox"
+TMP_DIR="$(mktemp -d)"
+TAR_FILE="${TMP_DIR}/toolbox.tar.gz"
 INSTALL_DIR="/opt/jetbrains-toolbox"
+BIN_PATH="/usr/local/bin/jetbrains-toolbox"
+DESKTOP_ENTRY="/usr/share/applications/jetbrains-toolbox.desktop"
 
-# Start
-echo -e "${BLUE}Downloading JetBrains Toolbox ${TOOLBOX_VERSION}...${NC}"
-mkdir -p "$TMP_DIR"
-wget -q --show-progress -O "$TMP_DIR/toolbox.tar.gz" "$TOOLBOX_URL"
+# ===================================
+# Download
+# ===================================
+log "Downloading JetBrains Toolbox v${TOOLBOX_VERSION}..."
+wget -q --show-progress -O "$TAR_FILE" "$TOOLBOX_URL"
 
-echo -e "${BLUE}Extracting Toolbox...${NC}"
-tar -xzf "$TMP_DIR/toolbox.tar.gz" -C "$TMP_DIR"
+# ===================================
+# Extract
+# ===================================
+log "Extracting archive..."
+tar -xzf "$TAR_FILE" -C "$TMP_DIR"
+EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'jetbrains-toolbox-*' | head -n1)"
 
-EXTRACTED_DIR=$(find "$TMP_DIR" -maxdepth 1 -type d -name "jetbrains-toolbox-*")
-
-echo -e "${BLUE}Installing Toolbox to ${INSTALL_DIR}...${NC}"
+# ===================================
+# Install
+# ===================================
+log "Installing to ${INSTALL_DIR}..."
 sudo rm -rf "$INSTALL_DIR"
 sudo mv "$EXTRACTED_DIR" "$INSTALL_DIR"
 
-echo -e "${BLUE}Creating symbolic link in /usr/local/bin...${NC}"
-sudo ln -sf "$INSTALL_DIR/jetbrains-toolbox" /usr/local/bin/jetbrains-toolbox
+# ===================================
+# Symlink
+# ===================================
+log "Creating symlink at /usr/local/bin..."
+sudo ln -sf "${INSTALL_DIR}/jetbrains-toolbox" "$BIN_PATH"
 
-echo -e "${BLUE}Creating desktop entry...${NC}"
-sudo tee /usr/share/applications/jetbrains-toolbox.desktop > /dev/null <<EOL
+# ===================================
+# Desktop entry
+# ===================================
+log "Creating desktop entry..."
+sudo tee "$DESKTOP_ENTRY" >/dev/null <<EOF
 [Desktop Entry]
 Name=JetBrains Toolbox
 GenericName=JetBrains Toolbox
@@ -42,7 +81,10 @@ Icon=${INSTALL_DIR}/toolbox.svg
 Terminal=false
 Type=Application
 Categories=Development;
-EOL
+EOF
 
-echo -e "${GREEN}JetBrains Toolbox installation complete! You can run it with 'jetbrains-toolbox'.${NC}"
-
+# ===================================
+# Cleanup
+# ===================================
+rm -rf "$TMP_DIR"
+success "JetBrains Toolbox v${TOOLBOX_VERSION} installed successfully. Run with 'jetbrains-toolbox'."

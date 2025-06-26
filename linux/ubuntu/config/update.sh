@@ -1,50 +1,70 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ================================
+# Colors
+# ================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Updating system
-echo -e "${BLUE}Updating System${NC}"
+# ================================
+# Logging
+# ================================
+log()     { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
+
+# ================================
+# Checks
+# ================================
+for cmd in sudo apt; do
+  command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ================================
+# APT Package Maintenance
+# ================================
+log "Updating APT package lists..."
 sudo apt update -y
 
-# Upgrading packages
-echo -e "${BLUE}Upgrading Packages${NC}"
+log "Upgrading installed packages..."
 sudo apt upgrade -y
 
-# Dist-upgrade
-echo -e "${BLUE}Dist-Upgrade${NC}"
+log "Applying dist-upgrade..."
 sudo apt dist-upgrade -y
 
-# Full-upgrade
-echo -e "${BLUE}Full-Upgrade${NC}"
+log "Applying full-upgrade..."
 sudo apt full-upgrade -y
 
-# Autoremove packages
-echo -e "${BLUE}Autoremove Packages${NC}"
+log "Removing unused packages..."
 sudo apt autoremove -y
 
-# Autoclean packages
-echo -e "${BLUE}Autoclean Packages${NC}"
+log "Cleaning up cached packages..."
 sudo apt autoclean -y
 
-# Fixing broken packages
-echo -e "${BLUE}Fixing Broken Packages${NC}"
+log "Fixing broken installations..."
 sudo apt --fix-broken install -y
 
-# Update flatpak packages if flatpak is installed
-if [ -x "$(command -v flatpak)" ]; then
-    echo -e "${BLUE}Updating Flatpak Packages${NC}"
-    sudo flatpak update --assumeyes
+# ================================
+# Flatpak (optional)
+# ================================
+if command -v flatpak >/dev/null; then
+  log "Updating Flatpak packages..."
+  sudo flatpak update --assumeyes
 fi
 
-# Update snap packages if snap is installed
-if [ -x "$(command -v snap)" ]; then
-    echo -e "${BLUE}Updating Snap Packages${NC}"
-    sudo snap refresh
+# ================================
+# Snap (optional)
+# ================================
+if command -v snap >/dev/null; then
+  log "Refreshing Snap packages..."
+  sudo snap refresh
 fi
 
-echo -e "${GREEN}System updates and package management completed successfully!${NC}"
+# ================================
+# Done
+# ================================
+success "System updates and package maintenance completed successfully!"

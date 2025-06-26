@@ -23,31 +23,44 @@ abort() {
 # ===================================
 # Checks
 # ===================================
-for cmd in wget sudo dpkg apt; do
+for cmd in curl grep wget dpkg sudo sed awk; do
     command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
+# Detect latest version
+# ===================================
+log "Detecting latest MongoDB Database Tools version..."
+LATEST_VERSION=$(curl -s https://www.mongodb.com/try/download/database-tools |
+    grep -oP 'mongodb-database-tools-debian12-[^"]+\.deb' |
+    grep "$(uname -m)" |
+    head -n1 |
+    sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)\.deb/\1/')
+
+[ -z "$LATEST_VERSION" ] && abort "Could not detect latest version."
+
+# ===================================
 # Config
 # ===================================
-ARCH="$(dpkg --print-architecture)"
+ARCH="$(uname -m)"
+PACKAGE="mongodb-database-tools-debian12-${ARCH}-${LATEST_VERSION}.deb"
+URL="https://fastdl.mongodb.org/tools/db/${PACKAGE}"
 TMP_DEB="$(mktemp --suffix=.deb)"
-URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
 
 # ===================================
 # Download
 # ===================================
-log "Downloading Visual Studio Code (stable, ${ARCH})..."
+log "Downloading MongoDB Database Tools v${LATEST_VERSION}..."
 wget -q --show-progress -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install
 # ===================================
-log "Installing Visual Studio Code..."
+log "Installing package..."
 sudo apt install -y "$TMP_DEB"
 
 # ===================================
 # Cleanup
 # ===================================
 rm -f "$TMP_DEB"
-success "Visual Studio Code installed successfully!"
+success "MongoDB Database Tools v${LATEST_VERSION} installed successfully!"

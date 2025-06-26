@@ -23,31 +23,35 @@ abort() {
 # ===================================
 # Checks
 # ===================================
-for cmd in wget sudo dpkg apt; do
+for cmd in curl gpg sudo tee apt; do
     command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
 # Config
 # ===================================
-ARCH="$(dpkg --print-architecture)"
-TMP_DEB="$(mktemp --suffix=.deb)"
-URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
+SPOTIFY_KEY_URL="https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg"
+SPOTIFY_KEY_PATH="/etc/apt/trusted.gpg.d/spotify.gpg"
+SPOTIFY_LIST_PATH="/etc/apt/sources.list.d/spotify.list"
+SPOTIFY_REPO="deb https://repository.spotify.com stable non-free"
 
 # ===================================
-# Download
+# Add repository
 # ===================================
-log "Downloading Visual Studio Code (stable, ${ARCH})..."
-wget -q --show-progress -O "$TMP_DEB" "$URL"
+log "Setting up the Spotify repository..."
+curl -sS "$SPOTIFY_KEY_URL" | sudo gpg --dearmor --yes -o "$SPOTIFY_KEY_PATH"
+echo "$SPOTIFY_REPO" | sudo tee "$SPOTIFY_LIST_PATH" >/dev/null
 
 # ===================================
-# Install
+# Update packages
 # ===================================
-log "Installing Visual Studio Code..."
-sudo apt install -y "$TMP_DEB"
+log "Updating package list..."
+sudo apt update
 
 # ===================================
-# Cleanup
+# Install Spotify
 # ===================================
-rm -f "$TMP_DEB"
-success "Visual Studio Code installed successfully!"
+log "Installing Spotify..."
+sudo apt install -y spotify-client
+
+success "Spotify installation complete!"

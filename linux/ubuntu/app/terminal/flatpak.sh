@@ -1,23 +1,45 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
-NC='\e[0m' # No Color
+NC='\e[0m'
 
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Installing flatpak
-echo -e "${BLUE}Installing flatpak${NC}"
-sudo apt install flatpak -y
+# ===================================
+# Checks
+# ===================================
+for cmd in sudo apt curl; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-# Install flatpak plugin for gnome software
-echo -e "${BLUE}Installing flatpak plugin for gnome software${NC}"
-sudo apt install gnome-software-plugin-flatpak -y
+# ===================================
+# Install Flatpak and plugin
+# ===================================
+log "Installing Flatpak..."
+sudo apt install -y flatpak
 
-# Add flathub repository
-echo -e "${BLUE}Adding flathub repository${NC}"
+log "Installing GNOME Software Flatpak plugin..."
+sudo apt install -y gnome-software-plugin-flatpak
+
+# ===================================
+# Add Flathub repository
+# ===================================
+log "Adding Flathub repository..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-echo -e "${GREEN}sudo flatpak installation complete!${NC}"
+success "Flatpak and Flathub setup complete!"

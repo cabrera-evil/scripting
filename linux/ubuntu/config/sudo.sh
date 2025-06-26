@@ -1,18 +1,41 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ================================
+# Colors
+# ================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Adding sudo user
-echo -e "${BLUE}Adding sudo user${NC}"
-sudo usermod -aG sudo $USER
+# ================================
+# Logging
+# ================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Checking if sudo user was added
-echo -e "${BLUE}Checking if sudo user was added${NC}"
-groups $USER | grep -q -w "sudo"
+# ================================
+# Check required commands
+# ================================
+for cmd in sudo usermod groups grep; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-echo -e "${GREEN}Sudo user was added${NC}"
+# ================================
+# Add user to sudo group
+# ================================
+log "Adding current user ($USER) to sudo group..."
+sudo usermod -aG sudo "$USER"
+
+log "Verifying sudo group membership..."
+if groups "$USER" | grep -qw "sudo"; then
+    success "User '$USER' is now in the sudo group."
+else
+    abort "Failed to add user '$USER' to sudo group."
+fi
