@@ -1,65 +1,87 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ================================
+# Colors
+# ================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-set -e
-
-echo -e "${BLUE}Starting NVIDIA Driver Setup for Debian Bookworm...${NC}"
-
-# 1. Check for NVIDIA GPU
-echo -e "${BLUE}Detecting NVIDIA GPU...${NC}"
-if ! lspci | grep -i nvidia >/dev/null; then
-    echo -e "${RED}No NVIDIA GPU found. Exiting.${NC}"
+# ================================
+# Logging
+# ================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+warn() { echo -e "${YELLOW}! $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
     exit 1
+}
+
+# ================================
+# Checks
+# ================================
+for cmd in lspci sudo apt tee update-initramfs; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ================================
+# Detect NVIDIA GPU
+# ================================
+log "Checking for NVIDIA GPU..."
+if ! lspci | grep -i nvidia >/dev/null; then
+    abort "No NVIDIA GPU detected."
 fi
 
-# 2. Check if NVIDIA drivers are already installed
+# ================================
+# Check if drivers already installed
+# ================================
 if command -v nvidia-smi >/dev/null 2>&1; then
-    echo -e "${GREEN}NVIDIA drivers already appear to be installed.${NC}"
-    echo -e "${BLUE}Recommended post-installation steps:${NC}"
+    success "NVIDIA driver already installed."
+    log "You can verify with:"
     echo "  nvidia-smi"
     echo "  glxinfo | grep 'OpenGL renderer'"
     exit 0
 fi
 
-# 3. Blacklist Nouveau
-echo -e "${BLUE}Blacklisting Nouveau driver...${NC}"
+# ================================
+# Blacklist Nouveau
+# ================================
+log "Blacklisting Nouveau driver..."
 sudo tee /etc/modprobe.d/blacklist-nouveau.conf >/dev/null <<EOF
 blacklist nouveau
 options nouveau modeset=0
 EOF
 
-echo -e "${BLUE}Updating initramfs...${NC}"
+log "Updating initramfs..."
 sudo update-initramfs -u
 
-# 4. Add contrib and non-free repositories (optional)
-# echo -e "${BLUE}Ensuring contrib and non-free repositories are enabled...${NC}"
-# sudo sed -i 's/main$/main contrib non-free non-free-firmware/' /etc/apt/sources.list
-
-# 5. Update APT and install packages
-echo -e "${BLUE}Updating package lists...${NC}"
+# ================================
+# Install NVIDIA drivers
+# ================================
+log "Updating APT package list..."
 sudo apt update
 
-echo -e "${BLUE}Installing NVIDIA driver and firmware...${NC}"
+log "Installing NVIDIA driver and firmware..."
 sudo apt install -y nvidia-driver firmware-misc-nonfree mesa-utils
 
-# 6. Final Notes
-echo -e "${GREEN}NVIDIA driver installation complete.${NC}"
-echo -e "${YELLOW}A reboot is required to activate the driver.${NC}"
-echo -e "${BLUE}After reboot, verify the installation with:${NC}"
+success "NVIDIA driver installation completed."
+warn "A reboot is required to activate the driver."
+
+log "After reboot, verify with:"
 echo "  nvidia-smi"
 echo "  glxinfo | grep 'OpenGL renderer'"
 
-# 7. Optional reboot prompt
-read -p $'\nDo you want to reboot now? [Y/n]: ' confirm
+# ================================
+# Prompt to reboot
+# ================================
+read -rp $'\nDo you want to reboot now? [Y/n]: ' confirm
 if [[ "$confirm" =~ ^[Yy]$ || -z "$confirm" ]]; then
-    echo -e "${BLUE}Rebooting now...${NC}"
+    log "Rebooting..."
     sudo reboot
 else
-    echo -e "${YELLOW}Please reboot manually later to apply the changes.${NC}"
+    warn "Please reboot manually to apply the changes."
 fi

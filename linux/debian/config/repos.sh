@@ -1,18 +1,44 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Define colors
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m'
+# ================================
+# Colors
+# ================================
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[0;34m'
+NC='\e[0m' # No Color
 
-# Comment out existing repositories
-echo -e "${YELLOW}Commenting out existing repositories in sources.list${NC}"
-sudo sed -i 's/^deb/#deb/g' /etc/apt/sources.list
+# ================================
+# Logging
+# ================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Add new repositories to sources.list
-echo -e "${YELLOW}Adding new repositories to sources.list${NC}"
-sudo tee -a /etc/apt/sources.list > /dev/null <<EOT
+# ================================
+# Checks
+# ================================
+for cmd in sudo sed tee; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ================================
+# Comment out current entries
+# ================================
+log "Commenting out existing 'deb' entries in /etc/apt/sources.list..."
+sudo sed -i 's/^\s*deb /# deb /g' /etc/apt/sources.list
+
+# ================================
+# Add new sources
+# ================================
+log "Adding Debian Bookworm repository entries..."
+
+sudo tee -a /etc/apt/sources.list >/dev/null <<'EOF'
 deb http://deb.debian.org/debian/ bookworm contrib main non-free non-free-firmware
 # deb-src http://deb.debian.org/debian/ bookworm contrib main non-free non-free-firmware
 
@@ -27,6 +53,6 @@ deb http://deb.debian.org/debian/ bookworm-backports contrib main non-free non-f
 
 deb http://deb.debian.org/debian-security/ bookworm-security contrib main non-free non-free-firmware
 # deb-src http://deb.debian.org/debian-security/ bookworm-security contrib main non-free non-free-firmware
-EOT
+EOF
 
-echo -e "${GREEN}Repositories added successfully${NC}"
+success "Debian Bookworm repositories updated successfully!"

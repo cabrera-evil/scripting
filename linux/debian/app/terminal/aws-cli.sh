@@ -1,25 +1,57 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
-NC='\e[0m' # No Color
+NC='\e[0m'
 
-# Define variables
-URL="https://awscli.amazonaws.com/awscli-exe-linux-${OS_ARCH_RAW}.zip"
+# ===================================
+# Logging
+# ===================================
+log()     { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
 
-# Download AWS CLI installer
-echo -e "${BLUE}Downloading AWS CLI installer...${NC}"
-wget -O /tmp/awscliv2.zip "$URL"
+# ===================================
+# Checks
+# ===================================
+for cmd in curl wget unzip sudo; do
+  command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-# Unzip the installer
-echo -e "${BLUE}Unzipping AWS CLI installer...${NC}"
-unzip -q /tmp/awscliv2.zip -d /tmp/
+# ===================================
+# Config
+# ===================================
+ARCH="$(uname -m)"
+URL="https://awscli.amazonaws.com/awscli-exe-linux-${ARCH}.zip"
+TMP_ZIP="$(mktemp --suffix=.zip)"
+TMP_DIR="$(mktemp -d)"
 
-# Install AWS CLI
-echo -e "${BLUE}Installing AWS CLI...${NC}"
-sudo /tmp/aws/install --update
+# ===================================
+# Download
+# ===================================
+log "Downloading AWS CLI v2 for ${ARCH}..."
+wget -q --show-progress -O "$TMP_ZIP" "$URL"
 
-echo -e "${GREEN}AWS CLI installation complete!${NC}"
+# ===================================
+# Extract
+# ===================================
+log "Unpacking installer..."
+unzip -q "$TMP_ZIP" -d "$TMP_DIR"
+
+# ===================================
+# Install
+# ===================================
+log "Installing AWS CLI..."
+sudo "${TMP_DIR}/aws/install" --update
+
+# ===================================
+# Cleanup
+# ===================================
+rm -rf "$TMP_ZIP" "$TMP_DIR"
+success "AWS CLI v2 installed successfully!"

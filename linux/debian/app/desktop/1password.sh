@@ -1,21 +1,53 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
-URL="https://downloads.1password.com/linux/debian/${OS_ARCH}/stable/1password-latest.deb"
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Download 1Password
-echo -e "${BLUE}Downloading 1Password...${NC}"
-wget -O /tmp/1password.deb "$URL"
+# ===================================
+# Checks
+# ===================================
+for cmd in wget sudo dpkg apt; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-# Install 1Password
-echo -e "${BLUE}Installing 1Password...${NC}"
-sudo apt install -y /tmp/1password.deb
+# ===================================
+# Config
+# ===================================
+ARCH="$(dpkg --print-architecture)"
+URL="https://downloads.1password.com/linux/debian/${ARCH}/stable/1password-latest.deb"
+TMP_DEB="$(mktemp --suffix=.deb)"
 
-echo -e "${GREEN}1Password installation complete!${NC}"
+# ===================================
+# Download
+# ===================================
+log "Downloading 1Password for ${ARCH}..."
+wget -q --show-progress -O "$TMP_DEB" "$URL"
+
+# ===================================
+# Install
+# ===================================
+log "Installing 1Password..."
+sudo apt install -y "$TMP_DEB"
+
+# ===================================
+# Cleanup
+# ===================================
+rm -f "$TMP_DEB"
+success "1Password installed successfully!"

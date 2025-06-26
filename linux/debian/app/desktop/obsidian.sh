@@ -1,19 +1,60 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
-URL="https://github.com/obsidianmd/obsidian-releases/releases/download/v1.8.4/obsidian_1.8.4_${OS_ARCH}.deb"
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Download Obsidian
-echo -e "${BLUE}Downloading Obsidian...${NC}"
-wget -O /tmp/obsidian.deb "$URL"
+# ===================================
+# Checks
+# ===================================
+for cmd in curl jq wget sudo dpkg apt; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-# Install Obsidian
-echo -e "${BLUE}Installing Obsidian...${NC}"
-sudo apt install -y /tmp/obsidian.deb
+# ===================================
+# Detect version and architecture
+# ===================================
+log "Fetching latest Obsidian version..."
+API_URL="https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest"
+VERSION=$(curl -s "$API_URL" | jq -r .tag_name | sed 's/^v//') || abort "Unable to retrieve version."
+ARCH="$(dpkg --print-architecture)"
+FILENAME="obsidian_${VERSION}_${ARCH}.deb"
+DOWNLOAD_URL="https://github.com/obsidianmd/obsidian-releases/releases/download/v${VERSION}/${FILENAME}"
+TMP_DEB="$(mktemp --suffix=.deb)"
+
+log "Detected version: v$VERSION"
+log "Architecture: $ARCH"
+log "Downloading: $FILENAME"
+
+# ===================================
+# Download
+# ===================================
+wget -q --show-progress -O "$TMP_DEB" "$DOWNLOAD_URL"
+
+# ===================================
+# Install
+# ===================================
+log "Installing Obsidian..."
+sudo apt install -y "$TMP_DEB"
+
+# ===================================
+# Cleanup
+# ===================================
+rm -f "$TMP_DEB"
+success "Obsidian v${VERSION} installed successfully!"

@@ -1,41 +1,66 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# ===============================
-# CONFIGURATION AND COLORS
-# ===============================
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-OS_ARCH="$(dpkg --print-architecture)"
-URL="https://downloads.mongodb.com/compass/mongodb-compass_1.46.3_${OS_ARCH}.deb"
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+warn() { echo -e "${YELLOW}⚠ $1${NC}"; }
+abort() {
+	echo -e "${RED}✗ $1${NC}" >&2
+	exit 1
+}
+
+# ===================================
+# Checks
+# ===================================
+for cmd in wget sudo dpkg apt sed; do
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ===================================
+# Config
+# ===================================
+ARCH="$(dpkg --print-architecture)"
+VERSION="1.46.3"
+URL="https://downloads.mongodb.com/compass/mongodb-compass_${VERSION}_${ARCH}.deb"
+TMP_DEB="$(mktemp --suffix=.deb)"
 DESKTOP_FILE="/usr/share/applications/mongodb-compass.desktop"
 EXTRA_FLAGS='--password-store="gnome-libsecret" --ignore-additional-command-line-flags'
 
-# ===============================
-# DOWNLOAD AND INSTALL
-# ===============================
-echo -e "${BLUE}Downloading MongoDB Compass...${NC}"
-wget -O /tmp/mongodb-compass.deb "$URL"
+# ===================================
+# Download
+# ===================================
+log "Downloading MongoDB Compass v$VERSION for $ARCH..."
+wget -q --show-progress -O "$TMP_DEB" "$URL"
 
-echo -e "${BLUE}Installing MongoDB Compass...${NC}"
-sudo apt install -y /tmp/mongodb-compass.deb
+# ===================================
+# Install
+# ===================================
+log "Installing MongoDB Compass..."
+sudo apt install -y "$TMP_DEB"
+rm -f "$TMP_DEB"
 
-# ===============================
-# PATCH .desktop FILE
-# ===============================
-echo -e "${BLUE}Patching .desktop launcher...${NC}"
-
+# ===================================
+# Patch .desktop launcher
+# ===================================
+log "Patching .desktop launcher with secure credential flags..."
 if [[ -f "$DESKTOP_FILE" ]]; then
-	sudo sed -i -E \
-		"s|^(Exec=.*mongodb-compass)(.*)|\1 ${EXTRA_FLAGS}|" \
-		"$DESKTOP_FILE"
-	echo -e "${GREEN}Desktop file updated with secure credential flags:${NC}"
+	sudo sed -i -E "s|^(Exec=.*mongodb-compass)(.*)|\1 ${EXTRA_FLAGS}|" "$DESKTOP_FILE"
+	success "Desktop entry updated with flags:"
 	echo -e "${YELLOW}  $EXTRA_FLAGS${NC}"
 else
-	echo -e "${RED}Desktop file not found: $DESKTOP_FILE${NC}"
+	warn "Desktop file not found: $DESKTOP_FILE"
 fi
 
-echo -e "${GREEN}MongoDB Compass installation complete!${NC}"
+success "MongoDB Compass installed successfully!"

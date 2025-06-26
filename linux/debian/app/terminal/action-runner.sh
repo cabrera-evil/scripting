@@ -1,38 +1,74 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
-NC='\e[0m' # No Color
+NC='\e[0m'
 
-# Define variables
-RUNNER_VERSION="2.323.0"
-FILENAME="actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
-DOWNLOAD_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${FILENAME}"
-EXPECTED_HASH="0dbc9bf5a58620fc52cb6cc0448abcca964a8d74b5f39773b7afcad9ab691e19"
-TMP_PATH="/tmp/${FILENAME}"
+# ===================================
+# Logging
+# ===================================
+log()     { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
+
+# ===================================
+# Checks
+# ===================================
+for cmd in curl wget shasum jq sudo tar; do
+  command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ===================================
+# Detect latest version and hash
+# ===================================
+log "Detecting latest GitHub Actions Runner release..."
+RELEASE_API="https://api.github.com/repos/actions/runner/releases/latest"
+RELEASE_DATA=$(curl -s "$RELEASE_API")
+
+RUNNER_VERSION=$(echo "$RELEASE_DATA" | jq -r '.tag_name' | sed 's/^v//')
+ASSET_INFO=$(echo "$RELEASE_DATA" | jq -r '.assets[] | select(.name | test("linux-x64.*\\.tar\\.gz$"))')
+FILENAME=$(echo "$ASSET_INFO" | jq -r '.name')
+DOWNLOAD_URL=$(echo "$ASSET_INFO" | jq -r '.browser_download_url')
+
+# Get expected hash (from the release body)
+EXPECTED_HASH=$(echo "$RELEASE_DATA" | jq -r '.body' | grep -i "${FILENAME}" | grep -oE '[a-f0-9]{64}' || true)
+[ -z "$EXPECTED_HASH" ] && abort "Could not extract SHA-256 hash for ${FILENAME}"
+
+# ===================================
+# Paths
+# ===================================
+TMP_TAR="$(mktemp --suffix=.tar.gz)"
 DEST_DIR="/usr/local/actions-runner"
 
-# Download the runner to /tmp
-echo -e "${BLUE}Downloading GitHub Actions Runner ${RUNNER_VERSION} to /tmp...${NC}"
-wget -O "$TMP_PATH" "$DOWNLOAD_URL"
+# ===================================
+# Download
+# ===================================
+log "Downloading GitHub Actions Runner ${RUNNER_VERSION}..."
+wget -q --show-progress -O "$TMP_TAR" "$DOWNLOAD_URL"
 
-# Validate the hash
-echo -e "${BLUE}Validating SHA-256 checksum...${NC}"
-echo "${EXPECTED_HASH}  ${TMP_PATH}" | shasum -a 256 -c
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Checksum verification failed! Aborting.${NC}"
-    exit 1
-fi
+# ===================================
+# Verify hash
+# ===================================
+log "Verifying SHA-256 checksum..."
+echo "${EXPECTED_HASH}  ${TMP_TAR}" | shasum -a 256 -c - || abort "Checksum verification failed!"
 
-# Create destination directory
-echo -e "${BLUE}Creating destination directory '${DEST_DIR}'...${NC}"
+# ===================================
+# Extract
+# ===================================
+log "Creating destination directory at ${DEST_DIR}..."
 sudo mkdir -p "$DEST_DIR"
 
-# Extract the runner package
-echo -e "${BLUE}Extracting runner package into ${DEST_DIR}...${NC}"
-sudo tar xzf "$TMP_PATH" -C "$DEST_DIR"
+log "Extracting runner package..."
+sudo tar -xzf "$TMP_TAR" -C "$DEST_DIR"
 
-echo -e "${GREEN}GitHub Actions Runner ${RUNNER_VERSION} setup complete in '${DEST_DIR}'!${NC}"
+# ===================================
+# Cleanup
+# ===================================
+rm -f "$TMP_TAR"
+success "GitHub Actions Runner ${RUNNER_VERSION} setup complete in '${DEST_DIR}'"

@@ -1,35 +1,59 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
+
+# ===================================
+# Checks
+# ===================================
+for cmd in curl wget bash sudo; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
+
+# ===================================
 # Install NVM
-echo -e "${BLUE}Installing NVM (Node Version Manager)...${NC}"
-if ! [ -x "$(command -v wget)" ]; then
-    echo -e "${YELLOW}Wget is not installed, installing...${NC}"
-    sudo apt install wget -y
+# ===================================
+NVM_VERSION="v0.40.3"
+log "Installing NVM ${NVM_VERSION}..."
+wget -qO- "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash
 
-fi
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+# ===================================
+# Source nvm in current session
+# ===================================
+export NVM_DIR="$HOME/.nvm"
+# shellcheck disable=SC1091
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || abort "NVM not found after installation."
 
-# Reload bash
-echo -e "${BLUE}Reloading bash...${NC}"
-source ~/.nvm/nvm.sh
-
-# Install Node.js LTS
-echo -e "${BLUE}Installing Node.js LTS...${NC}"
+# ===================================
+# Install Node.js LTS and set default
+# ===================================
+log "Installing latest Node.js LTS..."
 nvm install --lts
 
-# Set default Node.js version
-echo -e "${BLUE}Setting default Node.js version...${NC}"
+log "Setting latest Node.js LTS as default..."
 nvm use --lts
 
-# Install npm packages
-echo -e "${BLUE}Installing npm packages...${NC}"
-npm install -g npm@latest yarn@latest pnpm@latest 
+# ===================================
+# Install global npm tools
+# ===================================
+log "Installing global npm packages (npm, yarn, pnpm)..."
+npm install -g npm@latest yarn@latest pnpm@latest
 
-echo -e "${GREEN}NVM installation completed successfully.${NC}"
+success "NVM, Node.js LTS, and global packages installed successfully!"

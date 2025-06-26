@@ -1,23 +1,63 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===================================
+# Colors
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# Define variables
-URL="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${OS_ARCH_RAW}.tar.gz"
+# ===================================
+# Logging
+# ===================================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Download nvim pre-built binary
-echo -e "${BLUE}Downloading nvim pre-built binary...${NC}"
-wget -O /tmp/nvim-linux-${OS_ARCH_RAW}.tar.gz "$URL"
-sudo rm -rf /opt/nvim
-sudo tar -C /opt -xzf /tmp/nvim-linux-${OS_ARCH_RAW}.tar.gz
+# ===================================
+# Checks
+# ===================================
+for cmd in curl wget tar sudo ln; do
+    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+done
 
-# Create symbolic link
-echo -e "${BLUE}Creating symbolic link...${NC}"
-sudo ln -sf /opt/nvim-linux-${OS_ARCH_RAW}/bin/nvim /usr/local/bin/nvim
+# ===================================
+# Config
+# ===================================
+ARCH="$(uname -m)"
+URL="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${ARCH}.tar.gz"
+TMP_TAR="$(mktemp --suffix=.tar.gz)"
+INSTALL_DIR="/opt/nvim"
+BIN_LINK="/usr/local/bin/nvim"
 
-echo -e "${GREEN}Nvim has been installed successfully!${NC}"
+# ===================================
+# Download
+# ===================================
+log "Downloading latest Neovim binary for ${ARCH}..."
+wget -q --show-progress -O "$TMP_TAR" "$URL"
+
+# ===================================
+# Install
+# ===================================
+log "Extracting Neovim into ${INSTALL_DIR}..."
+sudo rm -rf "$INSTALL_DIR"
+sudo mkdir -p "$INSTALL_DIR"
+sudo tar -xzf "$TMP_TAR" -C "$INSTALL_DIR" --strip-components=1
+
+# ===================================
+# Symlink
+# ===================================
+log "Creating symlink to ${BIN_LINK}..."
+sudo ln -sf "$INSTALL_DIR/bin/nvim" "$BIN_LINK"
+
+# ===================================
+# Cleanup
+# ===================================
+rm -f "$TMP_TAR"
+success "Neovim installed successfully at ${BIN_LINK}"

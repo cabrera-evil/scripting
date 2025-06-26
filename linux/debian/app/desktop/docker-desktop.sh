@@ -7,7 +7,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Define variables
-URL="https://desktop.docker.com/linux/main/${OS_ARCH}/167172/docker-desktop-${OS_ARCH}.deb"
+URL="https://desktop.docker.com/linux/main/$(dpkg --print-architecture)/167172/docker-desktop-$(dpkg --print-architecture).deb"
 
 # Setup The Repository
 echo -e "${BLUE}Setting up Docker repository${NC}"

@@ -1,25 +1,56 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Colors for terminal output
+# ===============================
+# Colors
+# ===============================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
-NC='\e[0m' # No Color
+NC='\e[0m'
 
-# Get latest lazygit version
-echo -e "${BLUE}Fetching latest Lazygit version...${NC}"
-LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*')
+# ===============================
+# Logging
+# ===============================
+log() { echo -e "${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}✓ $1${NC}"; }
+abort() {
+    echo -e "${RED}✗ $1${NC}" >&2
+    exit 1
+}
 
-# Download lazygit
-echo -e "${BLUE}Downloading Lazygit v${LAZYGIT_VERSION}...${NC}"
-wget -O /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_${OS_ARCH_RAW}.tar.gz"
+# ===============================
+# Detect architecture
+# ===============================
+ARCH=$(uname -m)
+case "$ARCH" in
+x86_64) ARCH="x86_64" ;;
+aarch64) ARCH="arm64" ;;
+*) abort "Unsupported architecture: $ARCH" ;;
+esac
 
-# Extract and install
-echo -e "${BLUE}Extracting Lazygit...${NC}"
-tar -xzf /tmp/lazygit.tar.gz -C /tmp lazygit
+# ===============================
+# Detect latest version
+# ===============================
+log "Fetching latest Lazygit version..."
+VERSION=$(curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep -Po '"tag_name": *"v\K[^"]*')
+[ -z "$VERSION" ] && abort "Unable to detect latest version."
 
-echo -e "${BLUE}Installing Lazygit...${NC}"
-sudo install /tmp/lazygit -D -t /usr/local/bin/
+# ===============================
+# Download and install
+# ===============================
+FILENAME="lazygit_${VERSION}_Linux_${ARCH}.tar.gz"
+URL="https://github.com/jesseduffield/lazygit/releases/download/v${VERSION}/${FILENAME}"
+TMP_DIR="$(mktemp -d)"
 
-echo -e "${GREEN}Lazygit installation completed successfully.${NC}"
+log "Downloading Lazygit v${VERSION}..."
+curl -sL "$URL" -o "${TMP_DIR}/lazygit.tar.gz"
+
+log "Extracting..."
+tar -xzf "${TMP_DIR}/lazygit.tar.gz" -C "$TMP_DIR" lazygit
+
+log "Installing to /usr/local/bin..."
+sudo install -m 0755 "${TMP_DIR}/lazygit" /usr/local/bin/lazygit
+
+success "Lazygit v${VERSION} installed successfully!"
