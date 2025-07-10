@@ -16,21 +16,23 @@ NC='\e[0m' # No Color
 log() { echo -e "${BLUE}==> $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
-    exit 1
+	echo -e "${RED}✗ $1${NC}" >&2
+	exit 1
 }
 
 # ===================================
 # Checks
 # ===================================
 for cmd in wget sudo dpkg apt; do
-    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
 # Config
 # ===================================
-ARCH="$(dpkg --print-architecture)"
+
+# Expected arch x64, etc
+ARCH="$(dpkg --print-architecture | sed 's/^amd64$/x64/; s/^armhf$/arm/')"
 TMP_DEB="$(mktemp --suffix=.deb)"
 URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
 
