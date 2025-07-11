@@ -33,7 +33,7 @@ done
 URL="https://dl.pstmn.io/download/latest/linux64"
 INSTALL_DIR="/opt/Postman"
 TMP_DIR="$(mktemp -d)"
-TAR_FILE="${TMP_DIR}/toolbox.tar.gz"
+TMP_TAR="${TMP_DIR}/toolbox.tar.gz"
 DESKTOP_ENTRY="/usr/share/applications/postman.desktop"
 POSTMAN_BIN="/usr/bin/postman"
 
@@ -47,7 +47,7 @@ wget -q --show-progress -O "$TMP_TAR" "$URL"
 # Extract
 # ===================================
 log "Extracting archive..."
-tar -xzf "$TAR_FILE" -C "$TMP_DIR"
+tar -xzf "$TMP_TAR" -C "$TMP_DIR"
 EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'Postman*' | head -n1)"
 
 # ===================================
