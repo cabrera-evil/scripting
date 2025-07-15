@@ -45,7 +45,7 @@ log "Downloading: $FILENAME"
 # ===================================
 # Download
 # ===================================
-wget -q --show-progress -O "$TMP_DEB" "$DOWNLOAD_URL"
+wget -O "$TMP_DEB" "$DOWNLOAD_URL"
 
 # ===================================
 # Install

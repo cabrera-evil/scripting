@@ -42,7 +42,7 @@ EXTRA_FLAGS='--password-store="gnome-libsecret" --ignore-additional-command-line
 # Download
 # ===================================
 log "Downloading MongoDB Compass v$VERSION for $ARCH..."
-wget -q --show-progress -O "$TMP_DEB" "$URL"
+wget -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install

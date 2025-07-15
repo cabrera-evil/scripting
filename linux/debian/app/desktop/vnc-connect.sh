@@ -47,7 +47,7 @@ TMP_DEB="$(mktemp --suffix=.deb)"
 # Download
 # ===================================
 log "Downloading RealVNC Connect v$VERSION..."
-wget -q --show-progress -O "$TMP_DEB" "$DEB_URL"
+wget -O "$TMP_DEB" "$DEB_URL"
 
 # ===================================
 # Install

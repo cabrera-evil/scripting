@@ -40,7 +40,7 @@ URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH
 # Download
 # ===================================
 log "Downloading Visual Studio Code (stable, ${ARCH})..."
-wget -q --show-progress -O "$TMP_DEB" "$URL"
+wget -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install

@@ -38,7 +38,7 @@ TMP_DEB="$(mktemp --suffix=.deb)"
 # Download
 # ===================================
 log "Downloading DBeaver Community Edition for ${ARCH}..."
-wget -q --show-progress -O "$TMP_DEB" "$URL"
+wget -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install

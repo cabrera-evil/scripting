@@ -36,7 +36,7 @@ TOOLBOX_VERSION=$(curl -s "https://data.services.jetbrains.com/products/releases
 
 TOOLBOX_URL="https://download.jetbrains.com/toolbox/jetbrains-toolbox-${TOOLBOX_VERSION}.tar.gz"
 TMP_DIR="$(mktemp -d)"
-TAR_FILE="${TMP_DIR}/toolbox.tar.gz"
+TMP_FILE="${TMP_DIR}/toolbox.tar.gz"
 INSTALL_DIR="/opt/jetbrains-toolbox"
 BIN_PATH="/usr/local/bin/jetbrains-toolbox"
 DESKTOP_ENTRY="/usr/share/applications/jetbrains-toolbox.desktop"
@@ -45,13 +45,13 @@ DESKTOP_ENTRY="/usr/share/applications/jetbrains-toolbox.desktop"
 # Download
 # ===================================
 log "Downloading JetBrains Toolbox v${TOOLBOX_VERSION}..."
-wget -q --show-progress -O "$TAR_FILE" "$TOOLBOX_URL"
+wget -O "$TMP_FILE" "$TOOLBOX_URL"
 
 # ===================================
 # Extract
 # ===================================
 log "Extracting archive..."
-tar -xzf "$TAR_FILE" -C "$TMP_DIR"
+tar -xzf "$TMP_FILE" -C "$TMP_DIR"
 EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'jetbrains-toolbox-*' | head -n1)"
 
 # ===================================

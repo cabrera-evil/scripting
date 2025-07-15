@@ -51,7 +51,7 @@ TMP_DEB="$(mktemp --suffix=.deb)"
 # Download
 # ===================================
 log "Downloading MongoDB Database Tools v${LATEST_VERSION}..."
-wget -q --show-progress -O "$TMP_DEB" "$URL"
+wget -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install

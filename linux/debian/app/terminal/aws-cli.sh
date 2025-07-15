@@ -39,7 +39,7 @@ TMP_DIR="$(mktemp -d)"
 # Download
 # ===================================
 log "Downloading AWS CLI v2 for ${ARCH}..."
-wget -q --show-progress -O "$TMP_ZIP" "$URL"
+wget -O "$TMP_ZIP" "$URL"
 
 # ===================================
 # Extract

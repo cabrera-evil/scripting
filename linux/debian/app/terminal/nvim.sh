@@ -40,7 +40,7 @@ BIN_LINK="/usr/local/bin/nvim"
 # Download
 # ===================================
 log "Downloading latest Neovim binary for ${ARCH}..."
-wget -q --show-progress -O "$TMP_TAR" "$URL"
+wget -O "$TMP_TAR" "$URL"
 
 # ===================================
 # Install

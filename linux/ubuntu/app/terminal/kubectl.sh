@@ -39,7 +39,7 @@ TMP_BIN="$(mktemp)"
 # Download
 # ===================================
 log "Downloading kubectl ${KUBECTL_VERSION} for ${ARCH}..."
-wget -q --show-progress -O "$TMP_BIN" "$URL"
+wget -O "$TMP_BIN" "$URL"
 
 # ===================================
 # Install

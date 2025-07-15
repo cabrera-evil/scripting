@@ -12,9 +12,12 @@ NC='\e[0m' # No Color
 # ===================================
 # Logging
 # ===================================
-log()     { echo -e "${BLUE}==> $1${NC}"; }
+log() { echo -e "${BLUE}==> $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
-abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
+abort() {
+  echo -e "${RED}✗ $1${NC}" >&2
+  exit 1
+}
 
 # ===================================
 # Checks
@@ -27,31 +30,43 @@ done
 # Packages to install
 # ===================================
 packages=(
-  bat
-  bluez
-  build-essential
-  curl
-  filezilla
-  git
-  git-flow
-  htop
-  lsd
-  ncdu
-  neofetch
-  net-tools
-  ranger
-  resolvconf
-  rsync
-  tmux
-  trash-cli
-  unzip
-  unrar
-  vim
-  wireguard
-  xclip
-  zsh
-  zip
-  wget
+  bat       # cat alternative with syntax highlighting
+  curl      # data transfer tool
+  git       # version control
+  git-flow  # branching model support
+  htop      # interactive process viewer
+  lsd       # modern ls with icons
+  ncdu      # disk usage analyzer
+  neofetch  # system info display
+  ranger    # terminal file manager
+  rsync     # fast file synchronization
+  tmux      # terminal multiplexer
+  trash-cli # safe file deletion
+  unzip     # unzip .zip files
+  unrar     # unrar .rar files
+  wget      # network downloader
+  xclip     # clipboard integration
+  zip       # zip compression
+  zsh       # powerful shell
+  build-essential # gcc, g++, make
+  libssl-dev      # SSL dev headers (required for many Node/Python packages)
+  resolvconf      # DNS resolution management
+  wireguard       # VPN protocol
+  net-tools       # ifconfig/netstat (legacy, still useful)
+  bluez           # Bluetooth stack
+  filezilla # FTP/SFTP client
+  fzf             # fuzzy finder for terminal
+  ripgrep         # fast grep alternative
+  exa             # modern replacement for ls (if lsd not used)
+  fd-find         # simple, fast alternative to find
+  jq              # JSON processor
+  tree            # recursive directory listing
+  gnupg           # for GPG key management
+  openssh-client  # SSH utilities
+  ca-certificates # SSL certs bundle
+  dnsutils        # dig, nslookup
+  whois           # whois query tool
+  tzdata          # timezone data
 )
 
 # ===================================

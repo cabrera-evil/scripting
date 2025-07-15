@@ -52,7 +52,7 @@ GROUP="onepassword-cli"
 # Download
 # ===================================
 log "Downloading 1Password CLI v${LATEST_VERSION} for ${ARCH}..."
-wget -q --show-progress -O "$TMP_ZIP" "$URL"
+wget -O "$TMP_ZIP" "$URL"
 
 # ===================================
 # Extract

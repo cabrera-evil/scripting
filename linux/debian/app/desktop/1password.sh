@@ -38,7 +38,7 @@ TMP_DEB="$(mktemp --suffix=.deb)"
 # Download
 # ===================================
 log "Downloading 1Password for ${ARCH}..."
-wget -q --show-progress -O "$TMP_DEB" "$URL"
+wget -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install

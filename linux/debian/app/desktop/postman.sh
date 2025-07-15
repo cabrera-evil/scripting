@@ -41,7 +41,7 @@ POSTMAN_BIN="/usr/bin/postman"
 # Download
 # ===================================
 log "Downloading Postman..."
-wget -q --show-progress -O "$TMP_TAR" "$URL"
+wget -O "$TMP_TAR" "$URL"
 
 # ===================================
 # Extract

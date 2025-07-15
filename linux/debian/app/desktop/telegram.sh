@@ -39,7 +39,7 @@ VERSION=$(basename "$FINAL_URL" | sed -E 's/tsetup\.([0-9.]+)\.tar\.xz/\1/') || 
 # ===================================
 INSTALL_DIR="/opt/Telegram"
 TMP_DIR="$(mktemp -d)"
-TAR_FILE="${TMP_DIR}/telegram.tar.xz"
+TMP_FILE="${TMP_DIR}/telegram.tar.xz"
 DESKTOP_ENTRY="/usr/share/applications/telegram.desktop"
 TELEGRAM_BIN="/usr/bin/telegram"
 
@@ -47,13 +47,13 @@ TELEGRAM_BIN="/usr/bin/telegram"
 # Download
 # ===================================
 log "Downloading Telegram Desktop version $VERSION..."
-wget -q --show-progress -O "$TAR_FILE" "$FINAL_URL"
+wget -O "$TMP_FILE" "$FINAL_URL"
 
 # ===================================
 # Extract
 # ===================================
 log "Extracting archive..."
-tar -xf "$TAR_FILE" -C "$TMP_DIR"
+tar -xf "$TMP_FILE" -C "$TMP_DIR"
 EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'Telegram' | head -n1)"
 
 # ===================================

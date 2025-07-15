@@ -53,7 +53,7 @@ INSTALL_DIR="/usr/local/actions-runner"
 # Download
 # ===================================
 log "Downloading GitHub Actions Runner ${RUNNER_VERSION}..."
-wget -q --show-progress -O "$TMP_TAR" "$DOWNLOAD_URL"
+wget -O "$TMP_TAR" "$DOWNLOAD_URL"
 
 # ===================================
 # Verify hash

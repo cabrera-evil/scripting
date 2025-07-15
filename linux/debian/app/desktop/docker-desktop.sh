@@ -64,7 +64,7 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 # ===================================
 TMP_DEB="$(mktemp --suffix=.deb)"
 log "Downloading Docker Desktop $VERSION..."
-wget -q --show-progress -O "$TMP_DEB" "$URL"
+wget -O "$TMP_DEB" "$URL"
 
 # ===================================
 # Install Docker Desktop
