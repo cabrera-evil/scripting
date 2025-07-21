@@ -17,71 +17,94 @@ log() { echo -e "${BLUE}==> $1${NC}"; }
 success() { echo -e "${GREEN}✓ $1${NC}"; }
 warn() { echo -e "${YELLOW}! $1${NC}"; }
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
-    exit 1
+	echo -e "${RED}✗ $1${NC}" >&2
+	exit 1
 }
 
 # ================================
-# Checks
+# User input function
 # ================================
+prompt_yes_no() {
+	local prompt="$1"
+	local response
+	while true; do
+		echo -e "${YELLOW}$prompt (y/N): ${NC}"
+		read -r response
+		case "$response" in
+		[Yy] | [Yy][Ee][Ss]) return 0 ;;
+		[Nn] | [Nn][Oo] | "") return 1 ;;
+		*) echo -e "${RED}Please answer yes (y) or no (n).${NC}" ;;
+		esac
+	done
+}
+
+# ================================
+# Initial checks
+# ================================
+[[ $EUID -eq 0 ]] && abort "Do not run as root. Script will use sudo when needed."
+log "Checking required commands..."
 for cmd in lspci sudo apt tee update-initramfs; do
-    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' not found"
 done
+log "Detecting NVIDIA GPU..."
+nvidia_gpu=$(lspci | grep -i nvidia | head -1) || abort "No NVIDIA GPU detected"
+success "Found: $nvidia_gpu"
 
 # ================================
-# Detect NVIDIA GPU
-# ================================
-log "Checking for NVIDIA GPU..."
-if ! lspci | grep -i nvidia >/dev/null; then
-    abort "No NVIDIA GPU detected."
-fi
-
-# ================================
-# Check if drivers already installed
+# Check existing installation
 # ================================
 if command -v nvidia-smi >/dev/null 2>&1; then
-    success "NVIDIA driver already installed."
-    log "You can verify with:"
-    echo "  nvidia-smi"
-    echo "  glxinfo | grep 'OpenGL renderer'"
-    exit 0
+	success "NVIDIA driver already installed"
+	nvidia-smi --query-gpu=driver_version --format=csv,noheader,nounits 2>/dev/null || true
+	log "Verify with: nvidia-smi && glxinfo | grep 'OpenGL renderer'"
+	exit 0
 fi
 
 # ================================
-# Blacklist Nouveau
+# System preparation
 # ================================
 log "Blacklisting Nouveau driver..."
-sudo tee /etc/modprobe.d/blacklist-nouveau.conf >/dev/null <<EOF
+if [[ ! -f /etc/modprobe.d/blacklist-nouveau.conf ]]; then
+	sudo tee /etc/modprobe.d/blacklist-nouveau.conf >/dev/null <<'EOF'
 blacklist nouveau
+blacklist lbm-nouveau
 options nouveau modeset=0
+alias nouveau off
+alias lbm-nouveau off
 EOF
-
+	success "Nouveau blacklisted"
+else
+	warn "Nouveau blacklist already exists"
+fi
 log "Updating initramfs..."
-sudo update-initramfs -u
+sudo update-initramfs -u || abort "Failed to update initramfs"
 
 # ================================
-# Install NVIDIA drivers
+# Driver installation
 # ================================
-log "Updating APT package list..."
-sudo apt update
+log "Updating package repositories..."
+sudo apt update || abort "Failed to update package list"
+log "Installing NVIDIA driver packages..."
+sudo apt install -y \
+	nvidia-driver \
+	nvidia-settings \
+	firmware-misc-nonfree \
+	mesa-utils || abort "Failed to install NVIDIA packages"
+success "NVIDIA driver installation completed"
 
-log "Installing NVIDIA driver and firmware..."
-sudo apt install -y nvidia-driver firmware-misc-nonfree mesa-utils
-
-success "NVIDIA driver installation completed."
-warn "A reboot is required to activate the driver."
-
+# ================================
+# Reboot handling
+# ================================
+warn "System reboot required to activate the driver"
 log "After reboot, verify with:"
 echo "  nvidia-smi"
+echo "  nvidia-settings"
 echo "  glxinfo | grep 'OpenGL renderer'"
-
-# ================================
-# Prompt to reboot
-# ================================
-read -rp $'\nDo you want to reboot now? [Y/n]: ' confirm
-if [[ "$confirm" =~ ^[Yy]$ || -z "$confirm" ]]; then
-    log "Rebooting..."
-    sudo reboot
+if prompt_yes_no "Reboot now?"; then
+	log "Rebooting..."
+	sleep 1
+	sudo reboot
 else
-    warn "Please reboot manually to apply the changes."
+	warn "Reboot manually with: sudo reboot"
+	exit 0
 fi
