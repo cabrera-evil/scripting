@@ -43,7 +43,7 @@ prompt_yes_no() {
 # ================================
 [[ $EUID -eq 0 ]] && abort "Do not run as root. Script will use sudo when needed."
 log "Checking required commands..."
-for cmd in lspci sudo apt tee update-initramfs; do
+for cmd in lspci sudo apt tee; do
 	command -v "$cmd" >/dev/null || abort "Command '$cmd' not found"
 done
 log "Detecting NVIDIA GPU..."
