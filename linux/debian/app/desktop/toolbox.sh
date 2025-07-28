@@ -19,22 +19,22 @@ SILENT=false
 # LOGGING
 # ===================================
 log() {
-    if [ "$SILENT" != "true" ]; then
+    if [ "$SILENT" != true ]; then
         echo -e "${BLUE}==> $1${NC}"
     fi
 }
 warn() {
-    if [ "$SILENT" != "true" ]; then
+    if [ "$SILENT" != true ]; then
         echo -e "${YELLOW}⚠️  $1${NC}" >&2
     fi
 }
 success() {
-    if [ "$SILENT" != "true" ]; then
+    if [ "$SILENT" != true ]; then
         echo -e "${GREEN}✓ $1${NC}"
     fi
 }
 abort() {
-    if [ "$SILENT" != "true" ]; then
+    if [ "$SILENT" != true ]; then
         echo -e "${RED}✗ $1${NC}" >&2
     fi
     exit 1
