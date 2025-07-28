@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,31 +11,51 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-	echo -e "${RED}✗ $1${NC}" >&2
-	exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in wget tar curl sudo; do
 	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Resolve latest version URL
+# RESOLVE LATEST VERSION URL
 # ===================================
 BASE_URL="https://td.telegram.org/tlinux/tsetup.tar.xz"
 FINAL_URL=$(curl -Ls -o /dev/null -w %{url_effective} "$BASE_URL") || abort "Failed to resolve latest Telegram URL"
 VERSION=$(basename "$FINAL_URL" | sed -E 's/tsetup\.([0-9.]+)\.tar\.xz/\1/') || abort "Failed to parse version from URL"
 
 # ===================================
-# Config
+# CONFIG
 # ===================================
 INSTALL_DIR="/opt/Telegram"
 TMP_DIR="$(mktemp -d)"
@@ -44,20 +64,20 @@ DESKTOP_ENTRY="/usr/share/applications/telegram.desktop"
 TELEGRAM_BIN="/usr/bin/telegram"
 
 # ===================================
-# Download
+# DOWNLOAD
 # ===================================
 log "Downloading Telegram Desktop version $VERSION..."
 wget -O "$TMP_FILE" "$FINAL_URL"
 
 # ===================================
-# Extract
+# EXTRACT
 # ===================================
 log "Extracting archive..."
 tar -xf "$TMP_FILE" -C "$TMP_DIR"
 EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'Telegram' | head -n1)"
 
 # ===================================
-# Replace existing installation
+# REPLACE EXISTING INSTALLATION
 # ===================================
 if [ -e "$INSTALL_DIR" ]; then
 	log "Removing existing Telegram at $INSTALL_DIR..."
@@ -68,7 +88,7 @@ log "Installing Telegram to $INSTALL_DIR..."
 sudo mv "$EXTRACTED_DIR" "$INSTALL_DIR"
 
 # ===================================
-# Create .desktop file
+# CREATE .DESKTOP FILE
 # ===================================
 log "Creating desktop entry..."
 sudo tee "$DESKTOP_ENTRY" >/dev/null <<EOF
@@ -84,7 +104,7 @@ Categories=Network;InstantMessaging;
 EOF
 
 # ===================================
-# Create symlink
+# CREATE SYMLINK
 # ===================================
 if [ -e "$TELEGRAM_BIN" ]; then
 	log "Removing existing Telegram binary link..."

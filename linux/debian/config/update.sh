@@ -2,31 +2,54 @@
 set -euo pipefail
 
 # ================================
-# Colors
-# ================================
+# COLORS
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# ================================
-# Logging
-# ================================
-log()     { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
-abort()   { echo -e "${RED}✗ $1${NC}" >&2; exit 1; }
+# ===================================
+# GLOBAL CONFIGURATION
+# ===================================
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
+abort() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
+}
 
 # ================================
-# Checks
-# ================================
+# CHECKS
+# ===================================
 for cmd in sudo apt; do
   command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ================================
-# APT Package Maintenance
-# ================================
+# APT PACKAGE MAINTENANCE
+# ===================================
 log "Updating APT package lists..."
 sudo apt update -y
 
@@ -49,22 +72,22 @@ log "Fixing broken installations..."
 sudo apt --fix-broken install -y
 
 # ================================
-# Flatpak (optional)
-# ================================
+# FLATPAK (OPTIONAL)
+# ===================================
 if command -v flatpak >/dev/null; then
   log "Updating Flatpak packages..."
   sudo flatpak update --assumeyes
 fi
 
 # ================================
-# Snap (optional)
-# ================================
+# SNAP (OPTIONAL)
+# ===================================
 if command -v snap >/dev/null; then
   log "Refreshing Snap packages..."
   sudo snap refresh
 fi
 
 # ================================
-# Done
-# ================================
+# DONE
+# ===================================
 success "System updates and package maintenance completed successfully!"

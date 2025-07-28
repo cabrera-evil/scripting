@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,36 +11,56 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
     exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl grep wget dpkg sudo sed awk; do
-    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Detect latest version
+# DETECT LATEST VERSION
 # ===================================
 log "Detecting latest MongoDB Database Tools version..."
 LATEST_VERSION=$(curl -s https://www.mongodb.com/try/download/database-tools |
-    grep -oP 'mongodb-database-tools-debian12-[^"]+\.deb' |
-    grep "$(uname -m)" |
-    head -n1 |
-    sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)\.deb/\1/')
+	grep -oP 'mongodb-database-tools-debian12-[^"]+\.deb' |
+	grep "$(uname -m)" |
+	head -n1 |
+	sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)\.deb/\1/')
 
 [ -z "$LATEST_VERSION" ] && abort "Could not detect latest version."
 
 # ===================================
-# Config
+# CONFIG
 # ===================================
 ARCH="$(uname -m)"
 PACKAGE="mongodb-database-tools-debian12-${ARCH}-${LATEST_VERSION}.deb"
@@ -48,13 +68,13 @@ URL="https://fastdl.mongodb.org/tools/db/${PACKAGE}"
 TMP_DEB="$(mktemp --suffix=.deb)"
 
 # ===================================
-# Download
+# DOWNLOAD
 # ===================================
 log "Downloading MongoDB Database Tools v${LATEST_VERSION}..."
 wget -O "$TMP_DEB" "$URL"
 
 # ===================================
-# Install
+# INSTALL
 # ===================================
 log "Installing package..."
 sudo apt install -y "$TMP_DEB"

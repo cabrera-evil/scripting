@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,24 +11,44 @@ BLUE='\e[0;34m'
 NC='\e[0m'
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
     exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl wget sudo tee apt dpkg; do
-    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Config
+# CONFIG
 # ===================================
 ARCH=$(dpkg --print-architecture)
 KEYRING_DIR="/etc/apt/keyrings"
@@ -37,7 +57,7 @@ SOURCE_LIST="/etc/apt/sources.list.d/github-cli.list"
 REPO_URL="https://cli.github.com/packages"
 
 # ===================================
-# Setup
+# SETUP
 # ===================================
 log "Creating keyring directory..."
 sudo mkdir -p -m 755 "$KEYRING_DIR"
@@ -52,7 +72,7 @@ log "Adding GitHub CLI APT repository..."
 echo "deb [arch=${ARCH} signed-by=${KEYRING_FILE}] ${REPO_URL} stable main" | sudo tee "$SOURCE_LIST" >/dev/null
 
 # ===================================
-# Install
+# INSTALL
 # ===================================
 log "Updating APT package list..."
 sudo apt update -y

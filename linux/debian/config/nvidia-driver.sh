@@ -2,28 +2,46 @@
 set -euo pipefail
 
 # ================================
-# Colors
-# ================================
+# COLORS
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
-# ================================
-# Logging
-# ================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
-warn() { echo -e "${YELLOW}! $1${NC}"; }
-abort() {
-	echo -e "${RED}✗ $1${NC}" >&2
-	exit 1
-}
+# ===================================
+# GLOBAL CONFIGURATION
+# ===================================
+SILENT=false
 
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
+abort() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
+}
 # ================================
-# User input function
-# ================================
+# USER INPUT FUNCTION
+# ===================================
 prompt_yes_no() {
 	local prompt="$1"
 	local response
@@ -39,8 +57,8 @@ prompt_yes_no() {
 }
 
 # ================================
-# Initial checks
-# ================================
+# INITIAL CHECKS
+# ===================================
 [[ $EUID -eq 0 ]] && abort "Do not run as root. Script will use sudo when needed."
 log "Checking required commands..."
 for cmd in lspci sudo apt tee; do
@@ -51,8 +69,8 @@ nvidia_gpu=$(lspci | grep -i nvidia | head -1) || abort "No NVIDIA GPU detected"
 success "Found: $nvidia_gpu"
 
 # ================================
-# Check existing installation
-# ================================
+# CHECK EXISTING INSTALLATION
+# ===================================
 if command -v nvidia-smi >/dev/null 2>&1; then
 	success "NVIDIA driver already installed"
 	nvidia-smi --query-gpu=driver_version --format=csv,noheader,nounits 2>/dev/null || true
@@ -61,8 +79,8 @@ if command -v nvidia-smi >/dev/null 2>&1; then
 fi
 
 # ================================
-# System preparation
-# ================================
+# SYSTEM PREPARATION
+# ===================================
 log "Blacklisting Nouveau driver..."
 if [[ ! -f /etc/modprobe.d/blacklist-nouveau.conf ]]; then
 	sudo tee /etc/modprobe.d/blacklist-nouveau.conf >/dev/null <<'EOF'
@@ -80,8 +98,8 @@ log "Updating initramfs..."
 sudo update-initramfs -u || abort "Failed to update initramfs"
 
 # ================================
-# Driver installation
-# ================================
+# DRIVER INSTALLATION
+# ===================================
 log "Updating package repositories..."
 sudo apt update || abort "Failed to update package list"
 log "Installing NVIDIA driver packages..."
@@ -93,8 +111,8 @@ sudo apt install -y \
 success "NVIDIA driver installation completed"
 
 # ================================
-# Reboot handling
-# ================================
+# REBOOT HANDLING
+# ===================================
 warn "System reboot required to activate the driver"
 log "After reboot, verify with:"
 echo "  nvidia-smi"

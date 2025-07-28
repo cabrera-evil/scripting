@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,36 +11,49 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
     exit 1
 }
 
 # ===================================
-# Checks
-# ===================================
-for cmd in gpg pass awk grep cut sudo; do
-    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
-done
-
-# ===================================
-# Install Required Packages
+# INSTALL REQUIRED PACKAGES
 # ===================================
 log "Installing required packages: pass, gnupg2..."
 sudo apt install -y pass gnupg2
 
 # ===================================
-# Generate GPG Key
+# GENERATE GPG KEY
 # ===================================
 log "Generating a new GPG key..."
 gpg --generate-key
 
 # ===================================
-# Retrieve GPG Key ID
+# RETRIEVE GPG KEY ID
 # ===================================
 log "Extracting newly generated GPG key ID..."
 gpg_key=$(gpg --list-keys --keyid-format LONG | awk '/^pub/ {print $2}' | cut -d'/' -f2 | head -n1)
@@ -48,7 +61,7 @@ gpg_key=$(gpg --list-keys --keyid-format LONG | awk '/^pub/ {print $2}' | cut -d
 [ -z "$gpg_key" ] && abort "Could not extract GPG key ID."
 
 # ===================================
-# Initialize pass with GPG key
+# INITIALIZE PASS WITH GPG KEY
 # ===================================
 log "Initializing pass with GPG key: $gpg_key"
 pass init "$gpg_key"

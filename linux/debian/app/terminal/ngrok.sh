@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,35 +11,55 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
     exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl sudo tee apt; do
-    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Add GPG key and repository
+# ADD GPG KEY AND REPOSITORY
 # ===================================
 log "Adding Ngrok GPG key..."
 curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc |
-    sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+	sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
 
 log "Adding Ngrok APT source..."
 echo "deb https://ngrok-agent.s3.amazonaws.com buster main" |
-    sudo tee /etc/apt/sources.list.d/ngrok.list >/dev/null
+	sudo tee /etc/apt/sources.list.d/ngrok.list >/dev/null
 
 # ===================================
-# Install package
+# INSTALL PACKAGE
 # ===================================
 log "Updating package lists..."
 sudo apt update -y

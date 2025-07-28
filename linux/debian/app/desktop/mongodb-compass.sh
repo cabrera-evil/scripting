@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,25 +11,44 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
-warn() { echo -e "${YELLOW}⚠ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-	echo -e "${RED}✗ $1${NC}" >&2
-	exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in wget sudo dpkg apt sed; do
 	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Config
+# CONFIG
 # ===================================
 ARCH="$(dpkg --print-architecture)"
 VERSION="1.46.3"
@@ -39,19 +58,19 @@ DESKTOP_FILE="/usr/share/applications/mongodb-compass.desktop"
 EXTRA_FLAGS='--password-store="gnome-libsecret" --ignore-additional-command-line-flags'
 
 # ===================================
-# Download
+# DOWNLOAD
 # ===================================
 log "Downloading MongoDB Compass v$VERSION for $ARCH..."
 wget -O "$TMP_DEB" "$URL"
 
 # ===================================
-# Install
+# INSTALL
 # ===================================
 log "Installing MongoDB Compass..."
 sudo apt install -y "$TMP_DEB"
 
 # ===================================
-# Patch .desktop launcher
+# PATCH .DESKTOP LAUNCHER
 # ===================================
 log "Patching .desktop launcher with secure credential flags..."
 if [[ -f "$DESKTOP_FILE" ]]; then

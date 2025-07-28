@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -10,24 +10,44 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
     exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in git ssh-keygen ssh-add xclip xdg-open pgrep; do
     command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Git Email
+# GIT EMAIL
 # ===================================
 email="$(git config user.email || true)"
 
@@ -44,7 +64,7 @@ fi
 [ -z "$email" ] && abort "Email cannot be empty."
 
 # ===================================
-# SSH Key Name
+# SSH KEY NAME
 # ===================================
 default_key="id_ed25519"
 key_path="$HOME/.ssh/$default_key"
@@ -57,13 +77,13 @@ if [[ "$override_key" =~ ^[Yy]$ ]]; then
 fi
 
 # ===================================
-# Generate SSH Key
+# GENERATE SSH KEY
 # ===================================
 log "Generating SSH key..."
 ssh-keygen -t ed25519 -C "$email" -f "$key_path" -N ""
 
 # ===================================
-# Start SSH Agent
+# START SSH AGENT
 # ===================================
 if ! pgrep -u "$USER" ssh-agent >/dev/null; then
     log "Starting SSH agent..."
@@ -73,19 +93,19 @@ fi
 ssh-add "$key_path"
 
 # ===================================
-# Copy to Clipboard
+# COPY TO CLIPBOARD
 # ===================================
 log "Copying public key to clipboard..."
 xclip -selection clipboard <"$key_path.pub"
 
 # ===================================
-# Display Public Key
+# DISPLAY PUBLIC KEY
 # ===================================
 log "Public key content:"
 cat "$key_path.pub"
 
 # ===================================
-# Final Instructions
+# FINAL INSTRUCTIONS
 # ===================================
 log "The public key has been copied to the clipboard."
 read -rp "Press Enter to open GitHub SSH settings in your browser..."

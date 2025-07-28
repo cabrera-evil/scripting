@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,56 +11,53 @@ BLUE='\e[0;34m'
 NC='\e[0m'
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
     exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl tar grep uname chmod mv sudo; do
-    command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Detect latest version
+# INSTALL HELM
 # ===================================
-log "Detecting latest Helm version..."
-LATEST=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | grep -oP '"tag_name":\s*"\Kv[0-9.]+' || true)
-[[ -z "$LATEST" ]] && abort "Unable to detect latest version."
-
-ARCH=$(uname -m)
-[[ "$ARCH" == "x86_64" ]] && ARCH="amd64"
-OS=$(uname | tr '[:upper:]' '[:lower:]')
-FILENAME="helm-${LATEST#v}-$OS-$ARCH.tar.gz"
-TMP_DIR=$(mktemp -d)
-URL="https://get.helm.sh/${FILENAME}"
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # ===================================
-# Download
-# ===================================
-log "Downloading Helm $LATEST..."
-curl -fsSL "$URL" -o "$TMP_DIR/helm.tar.gz"
-
-# ===================================
-# Extract and Install
-# ===================================
-log "Extracting and installing Helm..."
-tar -xzf "$TMP_DIR/helm.tar.gz" -C "$TMP_DIR"
-sudo mv "$TMP_DIR/$OS-$ARCH/helm" /usr/local/bin/helm
-sudo chmod +x /usr/local/bin/helm
-
-# ===================================
-# Autocompletion
+# AUTOCOMPLETION
 # ===================================
 log "Enabling bash autocompletion..."
 if ! grep -q "source <(helm completion bash)" ~/.bashrc; then
-    echo "source <(helm completion bash)" >>~/.bashrc
+	echo "source <(helm completion bash)" >>~/.bashrc
 fi
 
-success "Helm $LATEST installed successfully. Run with 'helm version'."
+success "Helm installed successfully. Use 'helm version' to verify."

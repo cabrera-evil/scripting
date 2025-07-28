@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -11,24 +11,44 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-	echo -e "${RED}✗ $1${NC}" >&2
-	exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl gpg sudo apt install; do
 	command -v "${cmd%% *}" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Setup repository
+# SETUP REPOSITORY
 # ===================================
 log "Setting up Docker repository..."
 sudo apt update -y
@@ -48,7 +68,7 @@ echo \
 sudo apt update -y
 
 # ===================================
-# Install Docker components
+# INSTALL DOCKER COMPONENTS
 # ===================================
 log "Installing Docker Engine and components..."
 sudo apt install -y \
@@ -59,13 +79,13 @@ sudo apt install -y \
 	docker-compose-plugin
 
 # ===================================
-# Post-install setup
+# POST-INSTALL SETUP
 # ===================================
 log "Adding current user to docker group..."
 sudo usermod -aG docker "$USER"
 
 # ===================================
-# Update /etc/hosts
+# UPDATE /ETC/HOSTS
 # ===================================
 log "Ensuring 'host.docker.internal' is in /etc/hosts..."
 
@@ -81,8 +101,8 @@ else
 fi
 
 # ==================================
-# Enable Docker services
-# ==================================
+# ENABLE DOCKER SERVICES
+# ===================================
 log "Enabling Docker and containerd services..."
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service

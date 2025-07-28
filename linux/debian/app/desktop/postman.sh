@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,24 +11,44 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-	echo -e "${RED}✗ $1${NC}" >&2
-	exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in wget tar sudo; do
 	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Config
+# CONFIG
 # ===================================
 URL="https://dl.pstmn.io/download/latest/linux64"
 INSTALL_DIR="/opt/Postman"
@@ -38,20 +58,20 @@ DESKTOP_ENTRY="/usr/share/applications/postman.desktop"
 POSTMAN_BIN="/usr/bin/postman"
 
 # ===================================
-# Download
+# DOWNLOAD
 # ===================================
 log "Downloading Postman..."
 wget -O "$TMP_TAR" "$URL"
 
 # ===================================
-# Extract
+# EXTRACT
 # ===================================
 log "Extracting archive..."
 tar -xzf "$TMP_TAR" -C "$TMP_DIR"
 EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'Postman*' | head -n1)"
 
 # ===================================
-# Replace existing installation
+# REPLACE EXISTING INSTALLATION
 # ===================================
 if [ -e "$INSTALL_DIR" ]; then
 	log "Removing existing Postman at $INSTALL_DIR..."
@@ -62,7 +82,7 @@ log "Installing Postman to $INSTALL_DIR..."
 sudo mv $EXTRACTED_DIR "$INSTALL_DIR"
 
 # ===================================
-# Create .desktop file
+# CREATE .DESKTOP FILE
 # ===================================
 log "Creating desktop entry..."
 sudo tee "$DESKTOP_ENTRY" >/dev/null <<EOF
@@ -78,7 +98,7 @@ Categories=Development;
 EOF
 
 # ===================================
-# Create symlink
+# CREATE SYMLINK
 # ===================================
 if [ -e "$POSTMAN_BIN" ]; then
 	log "Removing existing Postman binary link..."

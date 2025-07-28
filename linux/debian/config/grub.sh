@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,18 +11,37 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
-warn() { echo -e "${YELLOW}! $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-	echo -e "${RED}✗ $1${NC}" >&2
-	exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# User input function
+# USER INPUT FUNCTION
 # ===================================
 prompt_yes_no() {
 	local prompt="$1"
@@ -39,9 +58,9 @@ prompt_yes_no() {
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
-for cmd in sudo cp sed grep update-grub git; do
+for cmd in git; do
 	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
@@ -50,19 +69,19 @@ GRUB_BACKUP="/etc/default/grub.bak"
 THEMES_DIR="/usr/share/grub/themes"
 
 # ===================================
-# Backup original GRUB config
+# BACKUP ORIGINAL GRUB CONFIG
 # ===================================
 log "Backing up GRUB configuration to $GRUB_BACKUP..."
 sudo cp "$GRUB_FILE" "$GRUB_BACKUP"
 
 # ===================================
-# Set GRUB_DEFAULT=saved
+# SET GRUB_DEFAULT=SAVED
 # ===================================
 log "Setting GRUB_DEFAULT to 'saved'..."
 sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/' "$GRUB_FILE"
 
 # ===================================
-# Ensure GRUB_SAVEDEFAULT=true is present
+# ENSURE GRUB_SAVEDEFAULT=TRUE IS PRESENT
 # ===================================
 if grep -q '^GRUB_SAVEDEFAULT=true' "$GRUB_FILE"; then
 	warn "GRUB_SAVEDEFAULT already present. Skipping..."
@@ -72,7 +91,7 @@ else
 fi
 
 # ===================================
-# Set GRUB_TIMEOUT=5
+# SET GRUB_TIMEOUT=5
 # ===================================
 log "Setting GRUB_TIMEOUT to 5 seconds..."
 if grep -q '^GRUB_TIMEOUT=' "$GRUB_FILE"; then
@@ -82,7 +101,7 @@ else
 fi
 
 # ===================================
-# Ensure GRUB_DISABLE_OS_PROBER=false
+# ENSURE GRUB_DISABLE_OS_PROBER=FALSE
 # ===================================
 log "Ensuring GRUB_DISABLE_OS_PROBER=false..."
 if grep -q '^#*GRUB_DISABLE_OS_PROBER=' "$GRUB_FILE"; then
@@ -92,7 +111,7 @@ else
 fi
 
 # ===================================
-# Ask about Catppuccin GRUB theme installation
+# ASK ABOUT CATPPUCCIN GRUB THEME INSTALLATION
 # ===================================
 if prompt_yes_no "Do you want to install the Catppuccin GRUB theme?"; then
 	log "Installing Catppuccin GRUB theme..."
@@ -146,14 +165,14 @@ else
 fi
 
 # ===================================
-# Apply GRUB configuration
+# APPLY GRUB CONFIGURATION
 # ===================================
 log "Updating GRUB..."
 sudo update-grub
 success "GRUB configuration updated successfully!"
 
 # ===================================
-# Ask about reboot
+# ASK ABOUT REBOOT
 # ===================================
 if prompt_yes_no "Do you want to reboot now to see the changes?"; then
 	log "Rebooting system..."

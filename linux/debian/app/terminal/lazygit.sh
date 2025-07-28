@@ -2,27 +2,47 @@
 set -euo pipefail
 
 # ===============================
-# Colors
-# ===============================
+# COLORS
+# ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
 YELLOW='\e[1;33m'
 BLUE='\e[0;34m'
 NC='\e[0m'
 
-# ===============================
-# Logging
-# ===============================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+# ===================================
+# GLOBAL CONFIGURATION
+# ===================================
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-    echo -e "${RED}✗ $1${NC}" >&2
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
     exit 1
 }
 
 # ===============================
-# Detect architecture
-# ===============================
+# DETECT ARCHITECTURE
+# ===================================
 ARCH=$(uname -m)
 case "$ARCH" in
 x86_64) ARCH="x86_64" ;;
@@ -31,15 +51,15 @@ aarch64) ARCH="arm64" ;;
 esac
 
 # ===============================
-# Detect latest version
-# ===============================
+# DETECT LATEST VERSION
+# ===================================
 log "Fetching latest Lazygit version..."
 VERSION=$(curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep -Po '"tag_name": *"v\K[^"]*')
 [ -z "$VERSION" ] && abort "Unable to detect latest version."
 
 # ===============================
-# Download and install
-# ===============================
+# DOWNLOAD AND INSTALL
+# ===================================
 FILENAME="lazygit_${VERSION}_Linux_${ARCH}.tar.gz"
 URL="https://github.com/jesseduffield/lazygit/releases/download/v${VERSION}/${FILENAME}"
 TMP_DIR="$(mktemp -d)"

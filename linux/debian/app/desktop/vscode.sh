@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,24 +11,44 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-	echo -e "${RED}✗ $1${NC}" >&2
-	exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in wget sudo dpkg apt; do
 	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Config
+# CONFIG
 # ===================================
 
 # Expected arch x64, etc
@@ -37,13 +57,13 @@ TMP_DEB="$(mktemp --suffix=.deb)"
 URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-${ARCH}"
 
 # ===================================
-# Download
+# DOWNLOAD
 # ===================================
 log "Downloading Visual Studio Code (stable, ${ARCH})..."
 wget -O "$TMP_DEB" "$URL"
 
 # ===================================
-# Install
+# INSTALL
 # ===================================
 log "Installing Visual Studio Code..."
 sudo apt install -y "$TMP_DEB"

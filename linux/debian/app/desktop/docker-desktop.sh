@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,17 +11,37 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-  echo -e "${RED}✗ $1${NC}" >&2
-  exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl jq wget dpkg; do
   command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
@@ -31,14 +51,14 @@ ARCH="$(dpkg --print-architecture)"
 CODENAME="$(. /etc/os-release && echo "$VERSION_CODENAME")"
 
 # ===================================
-# Fetch latest Docker Desktop version
+# FETCH LATEST DOCKER DESKTOP VERSION
 # ===================================
 log "Detecting latest Docker Desktop version for $ARCH..."
 VERSION=$(curl -s "https://desktop.docker.com/linux/main/$ARCH/versions.json" | jq -r '.[0].version') || abort "Failed to fetch Docker Desktop version"
 URL="https://desktop.docker.com/linux/main/$ARCH/${VERSION}/docker-desktop-${ARCH}.deb"
 
 # ===================================
-# Setup Docker APT Repository
+# SETUP DOCKER APT REPOSITORY
 # ===================================
 log "Setting up Docker repository..."
 sudo apt update -y
@@ -54,26 +74,26 @@ echo \
 sudo apt update -y
 
 # ===================================
-# Install Docker Engine
+# INSTALL DOCKER ENGINE
 # ===================================
 log "Installing Docker Engine components..."
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # ===================================
-# Download Docker Desktop
+# DOWNLOAD DOCKER DESKTOP
 # ===================================
 TMP_DEB="$(mktemp --suffix=.deb)"
 log "Downloading Docker Desktop $VERSION..."
 wget -O "$TMP_DEB" "$URL"
 
 # ===================================
-# Install Docker Desktop
+# INSTALL DOCKER DESKTOP
 # ===================================
 log "Installing Docker Desktop..."
 sudo apt install -y "$TMP_DEB"
 
 # ===================================
-# Post-installation steps
+# POST-INSTALLATION STEPS
 # ===================================
 log "Adding user '$USER' to docker group..."
 sudo usermod -aG docker "$USER"

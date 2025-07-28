@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,24 +11,44 @@ BLUE='\e[0;34m'
 NC='\e[0m' # No Color
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-  echo -e "${RED}✗ $1${NC}" >&2
-  exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl grep wget unzip sudo dpkg sed awk; do
   command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Detect latest version from product history page
+# DETECT LATEST VERSION FROM PRODUCT HISTORY PAGE
 # ===================================
 log "Detecting latest 1Password CLI version..."
 LATEST_VERSION=$(curl -s https://app-updates.agilebits.com/product_history/CLI2 |
@@ -38,7 +58,7 @@ LATEST_VERSION=$(curl -s https://app-updates.agilebits.com/product_history/CLI2 
 [ -z "$LATEST_VERSION" ] && abort "Could not extract the latest version."
 
 # ===================================
-# Config
+# CONFIG
 # ===================================
 ARCH="$(dpkg --print-architecture)"
 FILENAME="op_linux_${ARCH}_v${LATEST_VERSION}.zip"
@@ -49,25 +69,25 @@ INSTALL_PATH="/usr/local/bin/op"
 GROUP="onepassword-cli"
 
 # ===================================
-# Download
+# DOWNLOAD
 # ===================================
 log "Downloading 1Password CLI v${LATEST_VERSION} for ${ARCH}..."
 wget -O "$TMP_ZIP" "$URL"
 
 # ===================================
-# Extract
+# EXTRACT
 # ===================================
 log "Extracting archive..."
 unzip -q "$TMP_ZIP" -d "$TMP_DIR"
 
 # ===================================
-# Install
+# INSTALL
 # ===================================
 log "Installing to ${INSTALL_PATH}..."
 sudo mv "${TMP_DIR}/op" "$INSTALL_PATH"
 
 # ===================================
-# Permissions
+# PERMISSIONS
 # ===================================
 log "Setting permissions..."
 sudo groupadd -f "$GROUP"

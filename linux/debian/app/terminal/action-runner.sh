@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ===================================
-# Colors
+# COLORS
 # ===================================
 RED='\e[0;31m'
 GREEN='\e[0;32m'
@@ -11,24 +11,44 @@ BLUE='\e[0;34m'
 NC='\e[0m'
 
 # ===================================
-# Logging
+# GLOBAL CONFIGURATION
 # ===================================
-log() { echo -e "${BLUE}==> $1${NC}"; }
-success() { echo -e "${GREEN}✓ $1${NC}"; }
+SILENT=false
+
+# ===================================
+# LOGGING
+# ===================================
+log() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${BLUE}==> $1${NC}"
+    fi
+}
+warn() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    fi
+}
+success() {
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${GREEN}✓ $1${NC}"
+    fi
+}
 abort() {
-  echo -e "${RED}✗ $1${NC}" >&2
-  exit 1
+    if [ "$SILENT" != "true" ]; then
+        echo -e "${RED}✗ $1${NC}" >&2
+    fi
+    exit 1
 }
 
 # ===================================
-# Checks
+# CHECKS
 # ===================================
 for cmd in curl wget shasum jq sudo tar; do
   command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
 done
 
 # ===================================
-# Detect latest version and hash
+# DETECT LATEST VERSION AND HASH
 # ===================================
 log "Detecting latest GitHub Actions Runner release..."
 RELEASE_API="https://api.github.com/repos/actions/runner/releases/latest"
@@ -44,25 +64,25 @@ EXPECTED_HASH=$(echo "$RELEASE_DATA" | jq -r '.body' | grep -i "${FILENAME}" | g
 [ -z "$EXPECTED_HASH" ] && abort "Could not extract SHA-256 hash for ${FILENAME}"
 
 # ===================================
-# Paths
+# PATHS
 # ===================================
 TMP_TAR="$(mktemp --suffix=.tar.gz)"
 INSTALL_DIR="/usr/local/actions-runner"
 
 # ===================================
-# Download
+# DOWNLOAD
 # ===================================
 log "Downloading GitHub Actions Runner ${RUNNER_VERSION}..."
 wget -O "$TMP_TAR" "$DOWNLOAD_URL"
 
 # ===================================
-# Verify hash
+# VERIFY HASH
 # ===================================
 log "Verifying SHA-256 checksum..."
 echo "${EXPECTED_HASH}  ${TMP_TAR}" | shasum -a 256 -c - || abort "Checksum verification failed!"
 
 # ===================================
-# Extract
+# EXTRACT
 # ===================================
 log "Creating destination directory at ${INSTALL_DIR}..."
 sudo mkdir -p "$INSTALL_DIR"
