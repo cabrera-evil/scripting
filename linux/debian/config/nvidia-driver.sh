@@ -108,8 +108,12 @@ sudo apt install -y \
 	nvidia-detect \
 	nvidia-driver \
 	nvidia-settings \
+	nvidia-cuda-dev \
+	nvidia-cuda-toolkit \
 	firmware-misc-nonfree \
-	mesa-utils
+	mesa-utils \
+	bumblebee \
+	primus
 success "NVIDIA driver installation completed"
 
 # ================================
