@@ -19,25 +19,25 @@ SILENT=false
 # LOGGING
 # ===================================
 log() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${BLUE}==> $1${NC}"
-    fi
+	if [ "$SILENT" != true ]; then
+		echo -e "${BLUE}==> $1${NC}"
+	fi
 }
 warn() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${YELLOW}⚠️  $1${NC}" >&2
-    fi
+	if [ "$SILENT" != true ]; then
+		echo -e "${YELLOW}⚠️  $1${NC}" >&2
+	fi
 }
 success() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${GREEN}✓ $1${NC}"
-    fi
+	if [ "$SILENT" != true ]; then
+		echo -e "${GREEN}✓ $1${NC}"
+	fi
 }
 abort() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${RED}✗ $1${NC}" >&2
-    fi
-    exit 1
+	if [ "$SILENT" != true ]; then
+		echo -e "${RED}✗ $1${NC}" >&2
+	fi
+	exit 1
 }
 # ================================
 # USER INPUT FUNCTION
@@ -90,24 +90,26 @@ options nouveau modeset=0
 alias nouveau off
 alias lbm-nouveau off
 EOF
+	log "Updating initramfs..."
+	sudo update-initramfs -u || abort "Failed to update initramfs"
 	success "Nouveau blacklisted"
 else
 	warn "Nouveau blacklist already exists"
 fi
-log "Updating initramfs..."
-sudo update-initramfs -u || abort "Failed to update initramfs"
 
 # ================================
 # DRIVER INSTALLATION
 # ===================================
 log "Updating package repositories..."
-sudo apt update || abort "Failed to update package list"
+sudo apt update
 log "Installing NVIDIA driver packages..."
 sudo apt install -y \
+	linux-headers-amd64 \
+	nvidia-detect \
 	nvidia-driver \
 	nvidia-settings \
 	firmware-misc-nonfree \
-	mesa-utils || abort "Failed to install NVIDIA packages"
+	mesa-utils
 success "NVIDIA driver installation completed"
 
 # ================================
