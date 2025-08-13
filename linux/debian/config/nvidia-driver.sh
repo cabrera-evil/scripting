@@ -108,8 +108,6 @@ sudo apt install -y \
 	nvidia-detect \
 	nvidia-driver \
 	nvidia-settings \
-	nvidia-cuda-dev \
-	nvidia-cuda-toolkit \
 	firmware-misc-nonfree \
 	mesa-utils \
 	bumblebee \
