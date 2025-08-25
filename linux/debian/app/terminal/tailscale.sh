@@ -19,25 +19,25 @@ SILENT=false
 # LOGGING
 # ===================================
 log() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${BLUE}==> $1${NC}"
-    fi
+	if [ "$SILENT" != true ]; then
+		echo -e "${BLUE}==> $1${NC}"
+	fi
 }
 warn() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${YELLOW}⚠️  $1${NC}" >&2
-    fi
+	if [ "$SILENT" != true ]; then
+		echo -e "${YELLOW}⚠️  $1${NC}" >&2
+	fi
 }
 success() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${GREEN}✓ $1${NC}"
-    fi
+	if [ "$SILENT" != true ]; then
+		echo -e "${GREEN}✓ $1${NC}"
+	fi
 }
 abort() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${RED}✗ $1${NC}" >&2
-    fi
-    exit 1
+	if [ "$SILENT" != true ]; then
+		echo -e "${RED}✗ $1${NC}" >&2
+	fi
+	exit 1
 }
 
 # ===================================
@@ -52,5 +52,8 @@ done
 # ===================================
 log "Installing Tailscale..."
 curl -fsSL https://tailscale.com/install.sh | sh
+
+log "Enabling tailscale operator mode for user $USER..."
+sudo tailscale set --operator="$USER"
 
 success "Tailscale installation complete!"
