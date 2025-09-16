@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in curl grep wget unzip sudo dpkg sed awk; do
-  command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # DETECT LATEST VERSION FROM PRODUCT HISTORY PAGE
 # ===================================
 log "Detecting latest 1Password CLI version..."

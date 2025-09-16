@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in sudo cat sed tee chown mkdir chmod; do
-    command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # CONFIG
 # ===================================
 KUBECONFIG_SRC="/etc/rancher/k3s/k3s.yaml"

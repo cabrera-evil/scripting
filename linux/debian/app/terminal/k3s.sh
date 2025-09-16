@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in curl sh; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # INSTALL K3S
 # ===================================
 log "Installing latest stable version of k3s..."

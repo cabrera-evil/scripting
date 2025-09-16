@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in wget sudo dpkg apt; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # CONFIG
 # ===================================
 URL="https://discord.com/api/download?platform=linux"

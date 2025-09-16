@@ -53,13 +53,6 @@ prompt_yes_no() {
 	done
 }
 
-# ===================================
-# CHECKS
-# ===================================
-for cmd in git; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
 GRUB_FILE="/etc/default/grub"
 GRUB_BACKUP="/etc/default/grub.bak"
 THEMES_DIR="/usr/share/grub/themes"

@@ -39,22 +39,8 @@ die() {
 # ===============================
 # CHECKS
 # ===============================
-for cmd in curl grep sed uname; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# Debian-based only
 if ! command -v dpkg >/dev/null; then
 	die "This installer currently supports Debian/Ubuntu (requires 'dpkg')."
-fi
-
-APT_CMD=""
-if command -v apt-get >/dev/null; then
-	APT_CMD="apt-get"
-elif command -v apt >/dev/null; then
-	APT_CMD="apt"
-else
-	die "Neither 'apt-get' nor 'apt' found; cannot resolve dependencies."
 fi
 
 # ===============================
@@ -99,30 +85,7 @@ curl -fL --retry 3 "$URL" -o "${TMP_DIR}/${DEB}" || {
 # INSTALL
 # ===============================
 log "Installing ${DEB}..."
-# Try apt to handle dependencies automatically if available
-if [ "$APT_CMD" = "apt-get" ] || [ "$APT_CMD" = "apt" ]; then
-	# Modern apt supports installing local debs directly
-	sudo "$APT_CMD" update -y >/dev/null 2>&1 || true
-	if sudo "$APT_CMD" install -y "${TMP_DIR}/${DEB}"; then
-		:
-	else
-		warn "apt install failed; attempting dpkg -i then fix dependencies."
-		sudo dpkg -i "${TMP_DIR}/${DEB}" || true
-		sudo "$APT_CMD" -f install -y
-	fi
-else
-	# Fallback path (shouldn't hit because we gate on apt/dpkg earlier)
-	sudo dpkg -i "${TMP_DIR}/${DEB}" || true
-	sudo apt-get -f install -y
-fi
+sudo apt update -y >/dev/null 2>&1 || true
+sudo apt install -y "${TMP_DIR}/${DEB}"
 
-# ===============================
-# VERIFY
-# ===============================
-if command -v rustdesk >/dev/null; then
-	RD_VER="$(rustdesk --version 2>/dev/null || true)"
-	success "RustDesk installed successfully. ${RD_VER:-}"
-else
-	warn "RustDesk binary not found in PATH, but package installation completed."
-	echo "Try running: /usr/lib/rustdesk/rustdesk or reboot if needed."
-fi
+success "RustDesk installed successfully."

@@ -37,13 +37,6 @@ die() {
 }
 
 # ================================
-# CHECKS
-# ===================================
-for cmd in sudo apt; do
-  command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ================================
 # APT PACKAGE MAINTENANCE
 # ===================================
 log "Updating APT package lists..."

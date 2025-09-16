@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in git ssh-keygen ssh-add xclip xdg-open pgrep; do
-    command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # GIT EMAIL
 # ===================================
 email="$(git config user.email || true)"

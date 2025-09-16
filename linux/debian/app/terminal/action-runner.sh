@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in curl wget shasum jq sudo tar; do
-  command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # DETECT LATEST VERSION AND HASH
 # ===================================
 log "Detecting latest GitHub Actions Runner release..."

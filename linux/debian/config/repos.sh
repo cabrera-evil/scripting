@@ -37,13 +37,6 @@ die() {
 }
 
 # ================================
-# CHECKS
-# ===================================
-for cmd in sudo sed tee; do
-    command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ================================
 # COMMENT OUT CURRENT ENTRIES
 # ===================================
 log "Commenting out existing 'deb' entries in /etc/apt/sources.list..."

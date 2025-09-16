@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in grep awk sed basename dirname source; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # CONFIG
 # ===================================
 DISTRO_NAME=$(. /etc/os-release && echo "$ID")

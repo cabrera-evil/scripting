@@ -37,13 +37,6 @@ die() {
 }
 
 # ===============================
-# CHECKS
-# ===================================
-for cmd in curl tar grep sed uname; do
-    command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===============================
 # CONFIG
 # ===================================
 ARCH=$(uname -m)

@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in sudo apt tee; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # FLATPAK SETUP
 # ===================================
 if ! command -v flatpak &>/dev/null; then

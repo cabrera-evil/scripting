@@ -36,13 +36,6 @@ die() {
 	exit 1
 }
 
-# ===================================
-# CHECKS
-# ===================================
-for cmd in curl jq wget dpkg; do
-  command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
 ARCH="$(dpkg --print-architecture)"
 CODENAME="$(. /etc/os-release && echo "$VERSION_CODENAME")"
 

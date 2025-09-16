@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in wget tar sudo; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # CONFIG
 # ===================================
 URL="https://dl.pstmn.io/download/latest/linux64"

@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in curl tar grep uname chmod mv sudo; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # INSTALL HELM
 # ===================================
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash

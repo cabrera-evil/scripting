@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in wget curl jq tar sudo tee find; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # DETECT LATEST VERSION
 # ===================================
 log "Detecting latest JetBrains Toolbox version..."

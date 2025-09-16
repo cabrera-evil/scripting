@@ -35,12 +35,6 @@ die() {
 	error "$*"
 	exit 1
 }
-# ===============================
-# CHECKS
-# ===================================
-for cmd in wget curl sudo; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
 
 # ===============================
 # DETECT ARCHITECTURE

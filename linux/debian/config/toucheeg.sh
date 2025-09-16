@@ -37,13 +37,6 @@ die() {
 }
 
 # ================================
-# CHECKS
-# ===================================
-for cmd in curl grep wget dpkg sudo; do
-    command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ================================
 # DETECT LATEST VERSION
 # ===================================
 log "Detecting latest touchegg version..."

@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in curl gpg sudo apt install; do
-	command -v "${cmd%% *}" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # SETUP REPOSITORY
 # ===================================
 log "Setting up Docker repository..."

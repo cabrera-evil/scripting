@@ -37,11 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-command -v git >/dev/null || die "Command 'git' is required but not found."
-
-# ===================================
 # INPUT
 # ===================================
 read -rp "$(echo -e "${BLUE}Enter GitHub username: ${NC}")" username

@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in wget tar curl sudo; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # RESOLVE LATEST VERSION URL
 # ===================================
 BASE_URL="https://td.telegram.org/tlinux/tsetup.tar.xz"

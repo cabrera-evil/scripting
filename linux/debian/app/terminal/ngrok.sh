@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in curl sudo tee apt; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # ADD GPG KEY AND REPOSITORY
 # ===================================
 log "Adding Ngrok GPG key..."

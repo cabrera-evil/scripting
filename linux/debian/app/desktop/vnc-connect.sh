@@ -37,13 +37,6 @@ die() {
 }
 
 # ===================================
-# CHECKS
-# ===================================
-for cmd in wget curl grep sed sudo dpkg apt; do
-	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
-done
-
-# ===================================
 # DETECT LATEST VERSION
 # ===================================
 log "Detecting latest RealVNC Connect .deb version..."
