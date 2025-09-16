@@ -4,47 +4,43 @@ set -euo pipefail
 # ===================================
 # COLORS
 # ===================================
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-NC='\033[0m'
+if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
+	readonly RED=$'\033[0;31m'
+	readonly GREEN=$'\033[0;32m'
+	readonly YELLOW=$'\033[0;33m'
+	readonly BLUE=$'\033[0;34m'
+	readonly MAGENTA=$'\033[0;35m'
+	readonly BOLD=$'\033[1m'
+	readonly DIM=$'\033[2m'
+	readonly NC=$'\033[0m'
+else
+	readonly RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
+fi
 
 # ===================================
 # GLOBAL CONFIGURATION
 # ===================================
-SILENT=false
+QUIET=false
+DEBUG=false
 
 # ===================================
-# LOGGING
+# LOGGING FUNCTIONS
 # ===================================
-log() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${BLUE}==> $1${NC}"
-    fi
-}
-warn() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${YELLOW}⚠️  $1${NC}" >&2
-    fi
-}
-success() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${GREEN}✓ $1${NC}"
-    fi
-}
-abort() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${RED}✗ $1${NC}" >&2
-    fi
-    exit 1
+log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
+warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
+error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
+success() { [[ "$QUIET" != true ]] && printf "${GREEN}✓${NC} %s\n" "$*" || true; }
+debug() { [[ "$DEBUG" == true ]] && printf "${MAGENTA}⚈${NC} DEBUG: %s\n" "$*" >&2 || true; }
+die() {
+	error "$*"
+	exit 1
 }
 
 # ===================================
 # CHECKS
 # ===================================
 for cmd in curl gpg sudo apt install; do
-	command -v "${cmd%% *}" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "${cmd%% *}" >/dev/null || die "Command '$cmd' is required but not found."
 done
 
 # ===================================
@@ -97,7 +93,7 @@ if grep -qE '^127\.0\.0\.1\s+.*localhost' /etc/hosts; then
 		success "'host.docker.internal' is already present in /etc/hosts."
 	fi
 else
-	abort "No '127.0.0.1 localhost' entry found in /etc/hosts. Please add one manually."
+	die "No '127.0.0.1 localhost' entry found in /etc/hosts. Please add one manually."
 fi
 
 # ==================================

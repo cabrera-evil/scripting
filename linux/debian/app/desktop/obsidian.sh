@@ -4,47 +4,43 @@ set -euo pipefail
 # ===================================
 # COLORS
 # ===================================
-RED='\e[0;31m'
-GREEN='\e[0;32m'
-YELLOW='\e[1;33m'
-BLUE='\e[0;34m'
-NC='\e[0m' # No Color
+if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
+	readonly RED=$'\033[0;31m'
+	readonly GREEN=$'\033[0;32m'
+	readonly YELLOW=$'\033[0;33m'
+	readonly BLUE=$'\033[0;34m'
+	readonly MAGENTA=$'\033[0;35m'
+	readonly BOLD=$'\033[1m'
+	readonly DIM=$'\033[2m'
+	readonly NC=$'\033[0m'
+else
+	readonly RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
+fi # No Color
 
 # ===================================
 # GLOBAL CONFIGURATION
 # ===================================
-SILENT=false
+QUIET=false
+DEBUG=false
 
 # ===================================
-# LOGGING
+# LOGGING FUNCTIONS
 # ===================================
-log() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${BLUE}==> $1${NC}"
-    fi
-}
-warn() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${YELLOW}⚠️  $1${NC}" >&2
-    fi
-}
-success() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${GREEN}✓ $1${NC}"
-    fi
-}
-abort() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${RED}✗ $1${NC}" >&2
-    fi
-    exit 1
+log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
+warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
+error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
+success() { [[ "$QUIET" != true ]] && printf "${GREEN}✓${NC} %s\n" "$*" || true; }
+debug() { [[ "$DEBUG" == true ]] && printf "${MAGENTA}⚈${NC} DEBUG: %s\n" "$*" >&2 || true; }
+die() {
+	error "$*"
+	exit 1
 }
 
 # ===================================
 # CHECKS
 # ===================================
 for cmd in curl jq wget sudo dpkg apt; do
-	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
 done
 
 # ===================================
@@ -52,7 +48,7 @@ done
 # ===================================
 log "Fetching latest Obsidian version..."
 API_URL="https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest"
-VERSION=$(curl -s "$API_URL" | jq -r .tag_name | sed 's/^v//') || abort "Unable to retrieve version."
+VERSION=$(curl -s "$API_URL" | jq -r .tag_name | sed 's/^v//') || die "Unable to retrieve version."
 ARCH="$(dpkg --print-architecture)"
 FILENAME="obsidian_${VERSION}_${ARCH}.deb"
 DOWNLOAD_URL="https://github.com/obsidianmd/obsidian-releases/releases/download/v${VERSION}/${FILENAME}"

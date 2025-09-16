@@ -4,47 +4,43 @@ set -euo pipefail
 # ===================================
 # COLORS
 # ===================================
-RED='\e[0;31m'
-GREEN='\e[0;32m'
-YELLOW='\e[1;33m'
-BLUE='\e[0;34m'
-NC='\e[0m' # No Color
+if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
+	readonly RED=$'\033[0;31m'
+	readonly GREEN=$'\033[0;32m'
+	readonly YELLOW=$'\033[0;33m'
+	readonly BLUE=$'\033[0;34m'
+	readonly MAGENTA=$'\033[0;35m'
+	readonly BOLD=$'\033[1m'
+	readonly DIM=$'\033[2m'
+	readonly NC=$'\033[0m'
+else
+	readonly RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
+fi # No Color
 
 # ===================================
 # GLOBAL CONFIGURATION
 # ===================================
-SILENT=false
+QUIET=false
+DEBUG=false
 
 # ===================================
-# LOGGING
+# LOGGING FUNCTIONS
 # ===================================
-log() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${BLUE}==> $1${NC}"
-    fi
-}
-warn() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${YELLOW}⚠️  $1${NC}" >&2
-    fi
-}
-success() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${GREEN}✓ $1${NC}"
-    fi
-}
-abort() {
-    if [ "$SILENT" != true ]; then
-        echo -e "${RED}✗ $1${NC}" >&2
-    fi
-    exit 1
+log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
+warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
+error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
+success() { [[ "$QUIET" != true ]] && printf "${GREEN}✓${NC} %s\n" "$*" || true; }
+debug() { [[ "$DEBUG" == true ]] && printf "${MAGENTA}⚈${NC} DEBUG: %s\n" "$*" >&2 || true; }
+die() {
+	error "$*"
+	exit 1
 }
 
 # ===================================
 # CHECKS
 # ===================================
 for cmd in grep awk sed basename dirname source; do
-	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
 done
 
 # ===================================
@@ -54,13 +50,13 @@ DISTRO_NAME=$(. /etc/os-release && echo "$ID")
 DISTRO_PATH="linux/$DISTRO_NAME"
 DIR="$(pwd)"
 
-[[ ! -d "$DIR/$DISTRO_PATH" ]] && abort "$DISTRO_NAME is not supported."
+[[ ! -d "$DIR/$DISTRO_PATH" ]] && die "$DISTRO_NAME is not supported."
 
 # ===================================
 # ERROR HANDLERS
 # ===================================
-trap 'abort "Aborted."' INT
-trap 'abort "Last command \"$BASH_COMMAND\" failed with exit code $?."' ERR
+trap 'die "Aborted."' INT
+trap 'die "Last command \"$BASH_COMMAND\" failed with exit code $?."' ERR
 
 # ===================================
 # UTILS
@@ -129,10 +125,10 @@ handle_scripts() {
 	local script_desc=$3
 	local path="$DIR/$DISTRO_PATH/$script_subdir"
 
-	[[ ! -d "$path" ]] && abort "Path not found: $path"
+	[[ ! -d "$path" ]] && die "Path not found: $path"
 
 	script_list=("$path"/*.sh)
-	((${#script_list[@]} == 0)) && abort "No scripts found in $script_subdir"
+	((${#script_list[@]} == 0)) && die "No scripts found in $script_subdir"
 
 	title "Available $script_desc:"
 	for i in "${!script_list[@]}"; do
@@ -166,7 +162,7 @@ menu() {
 			;;
 		5) handle_scripts configure "config" "configuration scripts" ;;
 		0) break ;;
-		*) abort "Invalid option: $opt" ;;
+		*) die "Invalid option: $opt" ;;
 		esac
 		read -n1 -rsp $'\nPress any key to continue...\n'
 	done

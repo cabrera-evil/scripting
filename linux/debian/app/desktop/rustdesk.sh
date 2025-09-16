@@ -4,39 +4,35 @@ set -euo pipefail
 # ===============================
 # COLORS
 # ===============================
-RED='\e[0;31m'
-GREEN='\e[0;32m'
-YELLOW='\e[1;33m'
-BLUE='\e[0;34m'
-NC='\e[0m'
+if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
+	readonly RED=$'\033[0;31m'
+	readonly GREEN=$'\033[0;32m'
+	readonly YELLOW=$'\033[0;33m'
+	readonly BLUE=$'\033[0;34m'
+	readonly MAGENTA=$'\033[0;35m'
+	readonly BOLD=$'\033[1m'
+	readonly DIM=$'\033[2m'
+	readonly NC=$'\033[0m'
+else
+	readonly RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
+fi
 
 # ===============================
 # GLOBAL CONFIGURATION
 # ===============================
-SILENT=false
+QUIET=false
+DEBUG=false
 
 # ===============================
 # LOGGING
 # ===============================
-log() {
-	if [ "$SILENT" != true ]; then
-		echo -e "${BLUE}==> $1${NC}"
-	fi
-}
-warn() {
-	if [ "$SILENT" != true ]; then
-		echo -e "${YELLOW}⚠️  $1${NC}" >&2
-	fi
-}
-success() {
-	if [ "$SILENT" != true ]; then
-		echo -e "${GREEN}✓ $1${NC}"
-	fi
-}
-abort() {
-	if [ "$SILENT" != true ]; then
-		echo -e "${RED}✗ $1${NC}" >&2
-	fi
+log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
+warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
+error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
+success() { [[ "$QUIET" != true ]] && printf "${GREEN}✓${NC} %s\n" "$*" || true; }
+debug() { [[ "$DEBUG" == true ]] && printf "${MAGENTA}⚈${NC} DEBUG: %s\n" "$*" >&2 || true; }
+die() {
+	error "$*"
 	exit 1
 }
 
@@ -44,12 +40,12 @@ abort() {
 # CHECKS
 # ===============================
 for cmd in curl grep sed uname; do
-	command -v "$cmd" >/dev/null || abort "Command '$cmd' is required but not found."
+	command -v "$cmd" >/dev/null || die "Command '$cmd' is required but not found."
 done
 
 # Debian-based only
 if ! command -v dpkg >/dev/null; then
-	abort "This installer currently supports Debian/Ubuntu (requires 'dpkg')."
+	die "This installer currently supports Debian/Ubuntu (requires 'dpkg')."
 fi
 
 APT_CMD=""
@@ -58,7 +54,7 @@ if command -v apt-get >/dev/null; then
 elif command -v apt >/dev/null; then
 	APT_CMD="apt"
 else
-	abort "Neither 'apt-get' nor 'apt' found; cannot resolve dependencies."
+	die "Neither 'apt-get' nor 'apt' found; cannot resolve dependencies."
 fi
 
 # ===============================
@@ -73,7 +69,7 @@ case "$ARCH_RAW" in
 x86_64 | amd64) ARCH_DEB="x86_64" ;;
 aarch64 | arm64) ARCH_DEB="aarch64" ;;
 *)
-	abort "Unsupported architecture: $ARCH_RAW"
+	die "Unsupported architecture: $ARCH_RAW"
 	;;
 esac
 
@@ -96,7 +92,7 @@ URL="https://github.com/rustdesk/rustdesk/releases/download/${VERSION}/${DEB}"
 
 log "Downloading RustDesk ${VERSION} (${ARCH_DEB})..."
 curl -fL --retry 3 "$URL" -o "${TMP_DIR}/${DEB}" || {
-	abort "Download failed from: $URL"
+	die "Download failed from: $URL"
 }
 
 # ===============================
