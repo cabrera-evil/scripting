@@ -15,7 +15,7 @@ if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	NC=$'\033[0m'
 else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
-fi # No Color
+fi
 
 # ===================================
 # GLOBAL CONFIGURATION
@@ -37,12 +37,14 @@ die() {
 }
 
 # ===================================
-# INSTALL TAILSCALE
+# INSTALL GITGUARDIANSHIELD
 # ===================================
-log "Installing Tailscale..."
-curl -fsSL https://tailscale.com/install.sh | sh
+log "Installing latest stable version of GitGuardianShield..."
+curl -1sLf \
+	'https://dl.cloudsmith.io/public/gitguardian/ggshield/setup.deb.sh' |
+	sudo -E bash || die "Failed to install GitGuardianShield."
 
-log "Enabling tailscale operator mode for user $USER..."
-sudo tailscale set --operator="$USER"
-
-success "Tailscale installation complete!"
+# ===================================
+# DONE
+# ===================================
+success "GitGuardianShield installation completed successfully."

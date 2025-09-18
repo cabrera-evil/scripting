@@ -37,22 +37,34 @@ die() {
 }
 
 # ===============================
-# INSTALL SNAPD
+# DETECT ARCHITECTURE
 # ===================================
-log "Installing snapd..."
-sudo apt update -y
-sudo apt install snapd -y
+ARCH=$(uname -m)
+case "$ARCH" in
+x86_64) ARCH="linux" ;;
+aarch64) ARCH="linux-arm64" ;;
+*) die "Unsupported architecture: $ARCH" ;;
+esac
 
 # ===============================
-# INSTALL MICROK8S
+# DETECT LATEST VERSION
 # ===================================
-log "Installing microk8s via snap..."
-sudo snap install microk8s --classic
+log "Fetching latest Snyk version..."
+VERSION=$(curl -s https://api.github.com/repos/snyk/cli/releases/latest | grep -Po '"tag_name": *"v\K[^"]*')
+[ -z "$VERSION" ] && die "Unable to detect latest version."
 
 # ===============================
-# ADD USER TO MICROK8S GROUP
+# DOWNLOAD AND INSTALL
 # ===================================
-log "Adding current user to microk8s group..."
-sudo usermod -aG microk8s "$USER"
+FILENAME="snyk-${ARCH}"
+URL="https://github.com/snyk/cli/releases/download/v${VERSION}/${FILENAME}"
+TMP_DIR="$(mktemp -d)"
+TMP_FILE="${TMP_DIR}/snyk"
 
-success "MicroK8s installation complete. You may need to log out and back in to apply group changes."
+log "Downloading Snyk v${VERSION}..."
+wget -O "$TMP_FILE" "$URL" || die "Failed to download Snyk."
+
+log "Installing to /usr/local/bin..."
+sudo apt install "${TMP_DIR}/snyk"
+
+success "Snyk v${VERSION} installed successfully!"

@@ -5,16 +5,16 @@ set -euo pipefail
 # COLORS
 # ===================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
-	readonly RED=$'\033[0;31m'
-	readonly GREEN=$'\033[0;32m'
-	readonly YELLOW=$'\033[0;33m'
-	readonly BLUE=$'\033[0;34m'
-	readonly MAGENTA=$'\033[0;35m'
-	readonly BOLD=$'\033[1m'
-	readonly DIM=$'\033[2m'
-	readonly NC=$'\033[0m'
+	RED=$'\033[0;31m'
+	GREEN=$'\033[0;32m'
+	YELLOW=$'\033[0;33m'
+	BLUE=$'\033[0;34m'
+	MAGENTA=$'\033[0;35m'
+	BOLD=$'\033[1m'
+	DIM=$'\033[2m'
+	NC=$'\033[0m'
 else
-	readonly RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
+	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
 # ===================================
