@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,9 +36,9 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # SETUP REPOSITORY
-# ===================================
+# ================================
 log "Setting up Docker repository..."
 sudo apt update -y
 sudo apt install -y ca-certificates curl gnupg
@@ -56,9 +56,9 @@ echo \
 
 sudo apt update -y
 
-# ===================================
+# ================================
 # INSTALL DOCKER COMPONENTS
-# ===================================
+# ================================
 log "Installing Docker Engine and components..."
 sudo apt install -y \
 	docker-ce \
@@ -67,15 +67,15 @@ sudo apt install -y \
 	docker-buildx-plugin \
 	docker-compose-plugin
 
-# ===================================
+# ================================
 # POST-INSTALL SETUP
-# ===================================
+# ================================
 log "Adding current user to docker group..."
 sudo usermod -aG docker "$USER"
 
-# ===================================
+# ================================
 # UPDATE /ETC/HOSTS
-# ===================================
+# ================================
 log "Ensuring 'host.docker.internal' is in /etc/hosts..."
 
 if grep -qE '^127\.0\.0\.1\s+.*localhost' /etc/hosts; then
@@ -91,7 +91,7 @@ fi
 
 # ==================================
 # ENABLE DOCKER SERVICES
-# ===================================
+# ================================
 log "Enabling Docker and containerd services..."
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service

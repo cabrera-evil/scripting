@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,9 +36,9 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # DETECT VERSION AND ARCHITECTURE
-# ===================================
+# ================================
 log "Fetching latest Obsidian version..."
 API_URL="https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest"
 VERSION=$(curl -s "$API_URL" | jq -r .tag_name | sed 's/^v//') || die "Unable to retrieve version."
@@ -51,14 +51,14 @@ log "Detected version: v$VERSION"
 log "Architecture: $ARCH"
 log "Downloading: $FILENAME"
 
-# ===================================
+# ================================
 # DOWNLOAD
-# ===================================
+# ================================
 wget -O "$TMP_DEB" "$DOWNLOAD_URL"
 
-# ===================================
+# ================================
 # INSTALL
-# ===================================
+# ================================
 log "Installing Obsidian..."
 sudo apt install -y "$TMP_DEB"
 

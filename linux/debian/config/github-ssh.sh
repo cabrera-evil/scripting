@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,9 +36,9 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # GIT EMAIL
-# ===================================
+# ================================
 email="$(git config user.email || true)"
 
 if [ -z "$email" ]; then
@@ -53,9 +53,9 @@ fi
 
 [ -z "$email" ] && die "Email cannot be empty."
 
-# ===================================
+# ================================
 # SSH KEY NAME
-# ===================================
+# ================================
 default_key="id_ed25519"
 key_path="$HOME/.ssh/$default_key"
 
@@ -66,15 +66,15 @@ if [[ "$override_key" =~ ^[Yy]$ ]]; then
     key_path="$HOME/.ssh/$custom_key"
 fi
 
-# ===================================
+# ================================
 # GENERATE SSH KEY
-# ===================================
+# ================================
 log "Generating SSH key..."
 ssh-keygen -t ed25519 -C "$email" -f "$key_path" -N ""
 
-# ===================================
+# ================================
 # START SSH AGENT
-# ===================================
+# ================================
 if ! pgrep -u "$USER" ssh-agent >/dev/null; then
     log "Starting SSH agent..."
     eval "$(ssh-agent -s)"
@@ -82,21 +82,21 @@ fi
 
 ssh-add "$key_path"
 
-# ===================================
+# ================================
 # COPY TO CLIPBOARD
-# ===================================
+# ================================
 log "Copying public key to clipboard..."
 xclip -selection clipboard <"$key_path.pub"
 
-# ===================================
+# ================================
 # DISPLAY PUBLIC KEY
-# ===================================
+# ================================
 log "Public key content:"
 cat "$key_path.pub"
 
-# ===================================
+# ================================
 # FINAL INSTRUCTIONS
-# ===================================
+# ================================
 log "The public key has been copied to the clipboard."
 read -rp "Press Enter to open GitHub SSH settings in your browser..."
 xdg-open "https://github.com/settings/ssh/new"

@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -38,7 +38,7 @@ die() {
 
 # ================================
 # USER INPUT FUNCTION
-# ===================================
+# ================================
 prompt_yes_no() {
 	local prompt="$1"
 	local response
@@ -55,7 +55,7 @@ prompt_yes_no() {
 
 # ================================
 # INITIAL CHECKS
-# ===================================
+# ================================
 [[ $EUID -eq 0 ]] && die "Do not run as root. Script will use sudo when needed."
 log "Checking required commands..."
 for cmd in lspci sudo apt tee; do
@@ -67,7 +67,7 @@ success "Found: $nvidia_gpu"
 
 # ================================
 # CHECK EXISTING INSTALLATION
-# ===================================
+# ================================
 if command -v nvidia-smi >/dev/null 2>&1; then
 	success "NVIDIA driver already installed"
 	nvidia-smi --query-gpu=driver_version --format=csv,noheader,nounits 2>/dev/null || true
@@ -77,7 +77,7 @@ fi
 
 # ================================
 # SYSTEM PREPARATION
-# ===================================
+# ================================
 log "Blacklisting Nouveau driver..."
 if [[ ! -f /etc/modprobe.d/blacklist-nouveau.conf ]]; then
 	sudo tee /etc/modprobe.d/blacklist-nouveau.conf >/dev/null <<'EOF'
@@ -96,7 +96,7 @@ fi
 
 # ================================
 # DRIVER INSTALLATION
-# ===================================
+# ================================
 log "Updating package repositories..."
 sudo apt update
 log "Installing NVIDIA driver packages..."
@@ -113,7 +113,7 @@ success "NVIDIA driver installation completed"
 
 # ================================
 # REBOOT HANDLING
-# ===================================
+# ================================
 warn "System reboot required to activate the driver"
 log "After reboot, verify with:"
 echo "  nvidia-smi"

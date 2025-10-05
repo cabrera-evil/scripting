@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,9 +36,9 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # INSTALL
-# ===================================
+# ================================
 log "Installing speedtest-cli..."
 curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
 sudo apt install -y speedtest

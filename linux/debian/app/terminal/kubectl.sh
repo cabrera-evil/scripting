@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,35 +36,35 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # CONFIG
-# ===================================
+# ================================
 ARCH="$(dpkg --print-architecture)"
 KUBECTL_VERSION="$(wget -qO- https://dl.k8s.io/release/stable.txt)"
 URL="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl"
 TMP_BIN="$(mktemp)"
 
-# ===================================
+# ================================
 # DOWNLOAD
-# ===================================
+# ================================
 log "Downloading kubectl ${KUBECTL_VERSION} for ${ARCH}..."
 wget -O "$TMP_BIN" "$URL"
 
-# ===================================
+# ================================
 # INSTALL
-# ===================================
+# ================================
 log "Installing kubectl to /usr/local/bin..."
 sudo install -o root -g root -m 0755 "$TMP_BIN" /usr/local/bin/kubectl
 
-# ===================================
+# ================================
 # AUTOCOMPLETION
-# ===================================
+# ================================
 log "Enabling bash autocompletion for kubectl..."
 if ! grep -q "source <(kubectl completion bash)" ~/.bashrc; then
 	echo "source <(kubectl completion bash)" >>~/.bashrc
 fi
 
-# ===================================
+# ================================
 # DONE
-# ===================================
+# ================================
 success "kubectl ${KUBECTL_VERSION} installed successfully."

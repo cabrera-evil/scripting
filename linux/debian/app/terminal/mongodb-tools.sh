@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,9 +36,9 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # DETECT LATEST VERSION
-# ===================================
+# ================================
 log "Detecting latest MongoDB Database Tools version..."
 LATEST_VERSION=$(curl -s https://www.mongodb.com/try/download/database-tools |
 	grep -oP 'mongodb-database-tools-debian12-[^"]+\.deb' |
@@ -48,23 +48,23 @@ LATEST_VERSION=$(curl -s https://www.mongodb.com/try/download/database-tools |
 
 [ -z "$LATEST_VERSION" ] && die "Could not detect latest version."
 
-# ===================================
+# ================================
 # CONFIG
-# ===================================
+# ================================
 ARCH="$(uname -m)"
 PACKAGE="mongodb-database-tools-debian12-${ARCH}-${LATEST_VERSION}.deb"
 URL="https://fastdl.mongodb.org/tools/db/${PACKAGE}"
 TMP_DEB="$(mktemp --suffix=.deb)"
 
-# ===================================
+# ================================
 # DOWNLOAD
-# ===================================
+# ================================
 log "Downloading MongoDB Database Tools v${LATEST_VERSION}..."
 wget -O "$TMP_DEB" "$URL"
 
-# ===================================
+# ================================
 # INSTALL
-# ===================================
+# ================================
 log "Installing package..."
 sudo apt install -y "$TMP_DEB"
 

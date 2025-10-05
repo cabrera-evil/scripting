@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,9 +36,9 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # USER INPUT FUNCTION
-# ===================================
+# ================================
 prompt_yes_no() {
 	local prompt="$1"
 	local response
@@ -57,21 +57,21 @@ GRUB_FILE="/etc/default/grub"
 GRUB_BACKUP="/etc/default/grub.bak"
 THEMES_DIR="/usr/share/grub/themes"
 
-# ===================================
+# ================================
 # BACKUP ORIGINAL GRUB CONFIG
-# ===================================
+# ================================
 log "Backing up GRUB configuration to $GRUB_BACKUP..."
 sudo cp "$GRUB_FILE" "$GRUB_BACKUP"
 
-# ===================================
+# ================================
 # SET GRUB_DEFAULT=SAVED
-# ===================================
+# ================================
 log "Setting GRUB_DEFAULT to 'saved'..."
 sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/' "$GRUB_FILE"
 
-# ===================================
+# ================================
 # ENSURE GRUB_SAVEDEFAULT=TRUE IS PRESENT
-# ===================================
+# ================================
 if grep -q '^GRUB_SAVEDEFAULT=true' "$GRUB_FILE"; then
 	warn "GRUB_SAVEDEFAULT already present. Skipping..."
 else
@@ -79,9 +79,9 @@ else
 	sudo sed -i '/^GRUB_DEFAULT=.*/a GRUB_SAVEDEFAULT=true' "$GRUB_FILE"
 fi
 
-# ===================================
+# ================================
 # SET GRUB_TIMEOUT=5
-# ===================================
+# ================================
 log "Setting GRUB_TIMEOUT to 5 seconds..."
 if grep -q '^GRUB_TIMEOUT=' "$GRUB_FILE"; then
 	sudo sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=5/' "$GRUB_FILE"
@@ -89,9 +89,9 @@ else
 	echo 'GRUB_TIMEOUT=5' | sudo tee -a "$GRUB_FILE" >/dev/null
 fi
 
-# ===================================
+# ================================
 # ENSURE GRUB_DISABLE_OS_PROBER=FALSE
-# ===================================
+# ================================
 log "Ensuring GRUB_DISABLE_OS_PROBER=false..."
 if grep -q '^#*GRUB_DISABLE_OS_PROBER=' "$GRUB_FILE"; then
 	sudo sed -i 's/^#*GRUB_DISABLE_OS_PROBER=.*/GRUB_DISABLE_OS_PROBER=false/' "$GRUB_FILE"
@@ -99,9 +99,9 @@ else
 	echo 'GRUB_DISABLE_OS_PROBER=false' | sudo tee -a "$GRUB_FILE" >/dev/null
 fi
 
-# ===================================
+# ================================
 # ASK ABOUT CATPPUCCIN GRUB THEME INSTALLATION
-# ===================================
+# ================================
 if prompt_yes_no "Do you want to install the Catppuccin GRUB theme?"; then
 	log "Installing Catppuccin GRUB theme..."
 
@@ -153,16 +153,16 @@ else
 	log "Skipping Catppuccin GRUB theme installation..."
 fi
 
-# ===================================
+# ================================
 # APPLY GRUB CONFIGURATION
-# ===================================
+# ================================
 log "Updating GRUB..."
 sudo update-grub
 success "GRUB configuration updated successfully!"
 
-# ===================================
+# ================================
 # ASK ABOUT REBOOT
-# ===================================
+# ================================
 if prompt_yes_no "Do you want to reboot now to see the changes?"; then
 	log "Rebooting system..."
 	sudo reboot

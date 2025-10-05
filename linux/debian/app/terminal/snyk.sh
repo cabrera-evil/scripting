@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ===============================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -38,7 +38,7 @@ die() {
 
 # ===============================
 # DETECT ARCHITECTURE
-# ===================================
+# ================================
 ARCH=$(uname -m)
 case "$ARCH" in
 x86_64) ARCH="linux" ;;
@@ -48,14 +48,14 @@ esac
 
 # ===============================
 # DETECT LATEST VERSION
-# ===================================
+# ================================
 log "Fetching latest Snyk version..."
 VERSION=$(curl -s https://api.github.com/repos/snyk/cli/releases/latest | grep -Po '"tag_name": *"v\K[^"]*')
 [ -z "$VERSION" ] && die "Unable to detect latest version."
 
 # ===============================
 # DOWNLOAD AND INSTALL
-# ===================================
+# ================================
 FILENAME="snyk-${ARCH}"
 URL="https://github.com/snyk/cli/releases/download/v${VERSION}/${FILENAME}"
 TMP_DIR="$(mktemp -d)"

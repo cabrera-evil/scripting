@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,15 +36,15 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # INPUT
-# ===================================
+# ================================
 read -rp "$(echo -e "${BLUE}Enter GitHub username: ${NC}")" username
 read -rp "$(echo -e "${BLUE}Enter GitHub email: ${NC}")" email
 
-# ===================================
+# ================================
 # GIT CONFIGURATION
-# ===================================
+# ================================
 log "Setting up Git global username and email..."
 git config --global user.name "$username"
 git config --global user.email "$email"

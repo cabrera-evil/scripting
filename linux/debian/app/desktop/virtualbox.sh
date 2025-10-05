@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,9 +36,9 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # DETECT LATEST VERSION
-# ===================================
+# ================================
 log "Fetching latest VirtualBox version..."
 LATEST_VERSION=$(curl -fsSL https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT) || die "Could not retrieve latest version"
 ARCH="$(dpkg --print-architecture)"
@@ -60,22 +60,22 @@ DEB_NAME=$(
 # Extract build number from the filename (optional, for logging)
 BUILD="$(printf '%s\n' "$DEB_NAME" | sed -n "s/^virtualbox-${SERIES}_${LATEST_VERSION}-\([0-9]\+\)~Debian~${CODENAME}_${ARCH}\.deb$/\1/p")"
 
-# ===================================
+# ================================
 # CONFIG
-# ===================================
+# ================================
 FILENAME="$DEB_NAME"
 URL="https://download.virtualbox.org/virtualbox/${LATEST_VERSION}/${FILENAME}"
 TMP_DEB="$(mktemp --suffix=.deb)"
 
-# ===================================
+# ================================
 # DOWNLOAD
-# ===================================
+# ================================
 log "Downloading VirtualBox $LATEST_VERSION (build ${BUILD:-unknown}) for $ARCH on $CODENAME..."
 wget -O "$TMP_DEB" "$URL" || die "Download failed: $URL"
 
-# ===================================
+# ================================
 # INSTALL
-# ===================================
+# ================================
 log "Installing VirtualBox..."
 sudo apt install -y "$TMP_DEB" || die "Installation failed"
 

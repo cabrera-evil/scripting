@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ===============================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -38,7 +38,7 @@ die() {
 
 # ===============================
 # CONFIG
-# ===================================
+# ================================
 ARCH=$(uname -m)
 TMP_DIR="$(mktemp -d)"
 BIN_PATH="/usr/local/bin/lazydocker"
@@ -52,14 +52,14 @@ esac
 
 # ===============================
 # DETECT LATEST VERSION
-# ===================================
+# ================================
 log "Fetching latest version of Lazydocker..."
 VERSION=$(curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')
 [ -z "$VERSION" ] && die "Unable to determine latest version."
 
 # ===============================
 # DOWNLOAD
-# ===================================
+# ================================
 TARBALL="lazydocker_${VERSION}_${ARCH}.tar.gz"
 URL="https://github.com/jesseduffield/lazydocker/releases/download/v${VERSION}/${TARBALL}"
 
@@ -71,12 +71,12 @@ tar -xzf "${TMP_DIR}/${TARBALL}" -C "$TMP_DIR"
 
 # ===============================
 # INSTALL
-# ===================================
+# ================================
 log "Installing to ${BIN_PATH}..."
 sudo mv "${TMP_DIR}/lazydocker" "$BIN_PATH"
 sudo chmod +x "$BIN_PATH"
 
 # ===============================
 # DONE
-# ===================================
+# ================================
 success "Lazydocker v${VERSION} installed successfully."

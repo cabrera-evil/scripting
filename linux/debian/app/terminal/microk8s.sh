@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ===============================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -38,20 +38,20 @@ die() {
 
 # ===============================
 # INSTALL SNAPD
-# ===================================
+# ================================
 log "Installing snapd..."
 sudo apt update -y
 sudo apt install snapd -y
 
 # ===============================
 # INSTALL MICROK8S
-# ===================================
+# ================================
 log "Installing microk8s via snap..."
 sudo snap install microk8s --classic
 
 # ===============================
 # ADD USER TO MICROK8S GROUP
-# ===================================
+# ================================
 log "Adding current user to microk8s group..."
 sudo usermod -aG microk8s "$USER"
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,18 +36,18 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # CONFIG
-# ===================================
+# ================================
 ARCH=$(dpkg --print-architecture)
 KEYRING_DIR="/etc/apt/keyrings"
 KEYRING_FILE="$KEYRING_DIR/githubcli-archive-keyring.gpg"
 SOURCE_LIST="/etc/apt/sources.list.d/github-cli.list"
 REPO_URL="https://cli.github.com/packages"
 
-# ===================================
+# ================================
 # SETUP
-# ===================================
+# ================================
 log "Creating keyring directory..."
 sudo mkdir -p -m 755 "$KEYRING_DIR"
 
@@ -60,9 +60,9 @@ sudo chmod go+r "$KEYRING_FILE"
 log "Adding GitHub CLI APT repository..."
 echo "deb [arch=${ARCH} signed-by=${KEYRING_FILE}] ${REPO_URL} stable main" | sudo tee "$SOURCE_LIST" >/dev/null
 
-# ===================================
+# ================================
 # INSTALL
-# ===================================
+# ================================
 log "Updating APT package list..."
 sudo apt update -y
 

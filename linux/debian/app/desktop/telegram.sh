@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===================================
+# ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -36,38 +36,38 @@ die() {
 	exit 1
 }
 
-# ===================================
+# ================================
 # RESOLVE LATEST VERSION URL
-# ===================================
+# ================================
 BASE_URL="https://td.telegram.org/tlinux/tsetup.tar.xz"
 FINAL_URL=$(curl -Ls -o /dev/null -w %{url_effective} "$BASE_URL") || die "Failed to resolve latest Telegram URL"
 VERSION=$(basename "$FINAL_URL" | sed -E 's/tsetup\.([0-9.]+)\.tar\.xz/\1/') || die "Failed to parse version from URL"
 
-# ===================================
+# ================================
 # CONFIG
-# ===================================
+# ================================
 INSTALL_DIR="/opt/Telegram"
 TMP_DIR="$(mktemp -d)"
 TMP_FILE="${TMP_DIR}/telegram.tar.xz"
 DESKTOP_ENTRY="/usr/share/applications/telegram.desktop"
 TELEGRAM_BIN="/usr/bin/telegram"
 
-# ===================================
+# ================================
 # DOWNLOAD
-# ===================================
+# ================================
 log "Downloading Telegram Desktop version $VERSION..."
 wget -O "$TMP_FILE" "$FINAL_URL"
 
-# ===================================
+# ================================
 # EXTRACT
-# ===================================
+# ================================
 log "Extracting archive..."
 tar -xf "$TMP_FILE" -C "$TMP_DIR"
 EXTRACTED_DIR="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'Telegram' | head -n1)"
 
-# ===================================
+# ================================
 # REPLACE EXISTING INSTALLATION
-# ===================================
+# ================================
 if [ -e "$INSTALL_DIR" ]; then
 	log "Removing existing Telegram at $INSTALL_DIR..."
 	sudo rm -rf "$INSTALL_DIR"
@@ -76,9 +76,9 @@ fi
 log "Installing Telegram to $INSTALL_DIR..."
 sudo mv "$EXTRACTED_DIR" "$INSTALL_DIR"
 
-# ===================================
+# ================================
 # CREATE .DESKTOP FILE
-# ===================================
+# ================================
 log "Creating desktop entry..."
 sudo tee "$DESKTOP_ENTRY" >/dev/null <<EOF
 [Desktop Entry]
@@ -92,9 +92,9 @@ Icon=${INSTALL_DIR}/telegram.png
 Categories=Network;InstantMessaging;
 EOF
 
-# ===================================
+# ================================
 # CREATE SYMLINK
-# ===================================
+# ================================
 if [ -e "$TELEGRAM_BIN" ]; then
 	log "Removing existing Telegram binary link..."
 	sudo rm -f "$TELEGRAM_BIN"

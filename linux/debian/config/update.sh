@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ================================
 # COLORS
-# ===================================
+# ================================
 if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
 	RED=$'\033[0;31m'
 	GREEN=$'\033[0;32m'
@@ -17,15 +17,15 @@ else
 	RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
 fi # No Color
 
-# ===================================
+# ================================
 # GLOBAL CONFIGURATION
-# ===================================
+# ================================
 QUIET=false
 DEBUG=false
 
-# ===================================
+# ================================
 # LOGGING FUNCTIONS
-# ===================================
+# ================================
 log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
 warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
 error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
@@ -38,7 +38,7 @@ die() {
 
 # ================================
 # APT PACKAGE MAINTENANCE
-# ===================================
+# ================================
 log "Updating APT package lists..."
 sudo apt update -y
 
@@ -62,7 +62,7 @@ sudo apt --fix-broken install -y
 
 # ================================
 # FLATPAK (OPTIONAL)
-# ===================================
+# ================================
 if command -v flatpak >/dev/null; then
   log "Updating Flatpak packages..."
   sudo flatpak update --assumeyes
@@ -70,7 +70,7 @@ fi
 
 # ================================
 # SNAP (OPTIONAL)
-# ===================================
+# ================================
 if command -v snap >/dev/null; then
   log "Refreshing Snap packages..."
   sudo snap refresh
@@ -78,5 +78,5 @@ fi
 
 # ================================
 # DONE
-# ===================================
+# ================================
 success "System updates and package maintenance completed successfully!"
