@@ -48,28 +48,28 @@ log "Detected Debian codename: ${BOLD}${CODENAME}${NC}"
 # COMMENT OUT CURRENT ENTRIES
 # ================================
 log "Commenting out existing 'deb' entries in /etc/apt/sources.list..."
-# sudo sed -i 's/^\s*deb /# deb /g' /etc/apt/sources.list
+sudo sed -i 's/^\s*deb /# deb /g' /etc/apt/sources.list
 
 # ================================
 # ADD NEW SOURCES
 # ================================
 log "Adding Debian ${CODENAME} repository entries..."
 
-# sudo tee /etc/apt/sources.list >/dev/null <<EOF
-# deb http://deb.debian.org/debian/ ${CODENAME} contrib main non-free non-free-firmware
-# # deb-src http://deb.debian.org/debian/ ${CODENAME} contrib main non-free non-free-firmware
-#
-# deb http://deb.debian.org/debian/ ${CODENAME}-updates contrib main non-free non-free-firmware
-# # deb-src http://deb.debian.org/debian/ ${CODENAME}-updates contrib main non-free non-free-firmware
-#
-# deb http://deb.debian.org/debian/ ${CODENAME}-proposed-updates contrib main non-free non-free-firmware
-# # deb-src http://deb.debian.org/debian/ ${CODENAME}-proposed-updates contrib main non-free non-free-firmware
-#
-# deb http://deb.debian.org/debian/ ${CODENAME}-backports contrib main non-free non-free-firmware
-# # deb-src http://deb.debian.org/debian/ ${CODENAME}-backports contrib main non-free non-free-firmware
-#
-# deb http://deb.debian.org/debian-security/ ${CODENAME}-security contrib main non-free non-free-firmware
-# # deb-src http://deb.debian.org/debian-security/ ${CODENAME}-security contrib main non-free non-free-firmware
-# EOF
+sudo tee /etc/apt/sources.list >/dev/null <<EOF
+deb http://deb.debian.org/debian/ ${CODENAME} contrib main non-free non-free-firmware
+# deb-src http://deb.debian.org/debian/ ${CODENAME} contrib main non-free non-free-firmware
+
+deb http://deb.debian.org/debian/ ${CODENAME}-updates contrib main non-free non-free-firmware
+# deb-src http://deb.debian.org/debian/ ${CODENAME}-updates contrib main non-free non-free-firmware
+
+deb http://deb.debian.org/debian/ ${CODENAME}-proposed-updates contrib main non-free non-free-firmware
+# deb-src http://deb.debian.org/debian/ ${CODENAME}-proposed-updates contrib main non-free non-free-firmware
+
+deb http://deb.debian.org/debian/ ${CODENAME}-backports contrib main non-free non-free-firmware
+# deb-src http://deb.debian.org/debian/ ${CODENAME}-backports contrib main non-free non-free-firmware
+
+deb http://deb.debian.org/debian-security/ ${CODENAME}-security contrib main non-free non-free-firmware
+# deb-src http://deb.debian.org/debian-security/ ${CODENAME}-security contrib main non-free non-free-firmware
+EOF
 
 success "Debian ${CODENAME} repositories updated successfully!"
