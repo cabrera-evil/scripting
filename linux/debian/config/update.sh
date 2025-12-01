@@ -43,13 +43,13 @@ log "Updating APT package lists..."
 sudo apt update -y
 
 log "Upgrading installed packages..."
-sudo apt upgrade -y
+sudo apt upgrade -y --fix-missing 
 
 log "Applying dist-upgrade..."
-sudo apt dist-upgrade -y
+sudo apt dist-upgrade -y --fix-missing
 
 log "Applying full-upgrade..."
-sudo apt full-upgrade -y
+sudo apt full-upgrade -y --fix-missing
 
 log "Removing unused packages..."
 sudo apt autoremove -y

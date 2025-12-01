@@ -47,7 +47,6 @@ packages=(
 	htop            # interactive process viewer
 	lsd             # modern ls with icons
 	ncdu            # disk usage analyzer
-	neofetch        # system info display
 	ranger          # terminal file manager
 	rsync           # fast file synchronization
 	tmux            # terminal multiplexer
@@ -72,7 +71,6 @@ packages=(
 	gnupg           # for GPG key management
 	openssh-client  # SSH utilities
 	ca-certificates # SSL certs bundle
-	dnsutils        # dig, nslookup
 	whois           # whois query tool
 	vim             # text editor
 )

@@ -22,6 +22,7 @@ fi # No Color
 # ================================
 QUIET=false
 DEBUG=false
+FLAVOR="proprietary" # or "open"
 
 # ================================
 # LOGGING
@@ -35,6 +36,35 @@ die() {
 	error "$*"
 	exit 1
 }
+
+# ================================
+# ARGUMENT PARSING
+# ================================
+usage() {
+	cat <<EOF
+Usage: $0 [--quiet] [--debug]
+
+Installs NVIDIA driver on Debian 13 "Trixie" following the Debian Wiki steps.
+
+Options:
+  --quiet    Reduce output
+  --debug    Increase output
+  -h, --help Show this help
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+	--quiet) QUIET=true ;;
+	--debug) DEBUG=true ;;
+	-h | --help)
+		usage
+		exit 0
+		;;
+	*) die "Unknown option: $1" ;;
+	esac
+	shift
+done
 
 # ================================
 # USER INPUT FUNCTION
@@ -53,14 +83,32 @@ prompt_yes_no() {
 	done
 }
 
+prompt_flavor() {
+	if prompt_yes_no "Install the open driver flavor (nvidia-open-kernel-dkms) instead of proprietary?"; then
+		FLAVOR="open"
+	else
+		FLAVOR="proprietary"
+	fi
+}
+
 # ================================
 # INITIAL CHECKS
 # ================================
 [[ $EUID -eq 0 ]] && die "Do not run as root. Script will use sudo when needed."
 log "Checking required commands..."
-for cmd in lspci sudo apt tee; do
+for cmd in lspci sudo apt tee dpkg; do
 	command -v "$cmd" >/dev/null || die "Command '$cmd' not found"
 done
+
+if [[ -r /etc/os-release ]]; then
+	. /etc/os-release
+	if [[ "${VERSION_CODENAME:-}" != "trixie" ]]; then
+		warn "Detected suite '${VERSION_CODENAME:-unknown}', but this script targets Debian 13 \"Trixie\"."
+	fi
+else
+	warn "/etc/os-release not readable; cannot verify distribution."
+fi
+
 log "Detecting NVIDIA GPU..."
 nvidia_gpu=$(lspci | grep -i nvidia | head -1) || die "No NVIDIA GPU detected"
 success "Found: $nvidia_gpu"
@@ -76,39 +124,61 @@ if command -v nvidia-smi >/dev/null 2>&1; then
 fi
 
 # ================================
+# FLAVOR SELECTION
+# ================================
+prompt_flavor
+log "Selected driver flavor: ${FLAVOR}"
+
+# ================================
+# REPOSITORY VALIDATION
+# ================================
+check_components() {
+	local file="$1"
+	local missing=()
+	for comp in main contrib non-free non-free-firmware; do
+		if ! grep -Eq "^[[:space:]]*deb .*[[:space:]]${comp}([[:space:]]|$)" "$file"; then
+			missing+=("$comp")
+		fi
+	done
+	[[ ${#missing[@]} -eq 0 ]] || die "Missing components (${missing[*]}) in $file. Add main contrib non-free non-free-firmware before continuing."
+}
+
+if [[ -f /etc/apt/sources.list.d/debian.sources ]]; then
+	check_components /etc/apt/sources.list.d/debian.sources
+elif [[ -f /etc/apt/sources.list ]]; then
+	check_components /etc/apt/sources.list
+else
+	warn "Could not find /etc/apt/sources.list.d/debian.sources or /etc/apt/sources.list. Ensure repos include main contrib non-free non-free-firmware."
+fi
+
+warn "If Secure Boot is enabled, enroll your MOK before installing (see Debian Wiki)."
+if [[ -d /etc/dracut.conf.d ]]; then
+	warn "dracut detected; ensure /etc/dracut.conf.d/10-nvidia.conf includes modprobe configs as per Debian Wiki."
+fi
+
+# ================================
 # SYSTEM PREPARATION
 # ================================
-log "Blacklisting Nouveau driver..."
-if [[ ! -f /etc/modprobe.d/blacklist-nouveau.conf ]]; then
-	sudo tee /etc/modprobe.d/blacklist-nouveau.conf >/dev/null <<'EOF'
-blacklist nouveau
-blacklist lbm-nouveau
-options nouveau modeset=0
-alias nouveau off
-alias lbm-nouveau off
-EOF
-	log "Updating initramfs..."
-	sudo update-initramfs -u || die "Failed to update initramfs"
-	success "Nouveau blacklisted"
-else
-	warn "Nouveau blacklist already exists"
-fi
+log "Installing kernel headers for DKMS..."
+sudo apt update
+sudo apt install -y "linux-headers-$(dpkg --print-architecture)"
 
 # ================================
 # DRIVER INSTALLATION
 # ================================
 log "Updating package repositories..."
 sudo apt update
-log "Installing NVIDIA driver packages..."
+
+log "Installing NVIDIA driver packages (${FLAVOR} flavor)..."
+kernel_pkg="nvidia-kernel-dkms"
+[[ "$FLAVOR" == "open" ]] && kernel_pkg="nvidia-open-kernel-dkms"
+
 sudo apt install -y \
-	linux-headers-amd64 \
-	nvidia-detect \
+	"$kernel_pkg" \
 	nvidia-driver \
-	nvidia-settings \
 	firmware-misc-nonfree \
-	mesa-utils \
-	bumblebee \
-	primus
+	mesa-utils
+
 success "NVIDIA driver installation completed"
 
 # ================================
@@ -119,6 +189,8 @@ log "After reboot, verify with:"
 echo "  nvidia-smi"
 echo "  nvidia-settings"
 echo "  glxinfo | grep 'OpenGL renderer'"
+echo "  cat /sys/module/nvidia_drm/parameters/modeset"
+echo "  # If modeset is N, add: echo \"options nvidia-drm modeset=1\" | sudo tee /etc/modprobe.d/nvidia-options.conf"
 if prompt_yes_no "Reboot now?"; then
 	log "Rebooting..."
 	sleep 1
