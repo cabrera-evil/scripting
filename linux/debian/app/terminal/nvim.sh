@@ -40,7 +40,12 @@ die() {
 # CONFIG
 # ================================
 ARCH="$(uname -m)"
-URL="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${ARCH}.tar.gz"
+# GitHub release assets use "arm64" instead of "aarch64"; normalize here.
+case "$ARCH" in
+	aarch64) TARGET_ARCH="arm64" ;;
+	*) TARGET_ARCH="$ARCH" ;;
+esac
+URL="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${TARGET_ARCH}.tar.gz"
 TMP_TAR="$(mktemp --suffix=.tar.gz)"
 INSTALL_DIR="/opt/nvim"
 BIN_LINK="/usr/local/bin/nvim"
