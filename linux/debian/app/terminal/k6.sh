@@ -39,33 +39,78 @@ die() {
 # ================================
 # CONFIG
 # ================================
-K6_GPG_KEY="C5AD17C747E3415A3642D57D77C6C491D6AC1D69"
-KEYRING_PATH="/usr/share/keyrings/k6-archive-keyring.gpg"
-SOURCES_LIST="/etc/apt/sources.list.d/k6.list"
-KEYSERVER="hkp://keyserver.ubuntu.com:80"
+INSTALL_DIR="/usr/local/bin"
+TEMP_DIR=$(mktemp -d)
+
+# Cleanup on exit
+trap 'rm -rf "$TEMP_DIR"' EXIT
 
 # ================================
-# ADD GPG KEY
+# DETECT ARCHITECTURE
 # ================================
-log "Adding k6 GPG key to keyring..."
-sudo gpg --no-default-keyring --keyring "$KEYRING_PATH" --keyserver "$KEYSERVER" --recv-keys "$K6_GPG_KEY"
+ARCH=$(uname -m)
+case "$ARCH" in
+x86_64)
+	K6_ARCH="amd64"
+	;;
+aarch64 | arm64)
+	K6_ARCH="arm64"
+	;;
+*)
+	die "Unsupported architecture: $ARCH"
+	;;
+esac
 
 # ================================
-# ADD REPOSITORY
+# DETECT LATEST VERSION
 # ================================
-log "Adding k6 repository to sources list..."
-echo "deb [signed-by=${KEYRING_PATH}] https://dl.k6.io/deb stable main" | sudo tee "$SOURCES_LIST" >/dev/null
+log "Fetching latest k6 version..."
+K6_VERSION=$(curl -s https://api.github.com/repos/grafana/k6/releases/latest | grep -Po '"tag_name": *"\K[^"]*')
+[ -z "$K6_VERSION" ] && die "Unable to detect latest version."
 
 # ================================
-# UPDATE APT
+# DOWNLOAD
 # ================================
-log "Updating package lists..."
-sudo apt-get update
+FILENAME="k6-${K6_VERSION}-linux-${K6_ARCH}.tar.gz"
+CHECKSUM_FILE="k6-${K6_VERSION}-checksums.txt"
+URL="https://github.com/grafana/k6/releases/download/${K6_VERSION}/${FILENAME}"
+CHECKSUM_URL="https://github.com/grafana/k6/releases/download/${K6_VERSION}/${CHECKSUM_FILE}"
+
+log "Downloading k6 ${K6_VERSION} for ${K6_ARCH}..."
+if ! curl -fsSL -o "${TEMP_DIR}/${FILENAME}" "$URL"; then
+	die "Failed to download k6 from $URL"
+fi
+
+log "Downloading checksums..."
+if ! curl -fsSL -o "${TEMP_DIR}/${CHECKSUM_FILE}" "$CHECKSUM_URL"; then
+	die "Failed to download checksums from $CHECKSUM_URL"
+fi
+
+# ================================
+# VERIFY CHECKSUM
+# ================================
+log "Verifying checksum..."
+cd "$TEMP_DIR"
+grep "${FILENAME}" "${CHECKSUM_FILE}" | sha256sum -c - || die "Checksum verification failed"
+
+# ================================
+# EXTRACT
+# ================================
+log "Extracting k6..."
+tar -xzf "$FILENAME" || die "Failed to extract archive"
 
 # ================================
 # INSTALL
 # ================================
-log "Installing k6..."
-sudo apt-get install -y k6
+log "Installing k6 to ${INSTALL_DIR}..."
+sudo install -m 0755 "k6-${K6_VERSION}-linux-${K6_ARCH}/k6" "$INSTALL_DIR/k6" || die "Failed to install k6"
 
-success "k6 installed successfully"
+# ================================
+# VERIFY INSTALLATION
+# ================================
+if command -v k6 &>/dev/null; then
+	VERSION=$(k6 version)
+	success "k6 installed successfully: $VERSION"
+else
+	die "k6 installation failed"
+fi
