@@ -37,6 +37,23 @@ die() {
 }
 
 # ================================
+# UTILITY FUNCTIONS
+# ================================
+prompt_yes_no() {
+	local prompt="$1"
+	local response
+	while true; do
+		echo -e "${YELLOW}$prompt (y/N): ${NC}"
+		read -r response
+		case "$response" in
+		[Yy] | [Yy][Ee][Ss]) return 0 ;;
+		[Nn] | [Nn][Oo] | "") return 1 ;;
+		*) echo -e "${RED}Please answer yes (y) or no (n).${NC}" ;;
+		esac
+	done
+}
+
+# ================================
 # CONFIG
 # ================================
 URL="https://discord.com/api/download?platform=linux"
@@ -54,4 +71,30 @@ wget -O "$TMP_DEB" "$URL"
 log "Installing Discord..."
 sudo apt install -y "$TMP_DEB"
 
-success "Discord installed successfully!"
+log "Discord installed."
+
+# ================================
+# CONFIG UPDATE
+# ================================
+if prompt_yes_no "Update Discord settings to skip host update?"; then
+	log "Updating Discord settings..."
+	SETTINGS_PATH="$HOME/.config/discord/settings.json"
+	if [[ -f "$SETTINGS_PATH" ]]; then
+		command -v jq >/dev/null 2>&1 || die "jq is required to update existing settings.json"
+		TMP_SETTINGS="$(mktemp)"
+		jq '.SKIP_HOST_UPDATE = true' "$SETTINGS_PATH" >"$TMP_SETTINGS"
+		mv "$TMP_SETTINGS" "$SETTINGS_PATH"
+	else
+		mkdir -p "$(dirname "$SETTINGS_PATH")"
+		cat >"$SETTINGS_PATH" <<'EOF'
+{
+  "SKIP_HOST_UPDATE": true
+}
+EOF
+	fi
+	success "Discord settings updated."
+else
+	log "Skipping Discord settings update."
+fi
+
+success "Discord setup complete!"
