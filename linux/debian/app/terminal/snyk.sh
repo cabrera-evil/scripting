@@ -37,6 +37,11 @@ die() {
 }
 
 # ===============================
+# SCRIPT CONFIGURATION
+# ================================
+INSTALL_DIR="/usr/local/bin"
+
+# ===============================
 # DETECT ARCHITECTURE
 # ================================
 ARCH=$(uname -m)
@@ -47,24 +52,18 @@ aarch64) ARCH="linux-arm64" ;;
 esac
 
 # ===============================
-# DETECT LATEST VERSION
-# ================================
-log "Fetching latest Snyk version..."
-VERSION=$(curl -s https://api.github.com/repos/snyk/cli/releases/latest | grep -Po '"tag_name": *"v\K[^"]*')
-[ -z "$VERSION" ] && die "Unable to detect latest version."
-
-# ===============================
 # DOWNLOAD AND INSTALL
 # ================================
 FILENAME="snyk-${ARCH}"
-URL="https://github.com/snyk/cli/releases/download/v${VERSION}/${FILENAME}"
+URL="https://downloads.snyk.io/cli/stable/${FILENAME}"
 TMP_DIR="$(mktemp -d)"
 TMP_FILE="${TMP_DIR}/snyk"
+trap 'rm -rf "${TMP_DIR}"' EXIT
 
-log "Downloading Snyk v${VERSION}..."
+log "Downloading Snyk..."
 wget -O "$TMP_FILE" "$URL" || die "Failed to download Snyk."
 
-log "Installing to /usr/local/bin..."
-sudo apt install "${TMP_DIR}/snyk"
+log "Installing to ${INSTALL_DIR}..."
+sudo install -m 0755 "$TMP_FILE" "${INSTALL_DIR}/snyk"
 
-success "Snyk v${VERSION} installed successfully!"
+success "Snyk installed successfully!"

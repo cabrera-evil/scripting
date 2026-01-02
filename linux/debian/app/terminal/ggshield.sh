@@ -37,12 +37,16 @@ die() {
 }
 
 # ================================
-# INSTALL GITGUARDIANSHIELD
+# INSTALL GGSHIELD
 # ================================
-log "Installing latest stable version of GitGuardianShield..."
+log "Configuring ggshield repository..."
 curl -1sLf \
 	'https://dl.cloudsmith.io/public/gitguardian/ggshield/setup.deb.sh' |
-	sudo -E bash || die "Failed to install GitGuardianShield."
+	sudo -E bash || die "Failed to configure ggshield repository."
+
+log "Installing ggshield..."
+sudo apt-get update -y || die "Failed to update package lists."
+sudo apt-get install -y ggshield || die "Failed to install ggshield."
 
 # ================================
 # DONE
