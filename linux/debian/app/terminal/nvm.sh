@@ -48,7 +48,7 @@ NVM_VERSION=$(curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest |
 # INSTALL NVM
 # ================================
 log "Installing NVM ${NVM_VERSION}..."
-wget -qO- "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash
+wget -O- "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash
 
 # ===============================
 # SOURCE NVM IN CURRENT SESSION

@@ -52,7 +52,7 @@ log "Creating keyring directory..."
 sudo mkdir -p -m 755 "$KEYRING_DIR"
 
 log "Downloading GitHub CLI keyring..."
-wget -qO- "${REPO_URL}/githubcli-archive-keyring.gpg" | sudo tee "$KEYRING_FILE" >/dev/null
+wget -O- "${REPO_URL}/githubcli-archive-keyring.gpg" | sudo tee "$KEYRING_FILE" >/dev/null
 
 log "Setting permissions on keyring..."
 sudo chmod go+r "$KEYRING_FILE"

@@ -40,7 +40,7 @@ die() {
 # CONFIG
 # ================================
 ARCH="$(dpkg --print-architecture)"
-KUBECTL_VERSION="$(wget -qO- https://dl.k8s.io/release/stable.txt)"
+KUBECTL_VERSION="$(wget -O- https://dl.k8s.io/release/stable.txt)"
 URL="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl"
 TMP_BIN="$(mktemp)"
 
