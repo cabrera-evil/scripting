@@ -39,9 +39,12 @@ die() {
 # ================================
 # RESOLVE LATEST VERSION URL
 # ================================
-BASE_URL="https://td.telegram.org/tlinux/tsetup.tar.xz"
+BASE_URL="https://telegram.org/dl/desktop/linux"
 FINAL_URL=$(curl -Ls -o /dev/null -w %{url_effective} "$BASE_URL") || die "Failed to resolve latest Telegram URL"
-VERSION=$(basename "$FINAL_URL" | sed -E 's/tsetup\.([0-9.]+)\.tar\.xz/\1/') || die "Failed to parse version from URL"
+VERSION="$(basename "$FINAL_URL" | sed -nE 's/tsetup\.([0-9.]+)\.tar\.xz/\1/p')"
+if [[ -z "$VERSION" ]]; then
+	VERSION="latest"
+fi
 
 # ================================
 # CONFIG
@@ -51,6 +54,8 @@ TMP_DIR="$(mktemp -d)"
 TMP_FILE="${TMP_DIR}/telegram.tar.xz"
 DESKTOP_ENTRY="/usr/share/applications/telegram.desktop"
 TELEGRAM_BIN="/usr/bin/telegram"
+ICON_URL="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/telegram.png"
+ICON_PATH="${INSTALL_DIR}/telegram.png"
 
 # ================================
 # DOWNLOAD
@@ -77,6 +82,12 @@ log "Installing Telegram to $INSTALL_DIR..."
 sudo mv "$EXTRACTED_DIR" "$INSTALL_DIR"
 
 # ================================
+# INSTALL ICON
+# ================================
+log "Installing Telegram icon..."
+sudo wget -O "$ICON_PATH" "$ICON_URL"
+
+# ================================
 # CREATE .DESKTOP FILE
 # ================================
 log "Creating desktop entry..."
@@ -88,7 +99,7 @@ Comment=Fast and secure messaging
 Exec=${INSTALL_DIR}/Telegram
 Terminal=false
 Type=Application
-Icon=${INSTALL_DIR}/telegram.png
+Icon=${ICON_PATH}
 Categories=Network;InstantMessaging;
 EOF
 
