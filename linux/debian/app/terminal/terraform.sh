@@ -53,9 +53,8 @@ sudo apt update && sudo apt install -y gnupg software-properties-common
 # INSTALL GPG KEY
 # ================================
 log "Installing HashiCorp GPG key..."
-wget -O- "$GPG_URL" |
-	gpg --dearmor |
-	sudo tee "$KEYRING_PATH" >/dev/null
+wget -O - "$GPG_URL" |
+	sudo gpg --dearmor -o "$KEYRING_PATH"
 
 # ================================
 # VERIFY GPG KEY
