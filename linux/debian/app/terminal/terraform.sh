@@ -47,7 +47,7 @@ KEYRING_PATH="/usr/share/keyrings/hashicorp-archive-keyring.gpg"
 # INSTALL PREREQUISITES
 # ================================
 log "Updating package list and installing prerequisites..."
-sudo apt update && sudo apt install -y gnupg software-properties-common
+sudo apt update && sudo apt install -y gnupg
 
 # ================================
 # INSTALL GPG KEY
