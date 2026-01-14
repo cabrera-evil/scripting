@@ -37,57 +37,46 @@ die() {
 }
 
 # ================================
-# SCRIPT CONFIGURATION
+# CONFIG
 # ================================
-REPO="localstack/localstack-cli"
-BIN_NAME="localstack"
-INSTALL_DIR="/usr/local/lib/localstack"
-BIN_PATH="/usr/local/bin/${BIN_NAME}"
+ARCH="$(dpkg --print-architecture)"
 TMP_DIR="$(mktemp -d)"
 
 # ================================
-# DETECT ARCHITECTURE
+# ARCH CHECK
 # ================================
-ARCH=$(uname -m)
-case "$ARCH" in
-x86_64) ARCH="amd64" ;;
-aarch64) ARCH="arm64" ;;
-*) die "Unsupported architecture: $ARCH" ;;
-esac
+if [[ "$ARCH" != "amd64" ]]; then
+	die "Unsupported architecture: ${ARCH} (requires amd64)"
+fi
 
 # ================================
 # DETECT LATEST VERSION
 # ================================
-log "Fetching latest LocalStack CLI version..."
-VERSION=$(curl -s "https://api.github.com/repos/${REPO}/releases/latest" | grep -Po '"tag_name":\s*"v\K[^\"]+')
+log "Fetching latest Semaphore version..."
+VERSION=$(curl -s https://api.github.com/repos/semaphoreui/semaphore/releases/latest | grep -Po '"tag_name": *"v\K[^"]*')
 [ -z "$VERSION" ] && die "Unable to detect latest version."
 
 # ================================
-# DOWNLOAD AND INSTALL
+# CONFIG
 # ================================
-FILENAME="localstack-cli-${VERSION}-linux-${ARCH}.tar.gz"
-URL="https://github.com/${REPO}/releases/download/v${VERSION}/${FILENAME}"
+URL="https://github.com/semaphoreui/semaphore/releases/download/v${VERSION}/semaphore_${VERSION}_linux_amd64.tar.gz"
 
-log "Downloading LocalStack CLI v${VERSION}..."
-curl -L "$URL" -o "${TMP_DIR}/${FILENAME}"
+# ================================
+# DOWNLOAD AND EXTRACT
+# ================================
+log "Downloading Semaphore v${VERSION}..."
+curl -sL "$URL" -o "${TMP_DIR}/semaphore.tar.gz"
 
 log "Extracting..."
-tar -xzf "${TMP_DIR}/${FILENAME}" -C "$TMP_DIR"
+tar -xzf "${TMP_DIR}/semaphore.tar.gz" -C "$TMP_DIR"
 
-BIN_CANDIDATE="$(find "$TMP_DIR" -type f -name "$BIN_NAME" -perm -u+x | head -n 1 || true)"
-[ -z "$BIN_CANDIDATE" ] && die "Expected ${BIN_NAME} binary not found in archive."
-
-BIN_DIR="$(dirname "$BIN_CANDIDATE")"
-
-log "Installing to ${INSTALL_DIR}..."
-sudo mkdir -p "$INSTALL_DIR"
-sudo cp -R "${BIN_DIR}/." "$INSTALL_DIR"
-sudo chmod +x "${INSTALL_DIR}/${BIN_NAME}"
-
-log "Linking binary to ${BIN_PATH}..."
-sudo ln -sf "${INSTALL_DIR}/${BIN_NAME}" "$BIN_PATH"
+# ================================
+# INSTALL
+# ================================
+log "Installing Semaphore to /usr/local/bin..."
+sudo install -m 0755 "${TMP_DIR}/semaphore" /usr/local/bin/semaphore
 
 # ================================
 # DONE
 # ================================
-success "LocalStack CLI v${VERSION} installed successfully."
+success "Semaphore v${VERSION} installed successfully."
