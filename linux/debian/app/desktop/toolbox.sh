@@ -43,7 +43,7 @@ log "Detecting latest JetBrains Toolbox version..."
 TOOLBOX_VERSION=$(curl -s "https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release" |
 	jq -r '.TBA[0].build') || die "Failed to fetch Toolbox version"
 
-TOOLBOX_URL="https://download.jetbrains.com/toolbox/jetbrains-toolbox-${TOOLBOX_VERSION}.tar.gz"
+TOOLBOX_URL="https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-${TOOLBOX_VERSION}.tar.gz"
 TMP_DIR="$(mktemp -d)"
 TMP_FILE="${TMP_DIR}/toolbox.tar.gz"
 INSTALL_DIR="/opt/jetbrains-toolbox"
