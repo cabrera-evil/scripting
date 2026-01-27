@@ -73,7 +73,7 @@ sudo mv "$EXTRACTED_DIR" "$INSTALL_DIR"
 # SYMLINK
 # ================================
 log "Creating symlink at /usr/local/bin..."
-sudo ln -sf "${INSTALL_DIR}/jetbrains-toolbox" "$BIN_PATH"
+sudo ln -sf "${INSTALL_DIR}/bin/jetbrains-toolbox" "$BIN_PATH"
 
 # ================================
 # DESKTOP ENTRY
@@ -84,8 +84,8 @@ sudo tee "$DESKTOP_ENTRY" >/dev/null <<EOF
 Name=JetBrains Toolbox
 GenericName=JetBrains Toolbox
 Comment=Manage JetBrains IDEs
-Exec=${INSTALL_DIR}/jetbrains-toolbox
-Icon=${INSTALL_DIR}/toolbox.svg
+Exec=${INSTALL_DIR}/bin/jetbrains-toolbox
+Icon=${INSTALL_DIR}/bin/toolbox-tray-color.png
 Terminal=false
 Type=Application
 Categories=Development;
