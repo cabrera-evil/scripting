@@ -65,7 +65,7 @@ URL="https://github.com/semaphoreui/semaphore/releases/download/v${VERSION}/sema
 # DOWNLOAD AND EXTRACT
 # ================================
 log "Downloading Semaphore v${VERSION}..."
-curl -sL "$URL" -o "${TMP_DIR}/semaphore.tar.gz"
+wget -O "${TMP_DIR}/semaphore.tar.gz" "$URL"
 
 log "Extracting..."
 tar -xzf "${TMP_DIR}/semaphore.tar.gz" -C "$TMP_DIR"

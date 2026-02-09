@@ -64,7 +64,7 @@ TARBALL="lazydocker_${VERSION}_${ARCH}.tar.gz"
 URL="https://github.com/jesseduffield/lazydocker/releases/download/v${VERSION}/${TARBALL}"
 
 log "Downloading Lazydocker v${VERSION}..."
-curl -sL "$URL" -o "${TMP_DIR}/${TARBALL}"
+wget -O "${TMP_DIR}/${TARBALL}" "$URL"
 
 log "Extracting..."
 tar -xzf "${TMP_DIR}/${TARBALL}" -C "$TMP_DIR"

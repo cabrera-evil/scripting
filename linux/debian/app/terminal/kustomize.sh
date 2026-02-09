@@ -57,7 +57,7 @@ FILENAME="kustomize_v${LATEST_TAG}_${ARCH}.tar.gz"
 URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${LATEST_TAG}/${FILENAME}"
 
 log "Downloading kustomize v${LATEST_TAG}..."
-curl -sL "$URL" -o "${TMP_DIR}/${FILENAME}"
+wget -O "${TMP_DIR}/${FILENAME}" "$URL"
 
 log "Extracting..."
 tar -xf "${TMP_DIR}/${FILENAME}" -C "$TMP_DIR"

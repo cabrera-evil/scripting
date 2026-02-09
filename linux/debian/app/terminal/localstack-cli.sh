@@ -69,7 +69,7 @@ FILENAME="localstack-cli-${VERSION}-linux-${ARCH}.tar.gz"
 URL="https://github.com/${REPO}/releases/download/v${VERSION}/${FILENAME}"
 
 log "Downloading LocalStack CLI v${VERSION}..."
-curl -L "$URL" -o "${TMP_DIR}/${FILENAME}"
+wget -O "${TMP_DIR}/${FILENAME}" "$URL"
 
 log "Extracting..."
 tar -xzf "${TMP_DIR}/${FILENAME}" -C "$TMP_DIR"

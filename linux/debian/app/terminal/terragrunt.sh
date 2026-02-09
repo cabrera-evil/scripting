@@ -62,8 +62,8 @@ BIN_URL="https://github.com/gruntwork-io/terragrunt/releases/download/${TAG}/${B
 SUMS_URL="https://github.com/gruntwork-io/terragrunt/releases/download/${TAG}/SHA256SUMS"
 
 log "Downloading Terragrunt ${TAG} for ${ARCH}..."
-curl -sL "$BIN_URL" -o "${TMP_DIR}/${BINARY_NAME}"
-curl -sL "$SUMS_URL" -o "${TMP_DIR}/SHA256SUMS"
+wget -O "${TMP_DIR}/${BINARY_NAME}" "$BIN_URL"
+wget -O "${TMP_DIR}/SHA256SUMS" "$SUMS_URL"
 
 # ================================
 # VERIFY CHECKSUM

@@ -61,7 +61,7 @@ URL="https://github.com/jesseduffield/lazygit/releases/download/v${VERSION}/${FI
 TMP_DIR="$(mktemp -d)"
 
 log "Downloading Lazygit v${VERSION}..."
-curl -sL "$URL" -o "${TMP_DIR}/lazygit.tar.gz"
+wget -O "${TMP_DIR}/lazygit.tar.gz" "$URL"
 
 log "Extracting..."
 tar -xzf "${TMP_DIR}/lazygit.tar.gz" -C "$TMP_DIR" lazygit

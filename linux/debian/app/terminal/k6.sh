@@ -77,12 +77,12 @@ URL="https://github.com/grafana/k6/releases/download/${K6_VERSION}/${FILENAME}"
 CHECKSUM_URL="https://github.com/grafana/k6/releases/download/${K6_VERSION}/${CHECKSUM_FILE}"
 
 log "Downloading k6 ${K6_VERSION} for ${K6_ARCH}..."
-if ! curl -fsSL -o "${TEMP_DIR}/${FILENAME}" "$URL"; then
+if ! wget -O "${TEMP_DIR}/${FILENAME}" "$URL"; then
 	die "Failed to download k6 from $URL"
 fi
 
 log "Downloading checksums..."
-if ! curl -fsSL -o "${TEMP_DIR}/${CHECKSUM_FILE}" "$CHECKSUM_URL"; then
+if ! wget -O "${TEMP_DIR}/${CHECKSUM_FILE}" "$CHECKSUM_URL"; then
 	die "Failed to download checksums from $CHECKSUM_URL"
 fi
 

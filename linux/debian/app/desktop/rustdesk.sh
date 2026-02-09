@@ -77,7 +77,7 @@ DEB="rustdesk-${VERSION}-${ARCH_DEB}.deb"
 URL="https://github.com/rustdesk/rustdesk/releases/download/${VERSION}/${DEB}"
 
 log "Downloading RustDesk ${VERSION} (${ARCH_DEB})..."
-curl -fL --retry 3 "$URL" -o "${TMP_DIR}/${DEB}" || {
+wget --tries=3 -O "${TMP_DIR}/${DEB}" "$URL" || {
 	die "Download failed from: $URL"
 }
 
