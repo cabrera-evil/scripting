@@ -37,59 +37,16 @@ die() {
 }
 
 # ================================
-# CONFIG
-# ================================
-KEY_URL="https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0x6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367"
-KEYRING_PATH="/usr/share/keyrings/ansible-archive-keyring.gpg"
-PPA_URL="http://ppa.launchpad.net/ansible/ansible/ubuntu"
-
-# ================================
-# DETERMINE UBUNTU CODENAME
-# ================================
-UBUNTU_CODENAME="${UBUNTU_CODENAME:-}"
-if [[ -z "$UBUNTU_CODENAME" ]]; then
-	DEBIAN_VERSION=$(source /etc/os-release && echo "${VERSION_ID:-}")
-	case "$DEBIAN_VERSION" in
-		"13") UBUNTU_CODENAME="noble" ;;
-		"12") UBUNTU_CODENAME="jammy" ;;
-		"11") UBUNTU_CODENAME="focal" ;;
-		"10") UBUNTU_CODENAME="bionic" ;;
-		*)
-			die "Unsupported Debian version '$DEBIAN_VERSION'. Set UBUNTU_CODENAME to a supported Ubuntu release."
-			;;
-	esac
-fi
-
-log "Using Ubuntu codename: $UBUNTU_CODENAME"
-
-# ================================
 # INSTALL PREREQUISITES
 # ================================
 log "Updating package list and installing prerequisites..."
 sudo apt update
-sudo apt install -y wget gnupg
-
-# ================================
-# INSTALL GPG KEY
-# ================================
-log "Installing Ansible GPG key..."
-wget -O - "$KEY_URL" |
-	sudo gpg --dearmor -o "$KEYRING_PATH"
-
-# ================================
-# ADD REPOSITORY
-# ================================
-log "Adding Ansible repository..."
-echo "deb [signed-by=$KEYRING_PATH] $PPA_URL $UBUNTU_CODENAME main" |
-	sudo tee /etc/apt/sources.list.d/ansible.list >/dev/null
+sudo apt install -y pipx
 
 # ================================
 # INSTALL ANSIBLE
 # ================================
-log "Updating package list with Ansible repository..."
-sudo apt update
-
-log "Installing Ansible..."
-sudo apt install -y ansible
+log "Installing Ansible via pipx..."
+pipx install --include-deps ansible
 
 success "Ansible installed successfully!"
