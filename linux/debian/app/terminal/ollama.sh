@@ -51,15 +51,20 @@ die() {
 # ================================
 if command -v ollama >/dev/null 2>&1; then
   success "Ollama is already installed at $(command -v ollama)."
+  log "Refreshing Ollama runtime without deleting models..."
+
+  sudo systemctl stop ollama.service 2>/dev/null || true
+  sudo rm -f /usr/local/bin/ollama
+  sudo rm -rf /usr/local/lib/ollama
+  sudo rm -rf /usr/lib/ollama
+  sudo rm -rf /lib/ollama
+
+  curl -fsSL https://ollama.com/install.sh | sh
+  success "Ollama runtime refresh complete!"
 else
   log "Installing Ollama..."
   curl -fsSL https://ollama.com/install.sh | sh
   success "Ollama installation complete!"
-fi
-
-OLLAMA_BIN=$(command -v ollama || true)
-if [[ -z "$OLLAMA_BIN" ]]; then
-  die "Ollama command was not found after installation."
 fi
 
 sudo systemctl daemon-reload
@@ -100,6 +105,8 @@ sudo mkdir -p /etc/systemd/system/ollama.service.d
 sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<EOF
 [Service]
 Environment="OLLAMA_HOST=0.0.0.0:11434"
+Environment="OLLAMA_DEBUG=1"
+Environment="CUDA_ERROR_LEVEL=50"
 EOF
 
 success "Systemd override written to /etc/systemd/system/ollama.service.d/override.conf"
