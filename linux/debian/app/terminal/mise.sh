@@ -39,6 +39,11 @@ die() {
 # ================================
 # INSTALL MISE
 # ================================
+if command -v mise >/dev/null 2>&1; then
+	success "mise is already installed at $(command -v mise)."
+	exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 

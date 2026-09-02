@@ -39,6 +39,11 @@ die() {
 # ================================
 # INSTALL NETBIRD
 # ================================
+if command -v netbird >/dev/null 2>&1; then
+	success "NetBird is already installed at $(command -v netbird)."
+	exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 

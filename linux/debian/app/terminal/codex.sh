@@ -40,6 +40,12 @@ die() {
 # CONFIG
 # ================================
 INSTALLER_URL="https://chatgpt.com/codex/install.sh"
+
+if command -v codex >/dev/null 2>&1; then
+	success "Codex is already installed at $(command -v codex)."
+	exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 

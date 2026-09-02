@@ -49,29 +49,20 @@ die() {
 # ================================
 # INSTALL OLLAMA
 # ================================
+if command -v ollama >/dev/null 2>&1; then
+  success "Ollama is already installed at $(command -v ollama)."
+  exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 
 log "Downloading Ollama installer..."
 curl -fsSL https://ollama.com/install.sh -o "$INSTALLER_SCRIPT" || die "Failed to download Ollama installer."
 
-if command -v ollama >/dev/null 2>&1; then
-  success "Ollama is already installed at $(command -v ollama)."
-  log "Refreshing Ollama runtime without deleting models..."
-
-  sudo systemctl stop ollama.service 2>/dev/null || true
-  sudo rm -f /usr/local/bin/ollama
-  sudo rm -rf /usr/local/lib/ollama
-  sudo rm -rf /usr/lib/ollama
-  sudo rm -rf /lib/ollama
-
-  sh "$INSTALLER_SCRIPT" || die "Failed to install Ollama."
-  success "Ollama runtime refresh complete!"
-else
-  log "Installing Ollama..."
-  sh "$INSTALLER_SCRIPT" || die "Failed to install Ollama."
-  success "Ollama installation complete!"
-fi
+log "Installing Ollama..."
+sh "$INSTALLER_SCRIPT" || die "Failed to install Ollama."
+success "Ollama installation complete!"
 
 sudo systemctl daemon-reload
 

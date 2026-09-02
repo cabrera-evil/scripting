@@ -40,6 +40,12 @@ die() {
 # CONFIG
 # ================================
 INSTALLER_URL="https://claude.ai/install.sh"
+
+if command -v claude >/dev/null 2>&1; then
+	success "Claude Code is already installed at $(command -v claude)."
+	exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 

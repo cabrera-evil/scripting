@@ -39,6 +39,11 @@ die() {
 # ================================
 # INSTALL TAILSCALE
 # ================================
+if command -v tailscale >/dev/null 2>&1; then
+	success "Tailscale is already installed at $(command -v tailscale)."
+	exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 

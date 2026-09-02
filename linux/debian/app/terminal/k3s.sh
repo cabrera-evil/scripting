@@ -39,6 +39,11 @@ die() {
 # ================================
 # INSTALL K3S
 # ================================
+if command -v k3s >/dev/null 2>&1; then
+	success "k3s is already installed at $(command -v k3s)."
+	exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 

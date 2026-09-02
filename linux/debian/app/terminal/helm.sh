@@ -39,6 +39,11 @@ die() {
 # ================================
 # INSTALL HELM
 # ================================
+if command -v helm >/dev/null 2>&1; then
+	success "Helm is already installed at $(command -v helm)."
+	exit 0
+fi
+
 INSTALLER_SCRIPT="$(mktemp)"
 trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
 
