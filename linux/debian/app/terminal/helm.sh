@@ -39,7 +39,14 @@ die() {
 # ================================
 # INSTALL HELM
 # ================================
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+INSTALLER_SCRIPT="$(mktemp)"
+trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
+
+log "Downloading Helm installer..."
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 -o "$INSTALLER_SCRIPT" || die "Failed to download Helm installer."
+
+log "Installing Helm..."
+bash "$INSTALLER_SCRIPT" || die "Failed to install Helm."
 
 # ================================
 # AUTOCOMPLETION

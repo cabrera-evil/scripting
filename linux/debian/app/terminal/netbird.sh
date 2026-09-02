@@ -39,7 +39,11 @@ die() {
 # ================================
 # INSTALL NETBIRD
 # ================================
+INSTALLER_SCRIPT="$(mktemp)"
+trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
+
 log "Installing NetBird..."
-curl -fsSL https://pkgs.netbird.io/install.sh | sh
+curl -fsSL https://pkgs.netbird.io/install.sh -o "$INSTALLER_SCRIPT" || die "Failed to download NetBird installer."
+sh "$INSTALLER_SCRIPT" || die "Failed to install NetBird."
 
 success "NetBird installation complete!"

@@ -39,8 +39,12 @@ die() {
 # ================================
 # INSTALL TAILSCALE
 # ================================
+INSTALLER_SCRIPT="$(mktemp)"
+trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
+
 log "Installing Tailscale..."
-curl -fsSL https://tailscale.com/install.sh | sh
+curl -fsSL https://tailscale.com/install.sh -o "$INSTALLER_SCRIPT" || die "Failed to download Tailscale installer."
+sh "$INSTALLER_SCRIPT" || die "Failed to install Tailscale."
 
 log "Enabling tailscale operator mode for user $USER..."
 sudo tailscale set --operator="$USER"

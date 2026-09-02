@@ -39,8 +39,12 @@ die() {
 # ================================
 # INSTALL MISE
 # ================================
+INSTALLER_SCRIPT="$(mktemp)"
+trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
+
 log "Installing latest stable version of mise..."
-curl https://mise.run | sh || die "Failed to install mise."
+curl -fsSL https://mise.run -o "$INSTALLER_SCRIPT" || die "Failed to download mise installer."
+sh "$INSTALLER_SCRIPT" || die "Failed to install mise."
 
 # ================================
 # DONE

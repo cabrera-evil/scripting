@@ -39,8 +39,12 @@ die() {
 # ================================
 # INSTALL K3S
 # ================================
+INSTALLER_SCRIPT="$(mktemp)"
+trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
+
 log "Installing latest stable version of k3s..."
-curl -sfL https://get.k3s.io | sh - || die "Failed to install k3s."
+curl -sfL https://get.k3s.io -o "$INSTALLER_SCRIPT" || die "Failed to download k3s installer."
+sh "$INSTALLER_SCRIPT" || die "Failed to install k3s."
 
 # ================================
 # DONE
