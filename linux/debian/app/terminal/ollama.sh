@@ -102,7 +102,32 @@ sudo mkdir -p /etc/systemd/system/ollama.service.d
 sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<EOF
 [Service]
 Environment="OLLAMA_HOST=0.0.0.0:11434"
+
+# Keep the model loaded between requests to avoid reload latency.
+Environment="OLLAMA_KEEP_ALIVE=1h"
+
+# Better default for OpenCode / long coding sessions.
+Environment="OLLAMA_CONTEXT_LENGTH=65536"
+
+# Reduce memory usage for large contexts.
+Environment="OLLAMA_FLASH_ATTENTION=1"
+
+# Reduce KV-cache memory usage.
+Environment="OLLAMA_KV_CACHE_TYPE=q8_0"
+
+# Your RTX 4070 SUPER has 12 GB VRAM, so avoid loading multiple models.
+Environment="OLLAMA_MAX_LOADED_MODELS=1"
+
+# Prefer one active generation at a time when using 64K context.
+Environment="OLLAMA_NUM_PARALLEL=1"
+
+# Queue additional company requests instead of rejecting them immediately.
+Environment="OLLAMA_MAX_QUEUE=64"
+
+# Useful while tuning; disable later if logs get noisy.
 Environment="OLLAMA_DEBUG=1"
+
+# CUDA diagnostic verbosity.
 Environment="CUDA_ERROR_LEVEL=50"
 EOF
 
