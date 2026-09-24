@@ -109,9 +109,6 @@ Environment="OLLAMA_KEEP_ALIVE=1h"
 # Better default for OpenCode / long coding sessions.
 Environment="OLLAMA_CONTEXT_LENGTH=65536"
 
-# Reduce memory usage for large contexts.
-Environment="OLLAMA_FLASH_ATTENTION=1"
-
 # Reduce KV-cache memory usage.
 Environment="OLLAMA_KV_CACHE_TYPE=q8_0"
 
