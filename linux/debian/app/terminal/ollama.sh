@@ -115,15 +115,6 @@ Environment="OLLAMA_FLASH_ATTENTION=1"
 # Reduce KV-cache memory usage.
 Environment="OLLAMA_KV_CACHE_TYPE=q8_0"
 
-# Your RTX 4070 SUPER has 12 GB VRAM, so avoid loading multiple models.
-Environment="OLLAMA_MAX_LOADED_MODELS=1"
-
-# Prefer one active generation at a time when using 64K context.
-Environment="OLLAMA_NUM_PARALLEL=1"
-
-# Queue additional company requests instead of rejecting them immediately.
-Environment="OLLAMA_MAX_QUEUE=64"
-
 # Useful while tuning; disable later if logs get noisy.
 Environment="OLLAMA_DEBUG=1"
 
