@@ -120,7 +120,7 @@ Environment="OLLAMA_KV_CACHE_TYPE=q8_0"
 Environment="OLLAMA_NUM_PARALLEL=2"
 
 # Avoid excessive VRAM/RAM usage from multiple resident models.
-Environment="OLLAMA_MAX_LOADED_MODELS=2"
+Environment="OLLAMA_MAX_LOADED_MODELS=3"
 
 # Queue bursts instead of overcommitting memory.
 Environment="OLLAMA_MAX_QUEUE=64"
