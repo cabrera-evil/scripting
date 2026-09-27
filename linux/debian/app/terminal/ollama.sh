@@ -101,22 +101,29 @@ sudo mkdir -p /etc/systemd/system/ollama.service.d
 
 sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<EOF
 [Service]
+# Expose Ollama on the company LAN.
 Environment="OLLAMA_HOST=0.0.0.0:11434"
 
-# Keep the model loaded between requests to avoid reload latency.
+# Keep models warm between requests.
 Environment="OLLAMA_KEEP_ALIVE=1h"
 
-# Better default for OpenCode / long coding sessions.
+# Long coding / agent sessions.
 Environment="OLLAMA_CONTEXT_LENGTH=65536"
 
-# Reduce KV-cache memory usage.
+# Reduce memory usage at large context sizes.
+Environment="OLLAMA_FLASH_ATTENTION=1"
+
+# Reduce KV-cache memory usage with minimal quality loss.
 Environment="OLLAMA_KV_CACHE_TYPE=q8_0"
 
-# Useful while tuning; disable later if logs get noisy.
-Environment="OLLAMA_DEBUG=1"
+# Conservative concurrency for 64K contexts.
+Environment="OLLAMA_NUM_PARALLEL=2"
 
-# CUDA diagnostic verbosity.
-Environment="CUDA_ERROR_LEVEL=50"
+# Avoid excessive VRAM/RAM usage from multiple resident models.
+Environment="OLLAMA_MAX_LOADED_MODELS=2"
+
+# Queue bursts instead of overcommitting memory.
+Environment="OLLAMA_MAX_QUEUE=64"
 EOF
 
 success "Systemd override written to /etc/systemd/system/ollama.service.d/override.conf"
