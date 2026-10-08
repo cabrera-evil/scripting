@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ================================
+# COLORS
+# ================================
+if [[ -t 1 ]] && [[ "${TERM:-}" != "dumb" ]]; then
+  RED=$'\033[0;31m'
+  GREEN=$'\033[0;32m'
+  YELLOW=$'\033[0;33m'
+  BLUE=$'\033[0;34m'
+  MAGENTA=$'\033[0;35m'
+  BOLD=$'\033[1m'
+  DIM=$'\033[2m'
+  NC=$'\033[0m'
+else
+  RED='' GREEN='' YELLOW='' BLUE='' MAGENTA='' BOLD='' DIM='' NC=''
+fi
+
+# ================================
+# GLOBAL CONFIGURATION
+# ================================
+QUIET=false
+DEBUG=false
+
+# ================================
+# LOGGING FUNCTIONS
+# ================================
+log() { [[ "$QUIET" != true ]] && printf "${BLUE}▶${NC} %s\n" "$*" || true; }
+warn() { printf "${YELLOW}⚠${NC} %s\n" "$*" >&2; }
+error() { printf "${RED}✗${NC} %s\n" "$*" >&2; }
+success() { [[ "$QUIET" != true ]] && printf "${GREEN}✓${NC} %s\n" "$*" || true; }
+debug() { [[ "$DEBUG" == true ]] && printf "${MAGENTA}⚈${NC} DEBUG: %s\n" "$*" >&2 || true; }
+die() {
+  error "$*"
+  exit 1
+}
+
+# ================================
+# CONFIG
+# ================================
+INSTALLER_URL="https://herdr.dev/install.sh"
+
+if command -v herd >/dev/null 2>&1; then
+  success "Laravel Herd is already installed at $(command -v herd)."
+  exit 0
+fi
+
+command -v curl >/dev/null 2>&1 || die "curl is required to install Laravel Herd."
+
+INSTALLER_SCRIPT="$(mktemp)"
+trap 'rm -f "$INSTALLER_SCRIPT"' EXIT
+
+# ================================
+# DOWNLOAD
+# ================================
+log "Downloading Laravel Herd installer..."
+curl -fsSL "$INSTALLER_URL" -o "$INSTALLER_SCRIPT" || die "Failed to download Laravel Herd installer."
+
+# ================================
+# INSTALL
+# ================================
+log "Installing Laravel Herd..."
+sh "$INSTALLER_SCRIPT" || die "Failed to install Laravel Herd."
+
+# ================================
+# DONE
+# ================================
+success "Laravel Herd installation completed successfully."
