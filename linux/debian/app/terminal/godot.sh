@@ -41,7 +41,7 @@ die() {
 ARCH="$(uname -m)"
 [[ "$ARCH" == "x86_64" ]] || die "Unsupported architecture '$ARCH'; Godot installer supports Linux x86_64 only."
 
-for tool in curl jq unzip mktemp sudo install; do
+for tool in wget jq unzip mktemp sudo install timeout; do
 	command -v "$tool" >/dev/null 2>&1 || die "Required tool '$tool' is not installed."
 done
 
@@ -50,8 +50,8 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 
 RELEASE_JSON="$TMP_DIR/release.json"
 log "Checking the latest stable Godot release..."
-if ! curl --fail --silent --show-error --location --retry 2 --connect-timeout 15 \
-	--max-time 120 "$GODOT_RELEASES_API" -o "$RELEASE_JSON"; then
+if ! timeout 120 wget --no-config --no-background --tries=3 --timeout=15 --read-timeout=120 \
+	-O "$RELEASE_JSON" "$GODOT_RELEASES_API" </dev/null; then
 	die "Failed to fetch Godot release metadata from GitHub. Check the network and try again."
 fi
 
@@ -82,8 +82,8 @@ else
 fi
 
 ZIP_PATH="$TMP_DIR/godot.zip"
-if ! curl --fail --silent --show-error --location --retry 2 --connect-timeout 15 \
-	--max-time 600 "$ASSET_URL" -o "$ZIP_PATH"; then
+if ! timeout 600 wget --no-config --no-background --tries=3 --timeout=15 --read-timeout=600 \
+	-O "$ZIP_PATH" "$ASSET_URL" </dev/null; then
 	die "Failed to download Godot $LATEST_VERSION. Check the network and try again."
 fi
 unzip -tq "$ZIP_PATH" >/dev/null || die "Downloaded Godot archive is invalid or incomplete."

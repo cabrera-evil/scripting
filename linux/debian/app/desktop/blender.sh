@@ -37,7 +37,7 @@ die() {
 # ===================================
 # CONFIGURATION AND PREREQUISITES
 # ===================================
-for tool in uname curl grep sort tar xz sha256sum mktemp install ln sudo mv readlink rm; do
+for tool in uname wget grep sort tar xz sha256sum mktemp install ln sudo mv readlink rm; do
 	command -v "$tool" >/dev/null 2>&1 || die "Required tool '$tool' is not installed."
 done
 
@@ -53,7 +53,7 @@ trap cleanup EXIT
 # RELEASE DISCOVERY
 # ===================================
 log "Discovering the latest stable Blender release..."
-curl --fail --location --silent --show-error "$INDEX_URL" -o "$TMP_DIR/index.html" || die "Could not fetch Blender release index."
+wget --no-config --no-background -O "$TMP_DIR/index.html" "$INDEX_URL" </dev/null || die "Could not fetch Blender release index."
 
 SERIES=()
 while IFS= read -r candidate; do
@@ -66,7 +66,7 @@ SERIES_NAME="${SERIES[${#SERIES[@]}-1]}"
 [[ "$SERIES_NAME" =~ ^Blender[0-9]+\.[0-9]+$ ]] || die "Invalid selected release series."
 
 SERIES_URL="${BASE_URL}/${SERIES_NAME}/"
-curl --fail --location --silent --show-error "$SERIES_URL" -o "$TMP_DIR/series.html" || die "Could not fetch release series ${SERIES_NAME}."
+wget --no-config --no-background -O "$TMP_DIR/series.html" "$SERIES_URL" </dev/null || die "Could not fetch release series ${SERIES_NAME}."
 
 ASSETS=()
 while IFS= read -r candidate; do
@@ -90,8 +90,8 @@ CHECKSUM_PATH="${TMP_DIR}/${ASSET}.sha256"
 # DOWNLOAD AND CHECKSUM VERIFICATION
 # ===================================
 log "Downloading Blender ${VERSION} and its official SHA-256 file..."
-curl --fail --location --silent --show-error "$ARCHIVE_URL" -o "$ARCHIVE_PATH" || die "Could not download Blender archive."
-curl --fail --location --silent --show-error "$CHECKSUM_URL" -o "$CHECKSUM_PATH" || die "Could not download Blender SHA-256 file."
+wget --no-config --no-background -O "$ARCHIVE_PATH" "$ARCHIVE_URL" </dev/null || die "Could not download Blender archive."
+wget --no-config --no-background -O "$CHECKSUM_PATH" "$CHECKSUM_URL" </dev/null || die "Could not download Blender SHA-256 file."
 
 CHECKSUM_LINES=()
 while IFS= read -r line; do
