@@ -44,4 +44,4 @@ The repository does not provide a Blender installer that discovers current stabl
 - `shellcheck linux/debian/app/desktop/blender.sh` — passed.
 - `git diff --check` — passed.
 - Live install: N/A; explicitly not run because this work unit forbids executing the installer or using sudo.
-- Work-unit commit: pending.
+- Work-unit commit: `8433620` (`feat: add Blender stable installer`).
