@@ -44,4 +44,4 @@ The repository has no Godot installer, so users cannot install or update the edi
 - `shellcheck linux/debian/app/terminal/godot.sh` — passed.
 - `git diff --check` — passed.
 - Live install: N/A; explicitly not run because this work unit forbids executing the installer or using sudo.
-- Work-unit commit: pending.
+- Work-unit commit: `d0aa009` (`feat: add Godot stable installer`).
