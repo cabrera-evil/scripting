@@ -105,6 +105,43 @@ sudo install -o root -g root -m 0755 "$TMP_DIR/godot" /usr/local/bin/godot \
 	|| die "Failed to install Godot at /usr/local/bin/godot."
 
 # ================================
+# DESKTOP ENTRY
+# ================================
+ICON_PATH="/usr/local/share/icons/hicolor/scalable/apps/godot.svg"
+ICON_BASE="https://raw.githubusercontent.com/godotengine/godot/${LATEST_VERSION}-stable"
+ICON_OK=false
+log "Installing Godot icon..."
+# The icon moved from icon.svg to misc/logo/icon.svg in newer releases.
+for icon_file in misc/logo/icon.svg icon.svg; do
+	if timeout 60 wget --no-config --no-background --tries=3 --timeout=15 --read-timeout=60 \
+		-O "$TMP_DIR/godot.svg" "$ICON_BASE/$icon_file" </dev/null && [[ -s "$TMP_DIR/godot.svg" ]]; then
+		ICON_OK=true
+		break
+	fi
+done
+if [[ "$ICON_OK" == true ]]; then
+	sudo install -D -o root -g root -m 0644 "$TMP_DIR/godot.svg" "$ICON_PATH"
+else
+	warn "Could not download the Godot icon; the desktop entry will use a generic icon."
+	ICON_PATH="applications-games"
+fi
+
+log "Creating desktop entry..."
+sudo tee /usr/share/applications/godot.desktop >/dev/null <<EOF
+[Desktop Entry]
+Name=Godot Engine
+GenericName=Game Engine
+Comment=Multi-platform 2D and 3D game engine
+Exec=/usr/local/bin/godot --editor %f
+Terminal=false
+Type=Application
+Icon=${ICON_PATH}
+Categories=Development;IDE;
+MimeType=application/x-godot-project;
+StartupWMClass=Godot
+EOF
+
+# ================================
 # DONE
 # ================================
 success "Godot $LATEST_VERSION installed successfully at /usr/local/bin/godot."
