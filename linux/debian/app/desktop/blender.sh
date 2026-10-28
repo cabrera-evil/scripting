@@ -164,4 +164,13 @@ if ! sudo mv -Tf "$LINK_TMP" "$LINK_PATH"; then
 	die "Could not atomically update Blender command symlink."
 fi
 
+# ===================================
+# DESKTOP ENTRY
+# ===================================
+log "Creating desktop entry..."
+sudo install -D -o root -g root -m 0644 "${INSTALL_DIR}/blender.svg" /usr/local/share/icons/hicolor/scalable/apps/blender.svg || die "Could not install Blender icon."
+sudo install -D -o root -g root -m 0644 "${INSTALL_DIR}/blender.desktop" /usr/share/applications/blender.desktop || die "Could not install Blender desktop entry."
+sudo gtk-update-icon-cache -q -f /usr/local/share/icons/hicolor 2>/dev/null || true
+sudo update-desktop-database -q /usr/share/applications 2>/dev/null || true
+
 success "Blender ${VERSION} installed successfully."
