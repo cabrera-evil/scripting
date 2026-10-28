@@ -82,28 +82,34 @@ ARCHIVE_ROOT="blender-${VERSION}-linux-x64"
 [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "Invalid selected Blender version."
 
 ARCHIVE_URL="${SERIES_URL}${ASSET}"
-CHECKSUM_URL="${ARCHIVE_URL}.sha256"
-ARCHIVE_PATH="${TMP_DIR}/${ASSET}"
-CHECKSUM_PATH="${TMP_DIR}/${ASSET}.sha256"
+CHECKSUM_URL="${SERIES_URL}blender-${VERSION}.sha256"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/blender-installer"
+mkdir -p "$CACHE_DIR"
+ARCHIVE_PATH="${CACHE_DIR}/${ASSET}"
+CHECKSUM_PATH="${TMP_DIR}/blender-${VERSION}.sha256"
 
 # ===================================
 # DOWNLOAD AND CHECKSUM VERIFICATION
 # ===================================
-log "Downloading Blender ${VERSION} and its official SHA-256 file..."
-wget --no-config --no-background -O "$ARCHIVE_PATH" "$ARCHIVE_URL" </dev/null || die "Could not download Blender archive."
+log "Downloading the official SHA-256 file for Blender ${VERSION}..."
 wget --no-config --no-background -O "$CHECKSUM_PATH" "$CHECKSUM_URL" </dev/null || die "Could not download Blender SHA-256 file."
 
+# The release checksum file lists every platform; keep only our archive's digest.
 CHECKSUM_LINES=()
 while IFS= read -r line; do
-	[[ "$line" =~ ^([[:xdigit:]]{64})([[:space:]]+([^[:space:]]+))?$ ]] || die "Malformed SHA-256 file for ${ASSET}."
-	[[ -z "${BASH_REMATCH[3]:-}" || "${BASH_REMATCH[3]}" == "$ASSET" ]] || die "SHA-256 file names a different archive."
-	CHECKSUM_LINES+=("${BASH_REMATCH[1],,}")
+	[[ "$line" =~ ^([[:xdigit:]]{64})[[:space:]]+\*?([^[:space:]]+)$ ]] || continue
+	[[ "${BASH_REMATCH[2]}" == "$ASSET" ]] && CHECKSUM_LINES+=("${BASH_REMATCH[1],,}")
 done < "$CHECKSUM_PATH"
-((${#CHECKSUM_LINES[@]} == 1)) || die "SHA-256 file must contain exactly one matching digest."
+((${#CHECKSUM_LINES[@]} == 1)) || die "SHA-256 file must contain exactly one digest for ${ASSET}."
 EXPECTED_SHA="${CHECKSUM_LINES[0]}"
+log "Downloading Blender ${VERSION} (resumable; cached in ${CACHE_DIR})..."
+wget --no-config --no-background -c -O "$ARCHIVE_PATH" "$ARCHIVE_URL" </dev/null || die "Could not download Blender archive."
 ACTUAL_SHA="$(sha256sum "$ARCHIVE_PATH")"
 ACTUAL_SHA="${ACTUAL_SHA%% *}"
-[[ "$ACTUAL_SHA" == "$EXPECTED_SHA" ]] || die "Blender archive SHA-256 verification failed."
+if [[ "$ACTUAL_SHA" != "$EXPECTED_SHA" ]]; then
+	rm -f "$ARCHIVE_PATH"
+	die "Blender archive SHA-256 verification failed; removed cached archive."
+fi
 
 # ===================================
 # ARCHIVE VALIDATION AND EXTRACTION
